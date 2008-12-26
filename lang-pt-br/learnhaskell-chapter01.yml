@@ -1,11 +1,11 @@
 chapter:Introdução
 
-title:About this tutorial
+title:Sobre este tutorial
 
-text: Welcome to Learn You a Haskell for Great Good!
-If you're reading this, chances are you want to learn Haskell. Well, you've come to the right place, but let's talk about this tutorial a bit first.
+text: Bem-vindo ao Aprender Haskell será um grande bem para você! 
+Se você já esta lendo isto, existem chances de você quer aprender Haskell. Muito Bem, você já esta no lugar certo, mas antes vamos conversar um pouco sobre este tutorial.
 
-I decided to write this because I wanted to solidify my own knowledge of Haskell and because I thought I could help people new to Haskell learn it from my perspective. There are quite a few tutorials on Haskell floating around on the internet. When I was starting out in Haskell, I didn't learn from just one resource. The way I learned it was by reading several different tutorials and articles because each explained something in a different way than the other did. By going through several resources, I was able put together the pieces and it all just came falling into place. So this is an attempt at adding another useful resource for learning Haskell so you have a bigger chance of finding one you like.
+Eu decidi escreve-lo porque eu estava querendo solidificar meus conhecimentos em Haskell e porque pensei que poderia ajudar as pessoas novas em Haskell a aprende-lo sob a minha perspectiva. Este é só mais um tutorial sobre Haskell flutuando pela internet. Quando eu comecei em Haskell, e não aprendi a partir de apenas um recurso. O meu caminho para o aprendizado passou pela leitura de diversos e diferentes tutoriais e artigos porque cada um explicava algo seguindo por um caminho diferente do outro. Ao passar por diferentes recursos, eu consegui juntar as peças e tudo acabou caindo no mesmo lugar. Portanto, este é apenas mais um recurso adicional a se utilizar para aprender Haskell para que você tenha uma maior chance de encontrar um que você realmente goste. 
 
 This tutorial is aimed at people who have experience in imperative programming languages (C, C++, Java, Python &hellip;) but haven't programmed in a functional language before (Haskell, ML, OCaml &hellip;). Although I bet that even if you don't have any significant programming experience, a smart chap like you will be able to follow along and learn Haskell.
 
