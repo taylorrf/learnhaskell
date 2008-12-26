@@ -1,0 +1,36 @@
+title: Tuples
+text:In some ways, tuples are like lists &mdash; they are a way to store several values into a single value. However, there are a few fundamental differences. A list of numbers is a list of numbers. That's its type and it doesn't matter if it has only one number in it or an infinite amount of numbers. Tuples, however, are used when you know exactly how many values you want to combine and its type depends on how many components it has and the types of the components. They are denoted with parentheses and their components are separated by commas.
+
+Another key difference is that they don't have to be homogenous. Unlike a list, a tuple can contain a combination of several types.
+
+
+Think about how we'd represent a two-dimensional vector in Haskell. One way would be to use a list. That would kind of work. So what if we wanted to put a couple of vectors in a list to represent points of a shape on a two-dimensional plane? We could do something like [code][[1,2],[8,11],[4,5]][/code]. The problem with that method is that we could also do stuff like [code][[1,2],[8,11,5],[4,5]][/code], which Haskell has no problem with since it's still a list of lists with numbers but it kind of doesn't make sense. But a tuple of size two (also called a pair) is its own type, which means that a list can't have a couple of pairs in it and then a triple (a tuple of size three), so let's use that instead. Instead of surrounding the vectors with square brackets, we use parentheses: [code][(1,2),(8,11),(4,5)][/code] What if we tried to make a shape like [code][(1,2),(8,11,5),(4,5)][/code]? Well, we'd get this error:
+
+It's telling us that we tried to use a pair and a triple in the same list, which is not supposed to happen. You also couldn't make a list like [code][(1,2),("One",2)][/code] because the first element of the list is a pair of numbers and the second element is a pair consisting of a string and a number. Tuples can also be used to represent a wide variety of data. For instance, if we wanted to represent someone's name and age in Haskell, we could use a triple: [code]("Christopher", "Walken", 55)[/code]. As seen in this example, tuples can also contain lists.
+
+Use tuples when you know in advance how many components some piece of data should have. Tuples are much more rigid because each different size of tuple is its own type, so you can't write a general function to append an element to a tuple - you'd have to write a function for appending to a pair, one function for appending to a triple, one function for appending to a 4-tuple, etc.
+
+While there are singleton lists, there's no such thing as a singleton tuple. It doesn't really make much sense when you think about it. A singleton tuple would just be the value it contains and as such would have no benefit to us.
+
+Like lists, tuples can be compared with each other if their components can be compared. Only you can't compare two tuples of different sizes, whereas you can compare two lists of different sizes. Two useful functions that operate on pairs:
+
+[code]fst[/code] takes a pair and returns its first component.
+
+[code]snd[/code] takes a pair and returns its second component. Surprise!
+
+Note: these functions operate only on pairs. They won't work on triples, 4-tuples, 5-tuples, etc. We'll go over extracting data from tuples in different ways a bit later.
+
+
+A cool function that produces a list of pairs: [code]zip[/code]. It takes two lists and then zips them together into one list by joining the matching elements into pairs. It's a really simple function but it has loads of uses. It's especially useful for when you want to combine two lists in a way or traverse two lists simultaneously. Here's a demonstration.
+
+It pairs up the elements and produces a new list. The first element goes with the first, the second with the second, etc. Notice that because pairs can have different types in them, [code]zip[/code] can take two lists that contain different types and zip them up. What happens if the lengths of the lists don't match?
+
+The longer list simply gets cut off to match the length of the shorter one. Because Haskell is lazy, we can zip finite lists with infinite lists:
+
+Here's a problem that combines tuples and list comprehensions: which right triangle that has integers for all sides and all sides equal to or smaller than 10 has a perimeter of 24? First, let's try generating all triangles with sides equal to or smaller than 10:
+
+We're just drawing from three lists and our output function is combining them into a triple. If you evaluate that by typing out [code]triangles[/code] in GHCI, you'll get a list of all possible triangles with sides under or equal to 10. Next, we'll add a condition that they all have to be right triangles. We'll also modify this function by taking into consideration that side b isn't larger than the hypothenuse and that side a isn't larger than side b.
+
+We're almost done. Now, we just modify the function by saying that we want the ones where the perimeter is 24.
+
+And there's our answer! This is a common pattern in functional programming. You take a starting set of solutions and then you apply transformations to those solutions and filter them until you get the right ones.

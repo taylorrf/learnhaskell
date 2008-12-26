@@ -1,0 +1,74 @@
+title: An intro to lists
+
+text: Much like shopping lists in the real world, lists in Haskell are very useful. It's the most used data structure and it can be used in a multitude of different ways to model and solve a whole bunch of problems. Lists are SO awesome. In this section we'll look at the basics of lists, strings (which are lists) and list comprehensions.
+
+In Haskell, lists are a homogenous data structure. It stores several elements of the same type. That means that we can have a list of integers or a list of characters but we can't have a list that has a few integers and then a few characters. And now, a list!
+
+Note: We can use the [code]let[/code] keyword to define a name right in GHCI. Doing [code]let a = 1[/code] inside GHCI is the equivalent of writing [code]a = 1[/code] in a script and then loading it.
+
+As you can see, lists are denoted by square brackets and the values in the lists are separated by commas. If we tried a list like [code][1,2,'a',3,'b','c',4][/code], Haskell would complain that characters (which are, by the way, denoted as a character between single quotes) are not numbers. Speaking of characters, strings are just lists of characters. [code]"hello"[/code] is just syntactic sugar for [code]['h','e','l','l','o'][/code]. Because strings are lists, we can use list functions on them, which is really handy. 
+
+A common task is putting two lists together. This is done by using the [code]++[/code] operator.
+
+Watch out when repeatedly using the [code]++[/code] operator on long strings. When you put together two lists (even if you append a singleton list to a list, for instance: [code][1,2,3] ++ [4][/code]), internally, Haskell has to walk through the whole list on the left side of [code]++[/code]. That's not a problem when dealing with lists that aren't too big. But putting something at the end of a list that's fifty million entries long is going to take a while. However, putting something at the beginning of a list using the [code]:[/code] operator (also called the cons operator) is instantaneous.
+
+Notice how [code]:[/code] takes a number and a list of numbers or a character and a list of characters, whereas [code]++[/code] takes two lists. Even if you're adding an element to the end of a list with [code]++[/code], you have to surround it with square brackets so it becomes a list.
+
+[code][1,2,3][/code] is actually just syntactic sugar for [code]1:2:3:[][/code]. [code][][/code] is an empty list. If we prepend [code]3[/code] to it, it becomes [code][3][/code]. If we prepend [code]2[/code] to that, it becomes [code][2,3][/code], and so on.
+
+<p class="hintbox"><em>Note:</em> [code][][/code], [code][[]][/code] and[code][[],[],[]][/code] are all different things. The first one is an empty list, the seconds one is a list that contains one empty list, the third one is a list that contains three empty lists.
+
+If you want to get an element out of a list by index, use [code]!![/code]. The indices start at 0.
+
+But if you try to get the sixth element from a list that only has four elements, you'll get an error so be careful!
+
+Lists can also contain lists. They can also contain lists that contain lists that contain lists ...
+
+
+The lists within a list can be of different lengths but they can't be of different types. Just like you can't have a list that has some characters and some numbers, you can't have a list that has some lists of characters and some lists of numbers.
+
+Lists can be compared if the stuff they contain can be compared. When using [code]&lt;[/code], [code]&lt;=[/code], [code]&gt;[/code] and [code]&gt;=[/code] to compare lists, they are compared in lexicographical order. First the heads are compared. If they are equal then the second elements are compared, etc.
+
+What else can you do with lists? Here are some basic functions that operate on lists.
+
+[code]head[/code] takes a list and returns its head. The head of a list is basically its first element.
+
+[code]tail[/code] takes a list and returns its tail. In other words, it chops off a list's head.
+
+[code]last[/code] takes a list and returns its last element.
+
+[code]init[/code] takes a list and returns everything except its last element.
+
+If we think of a list as a monster, here's what's what.
+
+
+But what happens if we try to get the head of an empty list?
+
+
+Oh my! It all blows up in our face! If there's no monster, it doesn't have a head. When using [code]head[/code], [code]tail[/code], [code]last[/code] and [code]init[/code], be careful not to use them on empty lists. This error cannot be caught at compile time so it's always good practice to take precautions against accidentally telling Haskell to give you some elements from an empty list.
+
+[code]length[/code] takes a list and returns its length, obviously.
+
+
+[code]null[/code] checks if a list is empty. If it is, it returns [code]True[/code], otherwise it returns [code]False[/code]. Use this function instead of [code]xs == [][/code] (if you have a list called [code]xs[/code])
+
+[code]reverse[/code] reverses a list.
+
+[code]take[/code] takes number and a list. It extracts that many elements from the beginning of the list. Watch.
+
+
+See how if we try to take more elements than there are in the list, it just returns the list. If we try to take 0 elements, we get an empty list.
+
+[code]drop[/code] works in a similar way, only it drops the number of elements from the beginning of a list.
+
+[code]maximum[/code] takes a list of stuff that can be put in some kind of order and returns the biggest element.
+
+[code]minimum[/code] returns the smallest.
+
+[code]sum[/code] takes a list of numbers and returns their sum.
+
+[code]product[/code] takes a list of numbers and returns their product.
+
+[code]elem[/code] takes a thing and a list of things and tells us if that thing is an element of the list. It's usually called as an infix function because it's easier to read that way.
+
+Those were a few basic functions that operate on lists. We'll take a look at more list functions in section #TODO: include section name and link here.

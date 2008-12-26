@@ -1,0 +1,33 @@
+title: I'm a list comprehension
+text: If you've ever taken a course in mathematics, you've probably run into set comprehensions. They're normally used for building more specific sets out of general sets. A basic comprehension for a set that contains the first ten even natural numbers is [image]. The part before the pipe is called the output function, [code]x[/code] is the variable, [code]N[/code] is the input set and [code]x &lt;= 10[/code] is the predicate. That means that the set contains the doubles of all natural numbers that satisfy the predicate.
+
+If we wanted to write that in Haskell, we could do something like [code]take 10 [2,4..][/code]. But what if we didn't want doubles of the first 10 natural numbers but some kind of more complex function applied on them? We could use a list comprehension for that. List comprehensions are very similar to set comprehensions. We'll stick to getting the first 10 even numbers for now. The list comprehension we could use is [code][x*2 | x &lt;- [1..10]][/code]. [code]x[/code] is drawn from [code][1..10][/code] and for every element in [code][1..10][/code] (which we have bound to [code]x[/code]), we get that element, only doubled. Here's that comprehension in action.
+
+As you can see, we get the desired results. Now let's add a condition (or a predicate) to that comprehension. Predicates go after the binding parts and are separated from them by a comma. Let's say we want only the elements which, doubled, are greater than or equal to 12. 
+
+Cool, it works. How about if we wanted all numbers from 50 to 100 whose remainder when divided with the number 7 is 3? Easy.
+
+Success! Note that weeding out lists by predicates is also called <em>filtering</em>. We took a list of numbers and we filtered them by the predicate. Now for another example. Let's say we want a comprehension that replaces each odd number greater than 10 with [code]"BANG!"[/code] and each odd number that's less than 10 with [code]"BOOM!"[/code]. If a number isn't odd, we throw it out of our list. For convenience, we'll put that comprehension inside a function so we can easily reuse it.
+
+The last part of the comprehension is the predicate. The function [code]odd[/code] returns [code]True[/code] on an odd number and [code]False[/code]  on an even one. The element is included in the list only if all the predicates evaluate to [code]True[/code].
+
+We can include several predicates. If we wanted all numbers from 10 to 20 that are not 13, 15 or 19, we'd do:
+
+Not only can we have multiple predicates in list comprehensions (an element must satisfy all the predicates to be included in the resulting list), we can also draw from several lists. When drawing from several lists, comprehensions produce all combinations of the given lists and then join them by the output function we supply. A list produced by a comprehension that draws from two lists of length 4 will have a length of 16, provided we don't filter them. If we have two lists, [code][2,5,10][/code] and [code][8,10,11][/code] and we want to get the products of all the possible combinations between numbers in those lists, here's what we'd do.
+
+As expected, the length of the new list is 9. What if we wanted all possible products that are more than 50?
+
+How about a list comprehension that combines a list of adjectives and a list of nouns ... for epic hilarity.
+
+I know! Let's write our own version of [code]length[/code]! We'll call it [code]length'[/code].
+
+
+[code]_[/code] means that we don't care what we'll draw from the list anyway so instead of writing a variable name that we'll never use, we just write [code]_[/code]. This function replaces every element of a list with [code]1[/code] and then sums that up. This means that the resulting sum will be the length of our list.
+
+Just a friendly reminder: because strings are lists, we can use list comprehensions to process and produce strings. Here's a function that takes a string and removes everything except uppercase letters from it.
+
+Testing it out:
+
+The predicate here does all the work. It says that the character will be included in the new list only if it's an element of the list [code]['A'..'Z'][/code]. Nested list comprehensions are also possible if you're operating on lists that contain lists. A list contains several lists of numbers. Let's remove all odd numbers without flattening the list.
+
+You can write list comprehensions across several lines. So if you're not in GHCI, it's better to split longer list comprehensions across multiple lines, especially if they're nested.

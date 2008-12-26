@@ -1,0 +1,24 @@
+title: Texas ranges
+text:What if we want a list of all numbers between 1 and 20? Sure, we could just type them all out but obviously that's not a solution for gentlemen who demand excellence from their programming languages. Instead, we'll use ranges. Ranges are a way of making lists that are arithmetic sequences of elements that can be enumerated. Numbers can be enumerated. One, two, three, four, etc. Characters can also be enumerated. The alphabet is an enumeration of characters from A to Z. Names can't be enumerated. What comes after "John"? I don't know.
+
+To make a list containing all the natural numbers from 1 to 20, you just write [code][1..20][/code]. That is the equivalent of writing [code][1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20][/code] and there's no difference between writing one or the other except that writing out long enumeration sequences manually is stupid.
+
+Ranges are cool because you can also specify a step. What if we want all even numbers between 1 and 20? Or every third number between 1 and 20?
+
+It's simply a matter of separating the first two elements with a comma and then specifying what the upper limit is. While pretty smart, ranges with steps aren't as smart as some people expect them to be. You can't do [code][1,2,4,8,16..100][/code] and expect to get all the powers of 2. Firstly because you can only specify one step. And secondly because some sequences that aren't arithmetic are ambiguous if given only by a few of their first terms.
+
+To make a list with all the numbers from 20 to 1, you can't just do [code][20..1][/code], you have to do [code][20,19..1][/code].
+
+Watch out when using floating point numbers in ranges! Because they are not completely precise (by definition), their use in ranges can yield some pretty funky results.
+
+My advice is not to use them in list ranges.
+
+You can also use ranges to make infinite lists by just not specifying an upper limit. Later we'll go into more detail on infinite lists. For now, let's examine how you would get the first 24 multiples of 13. Sure, you could do [code][13,26..24*13][/code]. But there's a better way: [code]take 24 [13,26..][/code]. Because Haskell is lazy, it won't try to evaluate the infinite list immediately because it would never finish. It'll wait to see what you want to get out of that infinite lists. And here it sees you just want the first 24 elements and it gladly obliges.
+
+A handful of functions that produce infinite lists:
+
+[code]cycle[/code] takes a list and cycles it into an infinite list. If you just try to display the result, it will go on forever so you have to slice it off somewhere.
+
+[code]repeat[/code] takes an element and produces an infinite list of just that element. It's like cycling a list with only one element.
+
+Although it's simpler to just use the [code]replicate[/code] function if you want some number of the same element in a list. [code]replicate 3 10[/code] returns [code][10,10,10][/code].

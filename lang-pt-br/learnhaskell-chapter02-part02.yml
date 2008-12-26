@@ -1,0 +1,25 @@
+title: Baby's first functions
+
+text: In the previous section we got a basic feel for calling functions. Now let's try making our own! Open up your favorite text editor and punch in this function that takes a number and multiplies it by two.
+
+Functions are defined in a similar way that they are called. The function name is followed by parameters seperated by spaces. But when defining functions, there's a [code]=[/code] and after that we define what the function does. Save this as [code]baby.hs[/code] or something. Now navigate to where it's save and run [code]ghci[/code] from there. Once inside GHCI, do [code]:l baby[/code]. Now that our script is loaded, we can play with the function that we defined.
+
+Because [code]+[/code] works on integers as well as on floating-point numbers (anything that can be considered a number, really), our function also works on any number. Let's make a function that takes two numbers and multiplies each by two and then adds them together.
+
+Simple. We could have also defined it as [code]doubleUs x y = x + x + y + y[/code]. Testing it out produces pretty predictable results (remember to append this function to the [code]baby.hs[/code] file, save it and then do [code]:l baby[/code] inside GHCI).
+
+As expected, you can call your own functions from other functions that you made. With that in mind, we could redefine [code]doubleUs[/code] like this:
+
+This is a very simple example of a common pattern you will see throughout Haskell. Making basic functions that are obviously correct and then combining them into more complex functions. This way you also avoid repetition. What if some mathematicians figured out that 2 is actually 3 and you had to change your program? You could just redefine [code]doubleMe[/code] to be [code]x + x + x[/code] and since [code]doubleUs[/code] calls [code]doubleMe[/code], it would automatically work in this strange new world where 2 is 3.
+
+
+Functions in Haskell don't have to be in any particular order, so it doesn't matter if you define [code]doubleMe[/code] first and then  [code]doubleUs[/code] or if you do it the other way around.
+
+Now we're going to make a function that multiplies a number by 2 but only if that number is smaller than or equal to 100 because numbers bigger than 100 are big enough as it is!
+
+Right here we introduced Haskell's if statement. You're probably familiar with if statements from other languages. The difference between Haskell's if statement and if statements in imperative languages is that the else part is mandatory in Haskell. In imperative languages you can just skip a couple of steps if the condition isn't satisfied but in Haskell every expression and function must return something. We could have also written that if statement in one line but I find this way more readable. Another thing about the if statement in Haskell is that it is an <i>expression</i>. An expression is basically a piece of code that returns a value. [code]5[/code] is an expression because it returns 5, [code]4 + 8[/code] is an expression, [code]x + y[/code] is an expression because it returns the sum of [code]x[/code] and [code]y[/code]. Because the else is mandatory, an if statement will always return something and that's why it's an expression. If we wanted to add one to every number that's produced in our previous function, we could have written its body like this.
+
+
+Had we ommitted the parentheses, it would have added one only if [code]x[/code] wasn't greater than 100. Note the [code]'[/code] at the end of the function name. That apostrophe doesn't have any special meaning in Haskell's syntax. It's a valid character to use in a function name. We usually use [code]'[/code] to either denote a strict version of a function (one that isn't lazy) or a slightly modified version of a function or a variable. Because [code]'[/code] is a valid character in functions, we can make a function like this.
+
+There are two noteworthy things here. The first is that in the function name we didn't capitalize Conan's name. That's because functions can't begin with uppercase letters. We'll see why a bit later. The second thing is that this function doesn't take any parameters. When a function doesn't take any parameters, we usually say it's a <i>definition</i> (or a <i>name</i>). Because we can't change what names (and functions) mean once we've defined them, [code]conanO'Brien[/code] and the string [code]"It's a-me, Conan O'Brien!"[/code] can be used interchangeably.
