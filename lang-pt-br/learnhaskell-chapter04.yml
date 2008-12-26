@@ -55,27 +55,3 @@ This is similar to the factorial function we wrote earlier. First we defined the
 Let's see what happens if we call [code]length'[/code] on [code]"ham"[/code]. First, it will check if it's an empty list. Because it isn't, it falls through to the second pattern. It matches on the second pattern and there it says that the length is [code]1 + length' "am"[/code], because we broke it into a head and a tail and discarded the tail. O-kay. The [code]length'[/code] of [code]"am"[/code] is, similarly, [code]1 + length' "m"[/code]. So right now we have [code]1 + (1 + length' "m")[/code]. [code]length' "m"[/code] is [code]1 + length' ""[/code] (could also be written as [code]1 + length' [][/code]). And we've defined [code]length' [][/code] to be [code]0[/code]. So in the end we have [code]1 + (1 + (1 + 0))[/code].
 
 Let's implement [code]sum[/code]. We know that the sum of an empty list is 0. We write that down as a pattern. And we also know that the sum of a list is the head plus the sum of the rest of the list. So if we write that down, we get:
-
-
-
-title: Guards, guards!
-
-text: 
-
-
-
-title: Where!?
-
-text: 
-
-
-
-title: Let it be
-
-text: 
-
-
-
-title: Case expressions
-
-text: 
