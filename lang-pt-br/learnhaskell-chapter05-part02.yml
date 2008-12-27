@@ -1,3 +1,20 @@
 title: Maximum, impressionante
 
-text: 
+text: The [code]maximum[/code] function takes a list of things that can be ordered (e.g. instances of the [code]Ord[/code] typeclass) and returns the biggest of them. Think about how you'd implement that in an imperative fashion. You'd probably set up a variable to hold the maximum value so far and then you'd loop through the elements of a list and if an element is bigger than then the current maximum value, you'd replace it with that element. The maximum value that remains at the end is the result. Whew! That's quite a lot of words to describe such a simple algorithm!
+
+Now let's see how we'd define it recursively. We could first set up an edge condition and say that the maximum of a singleton list is equal to the only element in it. Then we can say that the maximum of a longer list is the head if the head is bigger than the maximum of the tail. If the maximum of the tail is bigger, well, then it's the maximum of the tail. That's it! Now let's implement that in Haskell.
+
+
+
+As you can see, pattern matching goes great with recursion! Most imperative languages don't have pattern matching so you have to make a lot of if else statements to test for edge conditions. Here, we simply put them out as patterns. So the first edge condition says that if the list is empty, crash! Makes sense because what's the maximum of an empty list? I don't know. The second pattern also lays out an edge condition. It says that if it's the singleton list, just give back the only element.
+
+Now the third pattern is where the action happens. We use pattern matching to split a list into a head and a tail. This is a very common idiom when doing recursion with lists, so get used to it. We use a <i>where</i> binding to define [code]maxTail[/code] as the maximum of the rest of the list. Then we check if the head is greater than the maximum of the rest of the list. If it is, we return the head. Otherwise, we return the maximum of the rest of the list.
+
+Let's take an example list of numbers and check out how this would work on them: [code][2,5,1][/code]. If we call [code]maximum'[/code] on that, the first two patterns won't match. The third one will and the list is split into [code]2[/code] and [code][5,1][/code]. The <i>where</i> clause wants to know the maximum of [code][5,1][/code], so we follow that route. It matches the third pattern again and [code][5,1][/code] is split into [code]5[/code] and [code][1][/code]. Again, the [code]where[/code] clause wants to know the maximum of [code][1][/code]. Because that's the edge condition, it returns [code]1[/code]. Finally! So going up one step, comparing [code]5[/code] to the maximum of [code][1][/code] (which is [code]1[/code]), we obviously get back [code]5[/code]. So now we know that the maximum of [code][5,1][/code] is [code]5[/code]. We go up one step again where we had [code]2[/code] and [code][5,1][/code]. Comparing [code]2[/code] with the maximum of [code][5,1][/code], which is [code]5[/code], we choose [code]5[/code].
+
+An even clearer way to write this function is to use [code]max[/code]. If you remember, [code]max[/code] is a function that takes two numbers and returns the bigger of them. Here's how we could rewrite [code]maximum'[/code] by using [code]max[/code]:
+
+
+
+How's that for elegant! In essence, the maximum of a list is the max of the first element and the maximum of the tail.
+

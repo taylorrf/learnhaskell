@@ -1,3 +1,39 @@
 title: Um pouco mais de funções recursivas
 
-text: 
+text: Now that we know how to generally think recursively, let's implement a few functions using recursion. First off, we'll implement [code]replicate[/code]. [code]replicate[/code] takes an [code]Int[/code] and some element and returns a list that has several repetitions of the same element. For instance, [code]replicate 3 5[/code] returns [code][5,5,5][/code]. Let's think about the edge condition. My guess is that the edge condition is 0 or less. If we try to replicate something zero times, it should return an empty list. Also for negative numbers, because it doesn't really make sense.
+
+
+
+We used guards here instead of patterns because we're testing for a boolean condition. If [code]n[/code] is less than or equal to 0, return an empty list. Otherwise return a list that has [code]x[/code] as the first element and then [code]x[/code] replicated n-1 times as the tail. Eventually, the [code](n-1)[/code] part will cause our function to reach the edge condition.
+
+<em>Nota:</em> [code]Num[/code] is not a subclass of [code]Ord[/code]. That means that what constitutes for a number doesn't really have to adhere to an ordering. So that's why we have to specify both the [code]Num[/code] and [code]Ord[/code] class constraints when doing addition or subtraction and also comparison.
+
+Next up, we'll implement [code]take[/code]. It takes a certain number of elements from a list. For instance, [code]take 3 [5,4,3,2,1][/code] will return [code][5,4,3][/code]. If we try to take 0 or less elements from a list, we get an empty list. Also if we try to take anything from an empty list, we get an empty list. Notice that those are two edge conditions right there. So let's write that out:
+
+
+
+The first pattern specifies that if we try to take a 0 or negative number of elements, we get an empty list. Notice that we're using [code]_[/code] to match the list because we don't really care what it is in this case. Also notice that we use a guard, but without an [code]otherwise[/code] part. That means that if [code]n[/code] turns out to be more than 0, the matching will fall through to the next pattern. The second pattern indicates that if we try to take anything from an empty list, we get an empty list. The third pattern breaks the list into a head and a tail. And then we state that taking [code]n[/code] elements from a list equals a list that has [code]x[/code] as the head and then a list that takes [code]n-1[/code] elements from the tail as a tail. Try using a piece of paper to write down how the evaluation would look like if we try to take, say, 3 from [code][4,3,2,1][/code].
+
+[code]reverse[/code] simply reverses a list. Think about the edge condition. What is it? Come on ... it's the empty list! An empty list reversed equals the empty list itself. O-kay. What about the rest of it? Well, you could say that if we split a list to a head and a tail, the reversed list is equal to the reversed tail and then the head at the end.
+
+
+
+There we go!
+
+Because Haskell supports infinite lists, our recursion doesn't really have to have an edge condition. But if it doesn't have it, it will either keep churning at something infinitely or produce an infinite data structure, like an infinite list. The good thing about infinite lists though is that we can cut them where we want. [code]repeat[/code] takes an element and returns an infinite list that just has that element. A recursive implementation of that is really easy, watch.
+
+
+
+Calling [code]repeat 3[/code] will give us a list that starts with [code]3[/code] and then has an infinite amount of 3's as a tail. So calling [code]repeat 3[/code] would evaluate like [code]3:repeat 3[/code], which is [code]3:(3:repeat 3)[/code], which is [code]3:(3:(3:repeat 3))[/code], etc. [code]repeat 3[/code] will never finish evaluating, whereas [code]take 5 (repeat 3)[/code] will give us a list of five 3's. So essentially it's like doing [code]replicate 5 3[/code].
+
+[code]zip[/code] takes two lists and zips them together. [code]zip [1,2,3] [2,3][/code] returns [code][(1,2),(2,3)][/code], because it truncates the longer list to match the length of the shorter one. How about if we zip something with an empty list? Well, we get an empty list back then. So there's our edge condition. However, [code]zip[/code] takes two lists as parameters, so there are actually two edge conditions.
+
+
+
+First two patterns say that if the first list or second list is empty, we get an empty list. The third one says that two lists zipped are equal to pairing up their heads and then tacking on the zipped tails. Zipping [code][1,2,3][/code] and [code]['a','b'][/code] will eventually try to zip [code][3][/code] with [code][][/code]. The edge condition patterns kick in and so the result is [code](1,'a'):(2,'b'):[][/code], which is exactly the same as [code][(1,'a'),(2,'b')][/code]
+
+Let's implement one more standard library function &mdash; [code]elem[/code]. It takes an element and a list and sees if that element is in the list. The edge condition, as is most of the times with lists, is the empty list. We know that an empty list contains no elements, so it certainly doesn't have the droids we're looking for.
+
+
+
+Pretty simple and expected. If the head isn't the element then we check the tail. If we reach an empty list, the result is [code]False[/code].
