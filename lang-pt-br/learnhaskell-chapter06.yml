@@ -1,5 +1,51 @@
 chapter: Higher order functions
 
+text:Haskell functions can take functions as parameters and return functions as return values. A function that does either of those is called a higher order function. Higher order functions aren't just a part of the Haskell experience, they pretty much are the Haskell experience. It turns out that if you want to define computations by defining what stuff <i>is</i> instead of defining steps that change some state and maybe looping them, higher order functions are indispensable. They're a really powerful way of solving problems and thinking about programs.
+
+
+
 title: Curried functions
 
-text: 
+text: Every function in Haskell officially only takes one parameter. So how is it possible that we defined and used several functions that take more than one parameter so far? Well, it's a clever trick! All the functions that accepted <i>several parameters</i> so far have been <em>curried functions</em>. What does that mean? You'll understand it best on an example. Let's take our good friend, the [code]max[/code] function. It looks like it takes two parameters and returns the one that's bigger. Doing [code]max 4 5[/code] first creates a function that takes a parameter and returns either [code]4[/code] or that parameter, depending on which is bigger. Then, [code]5[/code] is applied to that function and that function produces our desired result. That sounds like a mouthful but it's actually a really cool concept. The following two calls are equivalent:
+
+
+
+Putting a space between two things is simply <b>function application</b>. The space is sort of like an operator and it has the highest precedence. Let's examine the type of [code]max[/code]. It's [code]max :: (Ord a) =&gt; a -&gt; a -&gt; a[/code]. That can also be written as [code]max :: (Ord a) =&gt; a -&gt; (a -&gt; a)[/code]. That could be read as: [code]max[/code] takes an [code]a[/code] and returns (that's the [code]-&gt;[/code]) a function that takes an [code]a[/code] and returns an [code]a[/code]. That's why the return type and the parameters of functions are all simply separated with arrows.
+
+So how is that beneficial to us? Simply speaking, if we call a function with too few parameters, we get back a <em>partially applied</em> function, meaning a function that takes as many parameters as we left out. Using partial application (calling functions with too few parameters, if you will) is a neat way to create functions on the fly so we can pass them to another function or to seed them with some data.
+
+Take a look at this offensively simple function:
+
+
+
+What really happens when we do [code]multThree 3 5 9[/code] or [code]((multThree 3) 5) 9[/code]? First, [code]3[/code] is applied to [code]multThree[/code], because they're separated by a space. That creates a function that takes one parameter and returns a function. So then [code]5[/code] is applied to that, which creates a function that will take a parameter and multiply it by 15. [code]9[/code] is applied to that function and the result is 135 or something. Remember that this function's type could also be written as [code]multThree :: (Num a) =&gt; a -&gt; (a -&gt; (a -&gt; a))[/code]. The thing before the [code]-&gt;[/code] is the parameter that a function takes and the thing after it is what it returns. So our function takes an [code]a[/code] and returns a function of type [code](Num a) =&gt; a -&gt; (a -&gt; a)[/code]. Similarly, this function takes an [code]a[/code] and returns a function of type [code](Num a) =&gt; a -&gt; a[/code]. And this function, finally, just takes an [code]a[/code] and returns an [code]a[/code]. Take a look at this:
+
+
+
+By calling functions with too few parameters, so to speak, we're creating new functions on the fly. What if we wanted to create a function that takes a number and compares it to [code]100[/code]? We could do something like this:
+
+
+
+If we call it with [code]99[/code], it returns a [code]GT[/code]. Simple stuff. Notice that the [code]x[/code] is on the right hand side on both sides of the equation. Now let's think about what [code]compare 100[/code] returns. It returns a function that takes a number and compares it with [code]100[/code]. Wow! Isn't that the function we wanted? We can rewrite this as:
+
+
+
+The type declaration stays the same, because [code]compare 100[/code] returns a function. Compare has a type of [code](Ord a) =&gt; a -&gt; (a -&gt; Ordering)[/code] and calling it with [code]100[/code] returns a [code](Num a, Ord a) =&gt; a -&gt; Ordering[/code]. The additional class constraint sneaks up there because [code]100[/code] is also part of the [code]Num[/code] typeclass.
+
+<em>Yo!</em> Make sure you really understand how curried functions and partial application work because they're really important!
+
+Infix functions can also be partially applied by using sections. To section an infix function, simply surround it with parentheses and only supply a parameter on one side. That creates a function that takes one parameter and then applies it to the side that's missing an operand. An insultingly trivial function:
+
+
+
+Calling, say, [code]divideByTen 200[/code] is equivalent to doing [code]200 / 10[/code], as is doing [code](/10) 200[/code]. A function that checks if a character supplied to it is an uppercase letter:
+
+
+
+The only special thing about sections is using [code]-[/code]. From the definition of sections, [code](-4)[/code] would result in a function that takes a number and subtracts 4 from it. However, for convenience, [code](-4)[/code] means minus four. So if you want to make a function that subtracts 4 from the number it gets as a parameter, partially apply the [code]subtract[/code] function like so: [code](subtract 4)[/code].
+
+What happens if we try to just do [code]multThree 3 4[/code] in GHCI instead of binding it to a name with a <i>let</i> or passing it to another function?
+
+
+
+GHCI is telling us that that expression produced a function of type [code]a -&gt; a[/code] but it doesn't know how to print it to the screen. Functions aren't instances of the [code]Show[/code] typeclass, so we can't get a neat string representation of a function. When we do, say, [code]1 + 1[/code] at the GHCI prompt, it first calculates that to [code]2[/code] and then calls [code]show[/code] on [code]2[/code] to get a textual representation of that number. And the textual representation of [code]2[/code] is just the string [code]"2"[/code], which then gets printed to our screen.
