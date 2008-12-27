@@ -1,3 +1,98 @@
 title: Command line arguments
 
-text:
+text: Dealing with command line arguments is pretty much a necessity if you want to make a script or application that runs on a terminal. Luckily, Haskell's standard library has a nice way of getting command line arguments of a program.
+
+In the previous section, we made one program for adding a to-do item to our to-do list and one program for removing an item. There are two problems with the approach we took. The first one is that we just hardcoded the name of our to-do file in our code. We just decided that the file will be named <i>todo.txt</i> and that the user will never have a need for managing several to-do lists.
+
+One way to solve that is to always ask the user which file they want to use as their to-do list. We used that approach when we wanted to know which item the user wants to delete. It works, but it's not so good, because it requires the user to run the program, wait for the program to ask something and then tell that to the program. That's called an interactive program and the difficult bit with interactive command line programs is this &mdash; what if you want to automate the execution of that program, like with a batch script? It's harder to make a batch script that interacts with a program than a batch script that just calls one program or several of them.
+
+That's why it's sometimes better to have the user tell the program what they want when they run the program, instead of having the program ask the user once it's run. And what better way to have the user tell the program what they want it to do when they run it than via command line arguments!
+
+The [code]System.Environment[/code] module has two cool I/O actions. One is [function]getArgs[/function], which has a type of [code]getArgs :: IO [String][/code] and is an I/O action that will get the arguments that the program was run with and have as its contained result a list with the arguments. [function]getProgName[/function] has a type of [code]getProgName :: IO String[/code] and is an I/O action that contains the program name.
+
+Here's a small program that demonstrates how these two work:
+
+
+
+
+We bind [code]getArgs[/code] and [code]progName[/code] to [code]args[/code] and [code]progName[/code]. We say [code]The arguments are:[/code] and then for every argument in [code]args[/code], we do [code]putStrLn[/code]. Finally, we also print out the program name. Let's compile this as [code]arg-test[/code].
+
+
+
+
+
+Nice. Armed with this knowledge you could create some cool command line apps. In fact, let's go ahead and make one. In the previous section, we made a separate program for adding tasks and a separate program for deleting them. Now, we're going to join that into one program, what it does will depend on the command line arguments. We're also going to make it so it can operate on different files, not just <i>todo.txt</i>.
+
+We'll call it simply <i>todo</i> and it'll be able to do (haha!) three different things:
+
+    <li>View tasks</li>
+    <li>Add tasks</li>
+    <li>Delete tasks</li>
+
+We're not going to concern ourselves with possible bad input too much right now.
+
+Our program will be made so that if we want to add the task [code]Find the magic sword of power[/code] to the file <i>todo.txt</i>, we have to punch in [code]todo add todo.txt "Find the magic sword of power"[/code] in our terminal. To view the tasks we'll just do [code]todo view todo.txt[/code] and to remove the task with the index of 2, we'll do [code]todo remove todo.txt 2[/code].
+
+We'll start by making a dispatch association list. It's going to be a simple association list that has command line arguments as keys and functions as their corresponding values. All these functions will be of type [code][String] -&gt; IO ()[/code]. They're going to take the argument list as a parameter and return an I/O action that does the viewing, adding, deleting, etc.
+
+
+
+
+We have yet to define [code]main[/code], [code]add[/code], [code]view[/code] and [code]remove[/code], so let's start with [code]main[/code]:
+
+
+
+
+
+First, we get the arguments and bind them to [code](command:args)[/code]. If you remember your pattern matching, this means that the first argument will get bound to [code]command[/code] and the rest of them will get bound to [code]args[/code]. If we call our program like [code]todo add todo.txt "Spank the monkey"[/code], [code]command[/code] will be [code]"add"[/code] and [code]args[/code] will be [code]["todo.xt", "Spank the monkey"][/code].
+
+In the next line, we look up our command in the dispatch list. Because [code]"add"[/code] points to [code]add[/code], we get [code]Just add[/code] as a result. We use pattern matching again to extract our function out of the [code]Maybe[/code]. What happens if our command isn't in the dispatch list? Well then the lookup will return [code]Nothing[/code], but we said we won't concern ourselves with failing gracefully too much, so the pattern matching will fail and our program will throw a fit.
+
+Finally, we call our [code]getAction[/code] function (which is now, say, [code]add[/code]) with the rest of the argument list. That will return an I/O action that either adds an item, displays a list of items or deletes an item and because that action is part of the [code]main[/code] <i>do</i> block, it will get performed.
+
+Great! All that's left now is to implement [code]add[/code], [code]view[/code] and [code]remove[/code]. Let's start with [code]add[/code]:
+
+
+
+
+
+If we call our program like [code]todo add todo.txt "Spank the monkey"[/code], the [code]"add"[/code] will get bound to [code]command[/code] in the first pattern match in the [code]main[/code] block, whereas [code]["todo.txt", "Spank the monkey"][/code] will get passed to the function that we get from the dispatch list. So, because we're not dealing with bad input right now, we just pattern match against a list with those two elements right away and return an I/O action that appends that line to the end of the file, along with a newline character.
+
+Next, let's implement the list viewing functionality. If we want to view the items in a file, we do [code]todo view todo.txt[/code]. So in the first pattern match, [code]command[/code] will be [code]"view"[/code] and [code]args[/code] will be [code]["todo.txt"][/code].
+
+
+
+
+
+We already did pretty much the same thing in the program that only deleted tasks when we were displaying the tasks so that the user can choose one for deletion, only here we just display the tasks.
+
+And finally, we're going to implement [code]remove[/code]. It's going to be very similar to the program that only deleted the tasks, so if you don't understand how deleting an item here works, check out the explanation under that program. The main difference is that we're not hardcoding <i>todo.txt</i> but getting it as an argument. We're also not prompting the user for the task number to delete, we're getting it as an argument.
+
+
+
+
+
+
+We opened up the file based on [code]fileName[/code] and opened a temporary file, deleted the line with the index that the user wants to delete, wrote that to the temporary file, removed the original file and renamed the temporary file back to [code]fileName[/code].
+
+Here's the whole program at once, in all its glory!
+
+
+
+
+
+
+To summarize our solution: we made a dispatch association that maps from commands to functions that take some command line arguments and return an I/O action. We see what the command is and based on that we get the appropriate function from the dispatch list. We call that function with the rest of the command line arguments to get back an I/O action that will do the appropriate thing and then just perform that action!
+
+In other languages, we might have implemented this with a big switch case statement or whatever, but using higher order functions allows us to just tell the dispatch list to give us the appropriate function and then tell that function to give us an I/O action for some command line arguments.
+
+Let's try our app out!
+
+
+
+
+ cool thing about this is that it's easy to add extra functionality. Just add an entry in the dispatch association list and implement the corresponding function and you're laughing! As an exercise, you can try implementing a [code]bump[/code] function that will take a file and a task number and return an I/O action that bumps that task to the top of the to-do list.
+
+You could make this program fail a bit more gracefully in case of bad input (for example, if someone runs [code]todo UP YOURS HAHAHAHA[/code]) by making an I/O action that just reports there has been an error (say, [code]errorExit :: IO ()[/code]) and then check for possible erronous input and if there is erronous input, perform the error reporting I/O action. Another way is to use exceptions, which we will meet soon.
+
+More coming soon! Be on the look out for more LYAH ... really soon! Yeah yeah yeah!

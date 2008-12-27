@@ -2,9 +2,9 @@ title: Estruturas de dados recursivas
 
 text: As we've seen, a constructor in an algebraic data type can have several (or none at all) fields and each field must be of some concrete type. With that in mind, we can make types whose constructors have fields that are of the same type! Using that, we can create recursive data types, where one value of some type contains values of that type, which in turn contain more values of the same type and so on.
 
-Think about this list: <span class="fixed">[5]</span>. That's just syntactic sugar for <span class="fixed">5:[]</span>. On the left side of the <span class="fixed">:</span>, there's a value and on the right side, there's a list. And in this case, it's an empty list. Now how about the list <span class="fixed">[4,5]</span>? Well, that desugars to <span class="fixed">4:(5:[])</span>. Looking at the first <span class="fixed">:</span>, we see that it also has en element on its left side and a list (<span class="fixed">5:[]</span>) on its right side. Same goes for a list like <span class="fixed">3:(4:(5:6:[]))</span>, which could be written either like that or like <span class="fixed">3:4:5:6:[]</span> (because <span class="fixed">:</span> is right-associative) or <span class="fixed">[3,4,5,6]</span>.
+Think about this list: [code][5][/code]. That's just syntactic sugar for [code]5:[][/code]. On the left side of the [code]:[/code], there's a value and on the right side, there's a list. And in this case, it's an empty list. Now how about the list [code][4,5][/code]? Well, that desugars to [code]4:(5:[])[/code]. Looking at the first [code]:[/code], we see that it also has en element on its left side and a list ([code]5:[][/code]) on its right side. Same goes for a list like [code]3:(4:(5:6:[]))[/code], which could be written either like that or like [code]3:4:5:6:[][/code] (because [code]:[/code] is right-associative) or [code][3,4,5,6][/code].
 
-We could say that a list can be an empty list or it can be an element joined together with a <span class="fixed">:</span> with another list (that can be either the empty list or not).
+We could say that a list can be an empty list or it can be an element joined together with a [code]:[/code] with another list (that can be either the empty list or not).
 
 Let's use algebraic data types to implement our own list then!
 
@@ -16,35 +16,35 @@ This reads just like our definition of lists from one of the previous paragraphs
 
 
 
-You might also be confused about the <span class="fixed">Cons</span> constructor here. <i>cons</i> is another word for <span class="fixed">:</span>. You see, in lists, <span class="fixed">:</span> is actually a constructor that takes a value and another list and returns a list. We can already use our new list type! In other words, it has two fields. One field is of the type of <span class="fixed">a</span> and the other is of the type <span class="fixed">[a]</span>.
+You might also be confused about the [code]Cons[/code] constructor here. <i>cons</i> is another word for [code]:[/code]. You see, in lists, [code]:[/code] is actually a constructor that takes a value and another list and returns a list. We can already use our new list type! In other words, it has two fields. One field is of the type of [code]a[/code] and the other is of the type [code][a][/code].
 
 
 
 
 
-We called our <span class="fixed">Cons</span> constructor in an infix manner so you can see how it's just like <span class="fixed">:</span>. <span class="fixed">Empty</span> is like <span class="fixed">[]</span> and <span class="fixed">4 `Cons` (5 `Cons` Empty)</span> is like <span class="fixed">4:(5:[])</span>.
+We called our [code]Cons[/code] constructor in an infix manner so you can see how it's just like [code]:[/code]. [code]Empty[/code] is like [code][][/code] and [code]4 `Cons` (5 `Cons` Empty)[/code] is like [code]4:(5:[])[/code].
 
 We can define functions to be automatically infix by making them comprised of only special characters. We can also do the same with constructors, since they're just functions that return a data type. So check this out.
 
 
 
 
-First off, we notice a new syntactic construct, the fixity declarations. When we define functions as operators, we can use that to give them a fixity (but we don't have to). A fixity states how tightly the operator binds and whether it's left-associative or right-associative. For instance, <span class="fixed">*</span>'s fixity is <span class="fixed">infixl 7 *</span> and <span class="fixed">+</span>'s fixity is <span class="fixed">infixl 6</span>. That means that they're both left-associative (<span class="fixed">4 * 3 * 2</span> is <span class="fixed">(4 * 3) * 2</span>) but <span class="fixed">*</span> binds tighter than <span class="fixed">+</span>, because it has a greater fixity, so <span class="fixed">5 * 4 + 3</span> is <span class="fixed">(5 * 4) + 3</span>.
+First off, we notice a new syntactic construct, the fixity declarations. When we define functions as operators, we can use that to give them a fixity (but we don't have to). A fixity states how tightly the operator binds and whether it's left-associative or right-associative. For instance, [code]*[/code]'s fixity is [code]infixl 7 *[/code] and [code]+[/code]'s fixity is [code]infixl 6[/code]. That means that they're both left-associative ([code]4 * 3 * 2[/code] is [code](4 * 3) * 2[/code]) but [code]*[/code] binds tighter than [code]+[/code], because it has a greater fixity, so [code]5 * 4 + 3[/code] is [code](5 * 4) + 3[/code].
 
-Otherwise, we just wrote <span class="fixed">a :-: (List a)</span> instead of <span class="fixed">Cons a (List a)</span>. Now, we can write out lists in our list type like so:
-
-
-
-
-
-When deriving <span class="fixed">Show</span> for our type, Haskell will still display it as if the constructor was a prefix function, hence the parentheses around the operator (remember, <span class="fixed">4 + 3</span> is <span class="fixed">(+) 4 3</span>).
-
-Let's make a functions that adds two of our lists together. This is how <span class="fixed">++</span> is defined for normal lists:
+Otherwise, we just wrote [code]a :-: (List a)[/code] instead of [code]Cons a (List a)[/code]. Now, we can write out lists in our list type like so:
 
 
 
 
-So we'll just steal that for our own list. We'll name the function <span class="fixed">.++</span>.
+
+When deriving [code]Show[/code] for our type, Haskell will still display it as if the constructor was a prefix function, hence the parentheses around the operator (remember, [code]4 + 3[/code] is [code](+) 4 3[/code]).
+
+Let's make a functions that adds two of our lists together. This is how [code]++[/code] is defined for normal lists:
+
+
+
+
+So we'll just steal that for our own list. We'll name the function [code].++[/code].
 
 
 
@@ -54,11 +54,11 @@ And let's see if it works ...
 
 Nice. Is nice. If we wanted, we could implement all of the functions that operate on lists on our own list type.
 
-Notice how we pattern matched on <span class="fixed">(x :-: xs)</span>. That works because pattern matching is actually about matching constructors. We can match on <span class="fixed">:-:</span> because it is a constructor for our own list type and we can also match on <span class="fixed">:</span> because it is a constructor for the built-in list type. Same goes for <span class="fixed">[]</span>. Because pattern matching works (only) on constructors, we can match for stuff like that, normal prefix constructors or stuff like <span class="fixed">8</span> or <span class="fixed">'a'</span>, which are basically constructors for the numeric and character types, respectively.
+Notice how we pattern matched on [code](x :-: xs)[/code]. That works because pattern matching is actually about matching constructors. We can match on [code]:-:[/code] because it is a constructor for our own list type and we can also match on [code]:[/code] because it is a constructor for the built-in list type. Same goes for [code][][/code]. Because pattern matching works (only) on constructors, we can match for stuff like that, normal prefix constructors or stuff like [code]8[/code] or [code]'a'[/code], which are basically constructors for the numeric and character types, respectively.
 
 Now, we're going to implement a <em>binary search tree</em>. If you're not familiar with binary search trees from languages like C, here's what they are: an element points to two elements, one on its left and one on its right. The element to the left is smaller, the element to the right is bigger. Each of those elements can also point to two elements (or one, or none). In effect, each element has up to two sub-trees. And a cool thing about binary search trees is that we know that all the elements at the left sub-tree of, say, 5 are going to be smaller than 5. Elements in its right sub-tree are going to be bigger. So if we need to find if 8 is in our tree, we'd start at 5 and then because 8 is greater than 5, we'd go right. We're now at 7 and because 8 is greater than 7, we go right again. And we've found our element in three hops! Now if this were a normal list (or a tree, but really unbalanced), it would take us seven hops instead of three to see if 8 is in there.
 
-Sets and maps from <span class="fixed">Data.Set</span> and <span class="fixed">Data.Map</span> are implemented using trees, only instead of normal binary search trees, they use balanced binary search trees, which are always balanced. But right now, we'll just be implementing normal binary search trees.
+Sets and maps from [code]Data.Set[/code] and [code]Data.Map[/code] are implemented using trees, only instead of normal binary search trees, they use balanced binary search trees, which are always balanced. But right now, we'll just be implementing normal binary search trees.
 
 Here's what we're going to say: a tree is either an empty tree or it's an element that contains some value and two trees. Sounds like a perfect fit for an algebraic data type!
 
@@ -66,14 +66,14 @@ Here's what we're going to say: a tree is either an empty tree or it's an elemen
 
 Okay, good, this is good. Instead of manually building a tree, we're going to make a function that takes a tree and an element and inserts an element. We do this by comparing the value we want to insert to the root node and then if it's smaller, we go left, if it's larger, we go right. We do the same for every subsequent node until we reach an empty tree. Once we've reached an empty tree, we just insert a node with that value instead of the empty tree.
 
-In languages like C, we'd do this by modifying the pointers and values inside the tree. In Haskell, we can't really modify our tree, so we have to make a new sub-tree each time we decide to go left or right and in the end the insertion function returns a completely new tree, because Haskell doesn't really have a concept of pointer, just values. Hence, the type for our insertion function is going to be something like <span class="fixed">a -&gt; Tree a - &gt; Tree a</span>. It takes an element and a tree and returns a new tree that has that element inside. This might seem like it's inefficient but laziness takes care of that problem.
+In languages like C, we'd do this by modifying the pointers and values inside the tree. In Haskell, we can't really modify our tree, so we have to make a new sub-tree each time we decide to go left or right and in the end the insertion function returns a completely new tree, because Haskell doesn't really have a concept of pointer, just values. Hence, the type for our insertion function is going to be something like [code]a -&gt; Tree a - &gt; Tree a[/code]. It takes an element and a tree and returns a new tree that has that element inside. This might seem like it's inefficient but laziness takes care of that problem.
 
 So, here are two functions. One is a utility function for making a singleton tree (a tree with just one node) and a function to insert an element into a tree.
 
 
 
 
-The <span class="fixed">singleton</span> function is just a shortcut for making a node that has something and then two empty sub-trees. In the insertion function, we first have the edge condition as a pattern. If we've reached an empty sub-tree, that means we're where we want and instead of the empty tree, we put a singleton tree with our element. If we're not inserting into an empty tree, then we have to check some things. First off, if the element we're inserting is equal to the root element, just return a tree that's the same. If it's smaller, return a tree that has the same root value, the same right sub-tree but instead of its left sub-tree, put a tree that has our value inserted into it. Same (but the other way around) goes if our value is bigger than the root element.
+The [code]singleton[/code] function is just a shortcut for making a node that has something and then two empty sub-trees. In the insertion function, we first have the edge condition as a pattern. If we've reached an empty sub-tree, that means we're where we want and instead of the empty tree, we put a singleton tree with our element. If we're not inserting into an empty tree, then we have to check some things. First off, if the element we're inserting is equal to the root element, just return a tree that's the same. If it's smaller, return a tree that has the same root value, the same right sub-tree but instead of its left sub-tree, put a tree that has our value inserted into it. Same (but the other way around) goes if our value is bigger than the root element.
 
 Next up, we're going to make a function that checks if some element is in the tree. First, let's define the edge condition. If we're looking for an element in an empty tree, then it's certainly not there. Okay. Notice how this is the same as the edge condition when searching for elements in lists. If we're looking for an element in an empty list, it's not there. Anyway, if we're not looking for an element in an empty tree, then we check some things. If the element in the root node is what we're looking for, great! If it's not, what then? Well, we can take advantage of knowing that all the left elements are smaller than the root node. So if the element we're looking for is smaller than the root node, check to see if it's in the left sub-tree. If it's bigger, check to see if it's in the right sub-tree.
 
@@ -86,7 +86,7 @@ All we had to do was write up the previous paragraph in code. Let's have some fu
 
 
 
-In that <span class="fixed">foldr</span>, <span class="fixed">treeInsert</span> was the folding function (it takes a tree and a list element and produces a new tree) and <span class="fixed">EmptyTree</span> was the starting accumulator. <span class="fixed">nums</span>, of course, was the list we were folding over.
+In that [code]foldr[/code], [code]treeInsert[/code] was the folding function (it takes a tree and a list element and produces a new tree) and [code]EmptyTree[/code] was the starting accumulator. [code]nums[/code], of course, was the list we were folding over.
 
 When we print our tree to the console, it's not very readable, but if we try, we can make out its structure. We see that the root node is 5 and then it has two sub-trees, one of which has the root node of 3 and the other a 7, etc.
 
