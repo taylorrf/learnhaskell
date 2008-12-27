@@ -1,3 +1,58 @@
 title: Data.Set
 
-text: 
+text: The [code]Data.Set[/code] module offers us, well, sets. Like sets from mathematics. Sets are kind of like a cross between lists and maps. All the elements in a set are unique. And because they're internally implemented with trees (much like maps in [code]Data.Map[/code]), they're ordered. Checking for membership, inserting, deleting, etc. is much faster than doing the same thing with lists. The most common operation when dealing with sets are inserting into a set, checking for membership and converting a set to a list.
+
+Because the names in [code]Data.Set[/code] clash with a lot of [code]Prelude[/code] and [code]Data.List[/code] names, we do a qualified import.
+
+Put this import statement in a script:
+
+
+
+
+And then load the script via GHCI.
+
+Let's say we have two pieces of text. We want to find out which characters were used in both of them.
+
+
+
+The [function]fromList[/function] function works much like you would expect. It takes a list and converts it into a set.
+
+
+
+As you can see, the items are ordered and each element is unique. Now let's use the [function]intersection[/function] function to see which elements they both share.
+
+
+
+
+We can use the [function]difference[/function] function to see which letters are in the first set but aren't in the second one and vice versa.
+
+
+
+
+Or we can see all the unique letters used in both sentences by using [function]union[/function].
+
+
+
+
+The [function]null[/function], [function]size[/function], [function]member[/function], [function]empty[/function], [function]singleton[/function], [function]insert[/function] and [function]delete[/function] functions all work like you'd expect them to.
+
+
+
+
+We can also check for subsets or proper subset. Set A is a subset of set B if B contains all the elements that A does. Set A is a proper subset of set B if B contains all the elements that A does but has more elements.
+
+
+
+
+We can also [function]map[/function] over sets and [function]filter[/function] them.
+
+
+
+
+Sets are often used to weed a list of duplicates from a list by first making it into a set with [code]fromList[/code] and then converting it back to a list with [function]toList[/function]. The [code]Data.List[/code] function [code]nub[/code] already does that, but weeding out duplicates for large lists is much faster if you cram them into a set and then convert them back to a list than using [code]nub[/code]. But using [code]nub[/code] only requires the type of the list's elements to be part of the [code]Eq[/code] typeclass, whereas if you want to cram elements into a set, the type of the list has to be in [code]Ord[/code].
+
+
+
+
+
+[code]setNub[/code] is generally faster than [code]nub[/code] on big lists but as you can see, [code]nub[/code] preserves the ordering of the list's elements, while [code]setNub[/code] does not.

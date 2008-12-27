@@ -2,4 +2,48 @@ chapter: Módulos
 
 title: Loading modules
 
-text: 
+text: A Haskell module is a collection of related functions, types and typeclasses. A Haskell program is a collection of modules where the main module loads up the other modules and then uses the functions defined in them to do something. Having code split up into several modules has quite a lot of advantages. If a module is generic enough, the functions it exports can be used in a multitude of different programs. If your own code is separated into self-contained modules which don't rely on each other too much (we also say they are loosely coupled), you can reuse them later on. It makes the whole deal of writing code more manageable by having it split into several parts, each of which has some sort of purpose.
+
+The Haskell standard library is split into modules, each of them contains functions and types that are somehow related and serve some common purpose. There's a module for manipulating lists, a module for concurrent programming, a module for dealing with complex numbers, etc. All the functions, types and typeclasses that we've dealt with so far were part of the [code]Prelude[/code] module, which is imported by default. In this chapter, we're going to examine a few useful modules and the functions that they have. But first, we're going to see how to import modules.
+
+The syntax for importing modules in a Haskell script is [code]import &lt;module name&gt;[/code]. This must be done before defining any functions, so imports are usually done at the top of the file. One script can, of course, import several modules. Just put each import statement into a separate line. Let's import the [code]Data.List[/code] module, which has a bunch of useful functions for working with lists and use a function that it exports to create a function that tells us how many unique elements a list has.
+
+
+
+
+When you do [code]import Data.List[/code], all the functions that [code]Data.List[/code] exports become available in the global namespace, meaning that you can call them from wherever in the script. [code]nub[/code] is a function defined in [code]Data.List[/code] that takes a list and weeds out duplicate elements. Composing [code]length[/code] and [code]nub[/code] by doing [code]length . nub[/code] produces a function that's the equivalent of [code]\xs -&gt; length (nub xs)[/code].
+
+You can also put the functions of modules into the global namespace when using GHCI. If you're in GHCI and you want to be able to call the functions exported by [code]Data.List[/code], do this:
+
+
+
+
+If we want to load up the names from several modules inside GHCI, we don't have to do [code]:m +[/code] several times, we can just load up several modules at once.
+
+
+
+However, if you've loaded a script that already imports a module, you don't need to use [code]:m +[/code] to get access to it.
+
+If you just need a couple of functions from a module, you can selectively import just those functions. If we wanted to import only the [code]nub[/code] and [code]sort[/code] functions from [code]Data.List[/code], we'd do this:
+
+
+
+
+You can also choose to import all of the functions of a module except a few select ones. That's often useful when several modules export functions with the same name and you want to get rid of the offending ones. Say we already have our own function that's called [code]nub[/code] and we want to import all the functions from [code]Data.List[/code] except the [code]nub[/code] function:
+
+
+
+Another way of dealing with name clashes is to do qualified imports. The [code]Data.Map[/code] module, which offers a data structure for looking up values by key, exports a bunch of functions with the same name as [code]Prelude[/code] functions, like [code]filter[/code] or [code]null[/code]. So when we import [code]Data.Map[/code] and then call [code]filter[/code], Haskell won't know which function to use. Here's how we solve this:
+
+
+
+This makes it so that if we want to reference [code]Data.Map[/code]'s [code]filter[/code] function, we have to do [code]Data.Map.filter[/code], whereas just [code]filter[/code] still refers to the normal [code]filter[/code] we all know and love. But typing out [code]Data.Map[/code] in front of every function from that module is kind of tedious. That's why we can rename the qualified import to something shorter:
+
+
+
+
+Now, to reference [code]Data.Map[/code]'s [code]filter[/code] function, we just use [code]M.filter[/code].
+
+Use <a href="http://www.haskell.org/ghc/docs/latest/html/libraries/">this handy reference</a> to see which modules are in the standard library. A great way to pick up new Haskell knowledge is to just click through the standard library reference and explore the modules and their functions. You can also view the Haskell source code for each module. Reading the source code of some modules is a really good way to learn Haskell and get a solid feel for it.
+
+To search for functions or to find out where they're located, use <a href="http://haskell.org/hoogle">Hoogle</a>. It's a really awesome Haskell search engine, you can search by name, module name or even type signature.

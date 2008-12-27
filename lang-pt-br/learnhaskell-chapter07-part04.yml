@@ -1,3 +1,140 @@
 title: Data.Map
 
-text: 
+text: Association lists (also called dictionaries) are lists that are used to store key-value pairs where ordering doesn't matter. For instance, we might use an association list to store phone numbers, where phone numbers would be the values and people's names would be the keys. We don't care in which order they're stored, we just want to get the right phone number for the right person.
+
+The most obvious way to represent association lists in Haskell would be by having a list of pairs. The first component in the pair would be the key, the second component the value. Here's an example of an association list with phone numbers:
+
+
+
+
+Despite this seemingly odd indentation, this is just a list of pairs of strings. The most common task when dealing with association lists is looking up some value by key. Let's make a function that looks up some value given a key.
+
+
+
+
+Pretty simple. The function that takes a key and a list, filters the list so that only matching keys remain, gets the first key-value that matches and returns the value. But what happens if the key we're looking for isn't in the association list? Hmm. Here, if a key isn't in the association list, we'll end up trying to get the head of an empty list, which throws a runtime error. However, we should avoid making our programs so easy to crash, so let's use the [code]Maybe[/code] data type. If we don't find the key, we'll return a [code]Nothing[/code]. If we find it, we'll return [code]Just something[/code], where something is the value corresponding to that key.
+
+
+
+
+Look at the type declaration. It takes a key that can be equated, an association list and then it maybe produces a value. Sounds about right.
+
+This is a textbook recursive function that operates on a list. Edge case, splitting a list into a head and a tail, recursive calls, they're all there. This is the classic fold pattern, so let's see how this would be implemented as a fold.
+
+
+
+
+<em>Note:</em> It's usually better to use folds for this standard list recursion pattern instead of explicitly writing the recursion because they're easier to read and identify. Everyone knows it's a fold when they see the [code]foldr[/code] call, but it takes some more thinking to read explicit recursion.
+
+
+
+
+
+Works like a charm! If we have the girl's phone number, we [code]Just[/code] get the number, otherwise we get [code]Nothing[/code].
+
+We just implemented the [code]lookup[/code] function from [code]Data.List[/code]. If we want to find the corresponding value to a key, we have to traverse all the elements of the list until we find it. The [code]Data.Map[/code] module offers association lists that are much faster (because they're internally implemented with trees) and also it provides a lot of utility functions. From now on, we'll say we're working with maps instead of association lists.
+
+Because [code]Data.Map[/code] exports functions that clash with the [code]Prelude[/code] and [code]Data.List[/code] ones, we'll do a qualified import.
+
+
+
+
+Put this import statement into a script and then load the script via GHCI.
+
+Let's go ahead and see what [code]Data.Map[/code] has in store for us! Here's the basic rundown of its functions.
+
+The [function]fromList[/function] function takes an association list (in the form of a list) and returns a map with the same associations.
+
+
+
+
+If there are duplicate keys in the original association list, the duplicates are just discarded. This is the type signature of [code]fromList[/code]
+
+
+
+
+It says that it takes a list of pairs of type [code]k[/code] and [code]v[/code] and returns a map that maps from keys of type [code]k[/code] to type [code]v[/code]. Notice that when we were doing association lists with normal lists, the keys only had to be equatable (their type belonging to the [code]Eq[/code] typeclass) but now they have to be orderable. That's an essential constraint in the [code]Data.Map[/code] module. It needs the keys to be orderable so it can arrange them in a tree.
+
+You should always use [code]Data.Map[/code] for key-value associations unless you have keys that aren't part of the [code]Ord[/code] typeclass.
+
+[function]empty[/function] represents an empty map. It takes no arguments, it just returns an empty map.
+
+
+
+
+[function]insert[/function] takes a key, a value and a map and returns a new map that's just like the old one, only with the key and value inserted.
+
+
+
+
+We can implement our own [code]fromList[/code] by using the empty map, [code]insert[/code] and a fold. Watch:
+
+
+
+
+It's a pretty straightforward fold. We start of with an empty map and we fold it up from the right, inserting the key value pairs into the accumulator as we go along.
+
+[function]null[/function] checks if a map is empty.
+
+
+
+
+[function]size[/function] reports the size of a map.
+
+
+
+
+[function]singleton[/function] takes a key and a value and creates a map that has exactly one mapping.
+
+
+
+
+
+[function]lookup[/function] works like the [code]Data.List[/code] [code]lookup[/code], only it operates on maps. It returns [code]Just something[/code] if it finds something for the key and [code]Nothing[/code] if it doesn't.
+
+[function]member[/function] is a predicate takes a key and a map and reports whether the key is in the map or not.
+
+
+
+
+[function]map[/function] and [function]filter[/function] work much like their list equivalents.
+
+
+
+
+[function]toList[/function] is the inverse of [code]fromList[/code].
+
+
+
+
+[function]keys[/function] and [function]elems[/function] return lists of keys and values respectively. [code]keys[/code] is the equivalent of [code]map fst . Map.toList[/code] and [code]elems[/code] is the equivalent of [code]map snd . Map.toList[/code].
+
+[function]fromListWith[/function] is a cool little function. It acts like [code]fromList[/code], only it doesn't discard duplicate keys but it uses a function supplied to it to decide what to do with them. Let's say that a girl can have several numbers and we have an association list set up like this.
+
+
+
+
+Now if we just use [code]fromList[/code] to put that into a map, we'll lose a few numbers! So here's what we'll do:
+
+
+
+
+If a duplicate key is found, the function we pass is used to combine the values of those keys into some other value. We could also first make all the values in the association list singleton lists and then we can use [code]++[/code] to combine the numbers.
+
+
+
+
+Pretty neat! Another use case is if we're making a map from an association list of numbers and when a duplicate key is found, we want the biggest value for the key to be kept.
+
+
+
+Or we could choose to add together values on the same keys.
+
+
+
+[function]insertWith[/function] is to [code]insert[/code] what [code]fromListWith[/code] is to [code]fromList[/code]. It inserts a key-value pair into a map, but if that map already contains the key, it uses the function passed to it to determine what to do.
+
+
+
+
+These were just a few functions from [code]Data.Map[/code]. You can see a complete list of functions in the <a href="http://www.haskell.org/ghc/docs/latest/html/libraries/containers/Data-Map.html#v%3Aassocs">documentation</a>.
