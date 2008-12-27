@@ -1,5 +1,78 @@
 chapter: Making Our Own Types and Typeclasses
 
+text:In the previous chapters, we covered some existing Haskell types and typeclasses. In this chapter, we'll learn how to make our own and how to put them to work!
+
+
 title: Algebraic data types intro
 
-text:
+text: So far, we've run into a lot of data types. [code]Bool[/code], [code]Int[/code], [code]Char[/code], [code]Maybe[/code], etc. But how do we make our own? Well, one way is to use the <em>data</em> keyword to define a type. Let's see how the [code]Bool[/code] type is defined in the standard library.
+
+
+
+[code]data[/code] means that we're defining a new data type. The part before the [code]=[/code] denotes the type, which is [code]Bool[/code]. The parts after the [code]=[/code] are <em>value constructors</em>. They specify the different values that this type can have. The [code]|[/code] is read as <i>or</i>. So we can read this as: the [code]Bool[/code] type can have a value of [code]True[/code] or [code]False[/code]. Both the type name and the value constructors have to be capital cased.
+
+In a similar fashion, we can think of the [code]Int[/code] type as being defined like this:
+
+
+
+The first and last value constructors are the minimum and maximum possible values of [code]Int[/code]. It's not actually defined like this, the ellipses are here because we omitted a heapload of numbers, so this is just for illustrative purposes.	
+
+Now, let's think about how we would represent a shape in Haskell. One way would be to use tuples. A circle could be denoted as [code](43.1, 55.0, 10.4)[/code] where the first and second fields are the coordinates of the circle's center and the third field is the radius. Sounds OK, but those could also represent a 3D vector or anything else. A better solution would be to make our own type to represent a shape. Let's say that a shape can be a circle or a rectangle. Here it is:
+
+
+
+
+Now what's this? Think of it like this. The [code]Circle[/code] value constructor has three fields, which take floats. So when we write a value constructor, we can optionally add some types after it and those types define the values it will contain. Here, the first two fields are the coordinates of its center, the third one its radius. The [code]Rectangle[/code] value constructor has four fields which accept floats. The first two are the coordinates to its upper left corner and the second two are coordinates to its lower right one.
+
+Now when I say fields, I actually mean parameters. Value constructors are actually functions that ultimately return a value of a data type. Let's take a look at the type signatures for these two value constructors.
+
+
+
+Cool, so value constructors are functions like everything else. Who would have thought? Let's make a function that takes a shape and returns its surface.
+
+
+
+The first notable thing here is the type declaration. It says that the function takes a shape and returns a float. We couldn't write a type declaration of [code]Circle -&gt; Float[/code] because [code]Circle[/code] is not a type, [code]Shape[/code] is. Just like we can't write a function with a type declaration of [code]True -&gt; Int[/code]. The next thing we notice here is that we can pattern match against constructors. We pattern matched against constructors before (all the time actually) when we pattern matched against values like [code][][/code] or [code]False[/code] or [code]5[/code], only those values didn't have any fields. We just write a constructor and then bind its fields to names. Because we're interested in the radius, we don't actually care about the first two fields, which tell us where the circle is.
+
+
+
+
+Yay, it works! But if we try to just print out [code]Circle 10 20 5[/code] in the prompt, we'll get an error. That's because Haskell doesn't know how to display our data type as a string (yet). Remember, when we try to print a value out in the prompt, Haskell first runs the [code]show[/code] function to get the string representation of our value and then it prints that out to the terminal. To make our [code]Shape[/code] type part of the [code]Show[/code] typeclass, we modify it like this:
+
+
+
+
+We won't concern ourselves with deriving too much for now. Let's just say that if we add [code]deriving (Show)[/code] at the end of a <i>data</i> declaration, Haskell automagically makes that type part of the [code]Show[/code] typeclass. So now, we can do this:
+
+
+
+
+Value constructors are functions, so we can map them and partially apply them and everything. If we want a list of concentric circles with different radii, we can do this.
+
+
+
+Our data type is good, although it could be better. Let's make an intermediate data type that defines a point in two-dimensional space. Then we can use that to make our shapes more understandable.
+
+
+
+
+Notice that when defining a point, we used the same name for the data type and the value constructor. This has no special meaning, although it's common to use the same name as the type if there's only one value constructor. So now the [code]Circle[/code] is has two fields, one is of type [code]Point[/code] and the other of type [code]Float[/code]. This makes it easier to understand what's what. Same goes for the rectangle. We have to adjust our [code]surface[/code] function to reflect these changes.
+
+
+
+
+The only thing we had to change were the patterns. We disregarded the whole point in the circle pattern. In the rectangle pattern, we just used a nested pattern matching to get the fields of the points. If we wanted to reference the points themselves for some reason, we could have used as-patterns.
+
+
+
+
+How about a function that nudges a shape? It takes a shape, the amount to move it on the x axis and the amount to move it on the y axis and then returns a new shape that has the same dimensions, only it's located somewhere else.
+
+
+
+
+Pretty straightforward. We add the nudge amounts to the points that denote the position of the shape.
+
+
+
+If we don't want to deal directly with points, we can make some auxilliary functions that create shapes of some size at the zero coordinates and then nudge those.

@@ -1,3 +1,68 @@
 title: The Functor typeclass
 
-text:
+text: So far, we've encountered a lot of the typeclasses in the standard library. We've played with [code]Ord[/code], which is for stuff that can be ordered. We've palled around with [code]Eq[/code], which is for things that can be equated. We've seen [code]Show[/code], which presents an interface for types whose values can be displayed as strings. Our good friend [code]Read[/code] is there whenever we need to convert a string to a value of some type. And now, we're going to take a look at the [code]Functor[/code] typeclass, which is basically for things that can be mapped over. You're probably thinking about lists now, since mapping over lists is such a dominant idiom in Haskell. And you're right, the list type is part of the [code]Functor[/code] typeclass.
+
+What better way to get to know the [code]Functor[/code] typeclass than to see how it's implemented? Let's take a peek.
+
+
+
+
+Alright. We see that it defines one function, [code]fmap[/code], and doesn't provide any default implementation for it. The type of [code]fmap[/code] is interesting. In the definitions of typeclasses so far, the type variable that played the role of the type in the typeclass was a concrete type, like the [code]a[/code] in [code](==) :: (Eq a) =&gt; a -&gt; a -&gt; Bool[/code]. But now, the [code]f[/code] is not a concrete type (a type that a value can hold, like [code]Int[/code], [code]Bool[/code] or [code]Maybe String[/code]), but a type constructor that takes one type parameter. A quick refresher example: [code]Maybe Int[/code] is a concrete type, but [code]Maybe[/code] is a type constructor that takes one type as the parameter. Anyway, we see that [code]fmap[/code] takes a function from one type to another and a functor applied with one type and returns a functor applied with another type.
+
+If this sounds a bit confusing, don't worry. All will be revealed soon when we check out a few examples. Hmm, this type declaration for [code]fmap[/code] reminds me of something. If you don't know what the type signature of [code]map[/code] is, it's: [code]map :: (a -&gt; b) -&gt; [a] -&gt; [b][/code].
+
+Ah, interesting! It takes a function from one type to another and a list of one type and returns a list of another type. My friends, I think we have ourselves a functor! In fact, [code]map[/code] is just a [code]fmap[/code] that works only on lists. Here's how the list is an instance of the [code]Functor[/code] typeclass.
+
+
+
+
+
+That's it! Notice how we didn't write [code]instance Functor [a] where[/code], because from [code]fmap :: (a -&gt; b) -&gt; f a -&gt; f b[/code], we see that the [code]f[/code] has to be a type constructor that takes one type. [code][a][/code] is already a concrete type (of a list with any type inside it), while [code][][/code] is a type constructor that takes one type and can produce types such as [code][Int][/code], [code][String][/code] or even [code][[String]][/code].
+
+Since for lists, [code]fmap[/code] is just [code]map[/code], we get the same results when using them on lists.
+
+
+
+
+What happens when we [code]map[/code] or [code]fmap[/code] over an empty list? Well, of course, we get an empty list. It just turns an empty list of type [code][a][/code] into an empty list of type [code][b][/code].
+
+Types that can act like a box can be functors. You can think of a list as a box that has an infinite amount of little compartments and they can all be empty, one can be full and the others empty or a number of them can be full. So, what else has the properties of being like a box? For one, the [code]Maybe a[/code] type. In a way, it's like a box that can either hold nothing, in which case it has the value of [code]Nothing[/code], or it can hold one item, like [code]"HAHA"[/code], in which case it has a value of [code]Just "HAHA"[/code]. Here's how [code]Maybe[/code] is a functor.
+
+
+
+
+
+Again, notice how we wrote [code]instance Functor Maybe where[/code] instead of [code]instance Functor (Maybe m) where[/code], like we did when we were dealing with [code]Maybe[/code] and [code]YesNo[/code]. [code]Functor[/code] wants a type constructor that takes one type and not a concrete type. If you mentally replace the [code]f[/code]s with [code]Maybe[/code]s, [code]fmap[/code] acts like a [code](a -&gt; b) -&gt; Maybe a -&gt; Maybe b[/code] for this particular type, which looks OK. But if you replace [code]f[/code] with [code](Maybe m)[/code], then it would seem to act like a [code](a -&gt; b) -&gt; Maybe m a -&gt; Maybe m b[/code], which doesn't make any damn sense because [code]Maybe[/code] takes just one type parameter.
+
+Anyway, the [code]fmap[/code] implementation is pretty simple. If it's an empty value of [code]Nothing[/code], then just return a [code]Nothing[/code]. If we map over an empty box, we get an empty box. It makes sense. Just like if we map over an empty list, we get back an empty list. If it's not an empty value, but rather a single value packed up in a [code]Just[/code], then we apply the function on the contents of the [code]Just[/code].
+
+
+
+
+
+Another thing that can be mapped over and made an instance of [code]Functor[/code] is our [code]Tree a[/code] type. It can be thought of as a box in a way (holds several or no values) and the [code]Tree[/code] type constructor takes exactly one type parameter. If you look at [code]fmap[/code] as if it were a function made only for [code]Tree[/code], its type signature would look like [code](a -&gt; b) -&gt; Tree a -&gt; Tree b[/code]. We're going to use recursion on this one. Mapping over an empty tree will produce an empty tree. Mapping over a non-empty tree will be a tree consisting of our function applied to the root value and its left and right sub-trees will be the previous sub-trees, only our function will be mapped over them.
+
+
+
+
+Nice! Now how about [code]Either a b[/code]? Can this be made a functor? The [code]Functor[/code] typeclass wants a type constructor that takes only one type parameter but [code]Either[/code] takes two. Hmmm! I know, we'll partially apply [code]Either[/code] by feeding it only one parameter so that it has one free parameter. Here's how [code]Either a[/code] is a functor in the standard libraries:
+
+
+
+
+
+Well well, what did we do here? You can see how we made [code]Either a[/code] an instance instead of just [code]Either[/code]. That's because [code]Either a[/code] is a type constructor that takes one parameter, whereas [code]Either[/code] takes two. If [code]fmap[/code] was specifically for [code]Either a[/code], the type signature would then be [code](b -&gt; c) -&gt; Either a b -&gt; Either a c[/code] because that's the same as [code](b -&gt; c) -&gt; (Either a) b -&gt; (Either a) c[/code]. In the implementation, we mapped in the case of a [code]Right[/code] value constructor, but we didn't in the case of a [code]Left[/code]. Why is that? Well, if we look back at how the [code]Either a b[/code] type is defined, it's kind of like:
+
+
+
+
+
+Well, if we wanted to map one function over both of them, [code]a[/code] and [code]b[/code] would have to be the same type. I mean, if we tried to map a function that takes a string and returns a string and the [code]b[/code] was a string but the [code]a[/code] was a number, that wouldn't really work out. Also, from seeing what [code]fmap[/code]'s type would be if it operated only on [code]Either[/code] values, we see that the first parameter has to remain the same while the second one can change and the first parameter is actualized by the [code]Left[/code] value constructor.
+
+This also goes nicely with our box analogy if we think of the [code]Left[/code] part as sort of an empty box with an error message written on the side telling us why it's empty.
+
+Maps from [code]Data.Map[/code] can also be made a functor because they hold values (or not!). In the case of [code]Map k v[/code], [code]fmap[/code] will map a function [code]v -&gt; v'[/code] over a map of type [code]Map k v[/code] and return a map of type [code]Map k v'[/code]. </p><div class="hintbox">Note, the [code]'[/code] has no special meaning in types just like it doesn't have special meaning when naming values. It's used to denote things that are similar, only slightly changed.
+
+Try figuring out how [code]Map k[/code] is made an instance of [code]Functor[/code] by yourself!
+
+With the [code]Functor[/code] typeclass, we've seen how typeclasses can represent pretty cool higher-order concepts. We've also had some more practice with partially applying types and making instances. In one of the next chapters, we'll also take a look at some laws that apply for functors.

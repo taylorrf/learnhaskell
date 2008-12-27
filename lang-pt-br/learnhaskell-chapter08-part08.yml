@@ -1,3 +1,52 @@
 title: A yes-no typeclass
 
-text: 
+text: In JavaScript and some other weakly typed languages, you can put almost anything inside an if expression. For example, you can do all of the following: <span class="fixed">if (0) alert("YEAH!") else alert("NO!")</span>, <span class="fixed">if ("") alert ("YEAH!") else alert("NO!")</span>, <span class="fixed">if (false) alert("YEAH") else alert("NO!)</span>, etc. and all of these will throw an alert of <span class="fixed">NO!</span>. If you do <span class="fixed">if ("WHAT") alert ("YEAH") else alert("NO!")</span>, it will alert a <span class="fixed">"YEAH!"</span> because JavaScript considers non-empty strings to be a sort of true-ish value.
+
+Even though strictly using <span class="fixed">Bool</span> for boolean semantics works better in Haskell, let's try and implement that JavaScript-ish behavior anyway. For fun! Let's start out with a <i>class</i> declaration.
+
+
+
+
+Pretty simple. The <span class="fixed">YesNo</span> typeclass defines one function. That function takes one value of a type that can be considered to hold some concept of true-ness and tells us for sure if it's true or not. Notice that from the way we use the <span class="fixed">a</span> in the function, <span class="fixed">a</span> has to be a concrete type.
+
+Next up, let's define some instances. For numbers, we'll assume that (like in JavaScript) any number that isn't 0 is true-ish and 0 is false-ish.
+
+
+
+
+Empty lists (and by extensions, strings) are a no-ish value, while non-empty lists are a yes-ish value.
+
+
+
+
+Notice how we just put in a type parameter <span class="fixed">a</span> in there to make the list a concrete type, even though we don't make any assumptions about the type that's contained in the list. What else, hmm ... I know, <span class="fixed">Bool</span> itself also holds true-ness and false-ness and it's pretty obvious which is which.
+
+Huh? What's <span class="fixed">id</span>? It's just a standard library function that takes a parameter and returns the same thing, which is what we would be writing here anyway.
+
+Let's make <span class="fixed">Maybe a</span> an instance too.
+
+
+
+
+We didn't need a class constraint because we made no assumptions about the contents of the <span class="fixed">Maybe</span>. We just said that it's true-ish if it's a <span class="fixed">Just</span> value and false-ish if it's a <span class="fixed">Nothing</span>. We still had to write out <span class="fixed">(Maybe a)</span> instead of just <span class="fixed">Maybe</span> because if you think about it, a <span class="fixed">Maybe -&gt; Bool</span> function can't exist (because <span class="fixed">Maybe</span> isn't a concrete type), whereas a <span class="fixed">Maybe a -&gt; Bool</span> is fine and dandy. Still, this is really cool because now, any type of the form <span class="fixed">Maybe something</span> is part of <span class="fixed">YesNo</span> and it doesn't matter what that <span class="fixed">something</span> is.
+
+Previously, we defined a <span class="fixed">Tree a</span> type, that represented a binary search tree. We can say an empty tree is false-ish and anything that's not an empty tree is true-ish.
+
+
+
+
+Can a traffic light be a yes or no value? Sure. If it's red, you stop. If it's green, you go. If it's yellow? Eh, I usually run the yellows because I live for adrenaline.
+
+
+
+
+Cool, now that we have some instances, let's go play!
+
+
+
+
+Right, it works! Let's make a function that mimics the if statement, but it works with <span class="fixed">YesNo</span> values.
+
+
+
+Pretty straightforward. It takes a yes-no-ish value and two things. If the yes-no-ish value is more of a yes, it returns the first of the two things, otherwise it returns the second of them.

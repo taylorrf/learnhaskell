@@ -1,3 +1,99 @@
 title: Derived instances
 
-text:  
+text:  In the <a href="types-and-typeclasses#typeclasses-101">Typeclasses 101</a> section, we explained the basics of typeclasses. We explained that a typeclass is a sort of an interface that defines some behavior. A type can be made an <em>instance</em> of a typeclass if it supports that behavior. Example: the [code]Int[/code] type is an instance of the [code]Eq[/code] typeclass because the [code]Eq[/code] typeclass defines behavior for stuff that can be equated. And because integers can be equated, [code]Int[/code] is a part of the [code]Eq[/code] typeclass. The real usefulness comes with the functions that act as the interface for [code]Eq[/code], namely [code]==[/code] and [code]/=[/code]. If a type is a part of the [code]Eq[/code] typeclass, we can use the [code]==[/code] functions with values of that type. That's why expressions like [code]4 == 4[/code] and [code]"foo" /= "bar"[/code] typecheck.
+
+We also mentioned that they're often confused with classes in languages like Java, Python, C++ and the like, which then baffles a lot of people. In those languages, classes are a blueprint from which we then create objects that contain state and can do some actions. Typeclasses are more like interfaces. We don't make data from typeclasses. Instead, we first make our data type and then we think about what it can act like. If it can act like something that can be equated, we make it an instance of the [code]Eq[/code] typeclass. If it can act like something that can be ordered, we make it an instance of the [code]Ord[/code] typeclass.
+
+In the next section, we'll take a look at how we can manually make our types instances of typeclasses by implementing the functions defined by the typeclasses. But right now, let's see how Haskell can automatically make our type an instance of any of the following typeclasses: [code]Eq[/code], [code]Ord[/code], [code]Enum[/code], [code]Bounded[/code], [code]Show[/code], [code]Read[/code]. Haskell can derive the behavior of our types in these contexts if we use the <i>deriving</i> keyword when making our data type.
+
+Consider this data type:
+
+
+
+
+It describes a person. Let's assume that no two people have the same combination of first name, last name and age. Now, if we have records for two people, does it make sense to see if they represent the same person? Sure it does. We can try to equate them and see if they're equal or not. That's why it would make sense for this type to be part of the [code]Eq[/code] typeclass. We'll derive the instance.
+
+
+
+
+When we derive the [code]Eq[/code] instance for a type and then try to compare two values of that type with [code]==[/code] or [code]/=[/code], Haskell will see if the value constructors match (there's only one value constructor here though) and then it will check if all the data contained inside matches by testing each pair of fields with [code]==[/code]. There's only one catch though, the types of all the fields also have to be part of the [code]Eq[/code] typeclass. But since both [code]String[/code] and [code]Int[/code] are, we're OK. Let's test our [code]Eq[/code] instance.
+
+
+
+
+Of course, since [code]Person[/code] is now in [code]Eq[/code], we can use it as the [code]a[/code] for all functions that have a class constraint of [code]Eq a[/code] in their type signature, such as [code]elem[/code].
+
+
+
+
+
+The [code]Show[/code] and [code]Read[/code] typeclasses are for things that can be converted to or from strings, respectively. Like with [code]Eq[/code], if a type's constructors have fields, their type has to be a part of [code]Show[/code] or [code]Read[/code] if we want to make our type an instance of them. Let's make our [code]Person[/code] data type a part of [code]Show[/code] and [code]Read[/code] as well.
+
+
+
+
+Now we can print a person out to the terminal.
+
+
+
+
+Had we tried to print a person on the terminal before making the [code]Person[/code] data type part of [code]Show[/code], Haskell would have complained at us, claiming it doesn't know how to represent a person as a string. But now that we've derived a [code]Show[/code] instance for it, it does know.
+
+[code]Read[/code] is pretty much the inverse typeclass of [code]Show[/code]. [code]Show[/code] is for converting values of our a type to a string, [code]Read[/code] is for converting strings to values of our type. Remember though, when we use the [code]read[/code] function, we have to use an explicit type annotation to tell Haskell which type we want to get as a result. If we don't make the type we want as a result explicit, Haskell doesn't know which type we want.
+
+
+
+
+If we use use the result of our [code]read[/code] later on in a way that Haskell can infer that it should read it as a person, we don't have to use type annotation.
+
+
+
+
+We can also read parameterized types, but we have to fill in the type parameters. So we can't do [code]read "Just 't'" :: Maybe a[/code], but we can do [code]read "Just 't'" :: Maybe Char[/code].
+
+Derived instances of [code]Ord[/code] work like expected. First the constructors are compared lexicographically and if the values of two constructors are the same, their fields are compared, provided that the types of the fields are also instances of [code]Ord[/code]. The [code]Bool[/code] type can have a value of either [code]False[/code] or [code]True[/code]. For the purpose of seeing how it behaves when compared, we can think of it as being implemented like this:
+
+
+
+
+Because the [code]False[/code] value constructor is specified first and the [code]True[/code] value constructor is specified after it, we can consider [code]True[/code] as greater than [code]False[/code].
+
+
+
+
+In the [code]Maybe a[/code] data type, the [code]Nothing[/code] value constructor is specified before the [code]Just[/code] value constructor, so a value of [code]Nothing[/code] is always smaller than a value of [code]Just something[/code], even if that something is minus one billion trillion. But if we compare two [code]Just[/code] values, then it goes to compare what's inside them.
+
+
+
+
+But we can't do something like [code]Just (*3) > Just (*2)[/code], because [code](*3)[/code] and [code](*2)[/code] are functions, which aren't instances of [code]Ord[/code].
+
+We can easily use algebraic data types to make enumerations and the [code]Enum[/code] and [code]Bounded[/code] typeclasses help us with that. Consider the following data type:
+
+
+
+
+Because all the value constructors are nullary (take no parameters, i.e. fields), we can make it part of the [code]Enum[/code] typeclass. The [code]Enum[/code] typeclass is for things that have predecessors and successors. We can also make it part of the [code]Bounded[/code] typeclass, which is for things that have a lowest possible value and highest possible value. And while we're at it, let's also make it an instance of all the other derivable typeclasses and see what we can do with it.
+
+
+
+Because it's part of the [code]Show[/code] and [code]Read[/code] typeclasses, we can convert values of this type to and from strings.
+
+
+
+Because it's part of the [code]Eq[/code] and [code]Ord[/code] typeclasses, we can compare or equate days.
+
+
+
+
+It's also part of [code]Bounded[/code], so we can get the lowest and highest day.
+
+
+
+
+It's also an instance of [code]Enum[/code]. We can get predecessors and sucessors of days and we can make list ranges from them!
+
+
+
+
+That's pretty awesome.

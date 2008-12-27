@@ -1,3 +1,42 @@
 title: Record syntax
 
-text:  
+text:  OK, we've been tasked with creating a data type that describes a person. The info that we want to store about that person is: first name, last name, age, height, phone number, and favorite ice-cream flavor. I don't know about you, but that's all I ever want to know about a person. Let's give it a go!
+
+
+
+O-kay. The first field is the first name, the second is the last name, the third is the age and so on. Let's make a person.
+
+
+
+That's kind of cool, although slightly unreadable. What if we want to create a function to get seperate info from a person? A function that gets some person's first name, a function that gets some person's last name, etc. Well, we'd have to define them kind of like this.
+
+
+
+
+Whew! I certainly did not enjoy writing that! Despite being very cumbersome and BORING to write, this method works.
+
+
+
+There must be a better way, you say! Well no, there isn't, sorry.
+
+Just kidding, there is. Hahaha! The makers of Haskell were very smart and anticipated this scenario. They included an alternative way to write data types. Here's how we could achieve the above functionality with record syntax.
+
+
+
+
+So instead of just naming the field types one after another and separating them with spaces, we use curly brackets. First we write the name of the field, for instance, [code]firstName[/code] and then we write a double colon [code]::[/code] (also called Paamayim Nekudotayim, haha) and then we specify the type. The resulting data type is exactly the same. The main benefit of this is that it creates functions that lookup fields in the data type. By using record syntax to create this data type, Haskell automatically made these functions: [code]firstName[/code], [code]lastName[/code], [code]age[/code], [code]height[/code], [code]phoneNumber[/code] and [code]flavor[/code].
+
+
+
+
+There's another benefit to using record syntax. When we derive [code]Show[/code] for the type, it displays it differently if we use record syntax to define and instantiate the type. Say we have a type that represents a car. We want to keep track of the company that made it, the model name and its year of production. Watch.
+
+
+
+If we define it using record syntax, we can make a new car like this.
+
+
+
+When making a new car, we don't have to necessarily put the fields in the proper order, as long as we list all of them. But if we don't use record syntax, we have to specify them in order.
+
+Use record syntax when a constructor has several fields and it's not obvious which field is which. If we make a 3D vector data type by doing [code]data Vector = Vector Int Int Int[/code], it's pretty obvious that the fields are the components of a vector. However, in our [code]Person[/code] and [code]Car[/code] types, it wasn't so obvious and we greatly benefited from using record syntax.
