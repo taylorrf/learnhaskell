@@ -1,0 +1,89 @@
+chapter: Functionally Solving Problems
+
+In this chapter, we'll take a look at a few interesting problems and how to think functionally to solve them as elegantly as possible. We probably won't be introducing any new concepts, we'll just be flexing our newly acquired Haskell muscles and practicing our coding skills. Each section will present a different problem. First we'll describe the problem, then we'll try and find out what the best (or least worst) way of solving it is.
+
+title: Reverse Polish notation calculator
+
+text: Usually when we write mathematical expressions in school, we write them in an infix manner. For instance, we write [code]10 - (4 + 3) * 2[/code]. [code]+[/code], [code]*[/code] and [code]-[/code] are infix operators, just like the infix functions we met in Haskell ([code]+[/code], [code]`elem`[/code], etc.). This makes it handy because we, as humans, can parse it easily in our minds by looking at such an expression. The downside to it is that we have to use parentheses to denote precedence.
+
+
+[link]Reverse Polish notation[/link] is another way of writing down mathematical expressions. Initially it looks a bit weird, but it's actually pretty easy to understand and use because there's no need for parentheses and it's very easy to punch into a calculator. While most modern calculators use infix notation, some people still swear by RPN calculators. This is what the previous infix expression looks like in RPN: [code]10 4 3 + 2 * -[/code]. How do we calculate what the result of that is? Well, think of a stack. You go over the expression from left to right. Every time a number is encountered, push it on to the stack. When we encounter an operator, take the two numbers that are on top of the stack (we also say that we <i>pop</i> them), use the operator and those two and then push the resulting number back onto the stack. When you reach the end of the expression, you should be left with a single number if the expression was well-formed and that number represents the result.
+
+
+Let's go over the expression [code]10 4 3 + 2 * -[/code] together! First we push [code]10[/code] on to the stack and the stack is now [code]10[/code]. The next item is [code]4[/code], so we push it to the stack as well. The stack is now [code]10, 4[/code]. We do the same with [code]3[/code] and the stack is now [code]10, 4, 3[/code]. And now, we encounter an operator, namely [code]+[/code]! We pop the two top numbers from the stack (so now the stack is just [code]10[/code]), add those numbers together and push that result to the stack. The stack is now [code]10, 7[/code]. We push [code]2[/code] to the stack, the stack for now is [code]10, 7, 2[/code]. We've encountered an operator again, so let's pop [code]7[/code] and [code]2[/code] off the stack, multiply them and push that result to the stack. Multiplying [code]7[/code] and [code]2[/code] produces a [code]14[/code], so the stack we have now is [code]10, 14[/code]. Finally, there's a [code]-[/code]. We pop [code]10[/code] and [code]14[/code] from the stack, subtract [code]14[/code] from [code]10[/code] and push that back. The number on the stack is now [code]-4[/code] and because there are no more numbers or operators in our expression, that's our result!
+
+Now that we know how we'd calculate any RPN expression by hand, let's think about how we could make a Haskell function that takes as its parameter a string that contains a RPN expression, like [code]"10 4 3 + 2 * -"[/code] and gives us back its result.
+
+What would the type of that function be? We want it to take a string as a parameter and produce a number as its result. So it will probably be something like [code]solveRPN :: (Num a) =&gt; String -&gt; a[/code].
+
+
+<em>Protip:</em> it really helps to first think what the type declaration of a function should be before concerning ourselves with the implementation and then write it down. In Haskell, a function's type declaration tells us a whole lot about the function, due to the very strong type system.
+
+
+Cool. When implementing a solution to a problem in Haskell, it's also good to think back on how you did it by hand and maybe try to see if you can gain any insight from that. Here we see that we treated every number or operator that was separated by a space as a single item. So it might help us if we start by breaking a string like [code]"10 4 3 + 2 * -"[/code] into a list of items like [code]["10","4","3","+","2","*","-"][/code].
+
+Next up, what did we do with that list of items in our head? We went over it from left to right and kept a stack as we did that. Does the previous sentence remind you of anything? Remember, in the section about <a href="higher-order-functions/#folds">folds</a>, we said that pretty much any function where you traverse a list from left to right or right to left one element by element and build up (accumulate) some result (whether it's a number, a list, a stack, whatever) can be implemented with a fold.
+
+In this case, we're going to use a left fold, because we go over the list from left to right. The accumulator value will be our stack and hence, the result from the fold will also be a stack, only as we've seen, it will only have one item.
+
+One more thing to think about is, well, how are we going to represent the stack? I propose we use a list. Also I propose that we keep the top of our stack at the head of the list. That's because adding to the head (beginning) of a list is much faster than adding to the end of it. So if we have a stack of, say, [code]10, 4, 3[/code], we'll represent that as the list [code][3,4,10][/code].
+
+Now we have enough information to roughly sketch our function. It's going to take a string, like, [code]"10 4 3 + 2 * -"[/code] and break it down into a list of items by using [code]words[/code] to get [code]["10","4","3","+","2","*","-"][/code]. Next, we'll do a left fold over that list and end up with a stack that has a single item, so [code][-4][/code]. We take that single item out of the list and that's our final result!
+
+So here's a sketch of that function:
+
+
+
+
+
+We take the expression and turn it into a list of items. Then we fold over that list of items with the folding function. Mind the [code][][/code], which represents the starting accumulator. The accumulator is our stack, so [code][][/code] represents an empty stack, which is what we start with. After getting the final stack with a single item, we call [code]head[/code] on that list to get the item out and then we apply [code]read[/code].
+
+So all that's left now is to implement a folding function that will take a stack, like [code][4,10][/code], and an item, like [code]"3"[/code] and return a new stack [code][3,4,10][/code]. If the stack is [code][4,10][/code] and the item [code]"*"[/code], then it will have to return [code][40][/code]. But before that, let's turn our function into <a href="higher-order-functions#composition">point-free style</a> because it has a lot of parentheses that are kind of freaking me out:
+
+
+
+
+
+Ah, there we go. Much better. So, the folding function will take a stack and an item and return a new stack. We'll use pattern matching to get the top items of a stack and to pattern match against operators like [code]"*"[/code] and [code]"-"[/code].
+
+
+
+
+
+We laid this out as four patterns. The patterns will be tried from top to bottom. First the folding function will see if the current item is [code]"*"[/code]. If it is, then it will take a list like [code][3,4,9,3][/code] and call its first two elements [code]x[/code] and [code]y[/code] respectively. So in this case, [code]x[/code] would be [code]3[/code] and [code]y[/code] would be [code]4[/code]. [code]ys[/code] would be [code][9,3][/code]. It will return a list that's just like [code]ys[/code], only it has [code]x[/code] and [code]y[/code] multiplied as its head. So with this we pop the two topmost numbers off the stack, multiply them and push the result back on to the stack. If the item is not [code]"*"[/code], the pattern matching will fall through and [code]"+"[/code] will be checked, and so on.
+
+If the item is none of the operators, then we assume it's a string that represents a number. If it's a number, we just call [code]read[/code] on that string to get a number from it and return the previous stack but with that number pushed to the top.
+
+And that's it! Also noticed that we added an extra class constraint of [code]Read a[/code] to the function declaration, because we call [code]read[/code] on our string to get the number. So this declaration means that the result can be of any type that's part of the [code]Num[/code] and [code]Read[/code] typeclasses (like [code]Int[/code], [code]Float[/code], etc.). 
+
+For the list of items [code]["2","3","+"][/code], our function will start folding from the left. The intial stack will be [code][][/code]. It will call the folding function with [code][][/code] as the stack (accumulator) and [code]"2"[/code] as the item. Because that item is not an operator, it will be [code]read[/code] and the added to the beginning of [code][][/code]. So the new stack is now [code][2][/code] and the folding function will be called with [code][2][/code] as the stack and [code]["3"][/code] as the item, producing a new stack of [code][3,2][/code]. Then, it's called for the third time with [code][3,2][/code] as the stack and [code]"+"[/code] as the item. This causes these two numbers to be popped off the stack, added together and pushed back. The final stack is [code][5][/code], which is the number that we return.
+
+Let's play around with our function:
+
+
+
+
+
+
+
+Cool, it works! One nice thing about this function is that it can be easily modified to support various other operators. They don't even have to be binary operators. For instance, we can make an operator [code]"log"[/code] that just pops one number off the stack and pushes back its logarithm. We can also make a ternary operators that pop three numbers off the stack and push back a result or operators like [code]"sum"[/code] which pop off all the numbers and push back their sum.
+
+Let's modify our function to take a few more operators. For simplicity's sake, we'll change its type declaration so that it returns a number of type [code]Float[/code].
+
+
+
+
+Wow, great! [code]/[/code] is division of course and [code]**[/code] is floating point exponentiation. With the logarithm operator, we just pattern match against a single element and the rest of the stack because we only need one element to perform its natural logarithm. With the sum operator, we just return a stack that has only one element, which is the sum of the stack so far.
+
+
+
+
+
+
+Notice that we can include floating point numbers in our expression because [code]read[/code] knows how to read them.
+
+
+
+I think that making a function that can calculate arbitrary floating point RPN expressions and has the option to be easily extended in 10 lines is pretty awesome.
+
+One thing to note about this function is that it's not really fault tolerant. When given input that doesn't make sense, it will just crash everything. We'll make a fault tolerant version of this with a type declaration of [code]solveRPN :: String -&gt; Maybe Float[/code] once we get to know monads (they're not scary, trust me!). We could make one right now, but it would be a bit tedious because it would involve a lot of checking for [code]Nothing[/code] on every step. If you're feeling up to the challenge though, you can go ahead and try it! Hint: you can use [code]reads[/code] to see if a read was successful or not.
