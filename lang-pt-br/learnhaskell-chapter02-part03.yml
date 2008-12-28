@@ -1,4 +1,4 @@
-title: An intro to lists
+title: Uma introdução às listas
 
 text: Much like shopping lists in the real world, lists in Haskell are very useful. It's the most used data structure and it can be used in a multitude of different ways to model and solve a whole bunch of problems. Lists are SO awesome. In this section we'll look at the basics of lists, strings (which are lists) and list comprehensions.
 
