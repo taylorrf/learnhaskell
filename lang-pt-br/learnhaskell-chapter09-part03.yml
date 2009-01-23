@@ -94,5 +94,3 @@ Let's try our app out!
  cool thing about this is that it's easy to add extra functionality. Just add an entry in the dispatch association list and implement the corresponding function and you're laughing! As an exercise, you can try implementing a [code]bump[/code] function that will take a file and a task number and return an I/O action that bumps that task to the top of the to-do list.
 
 You could make this program fail a bit more gracefully in case of bad input (for example, if someone runs [code]todo UP YOURS HAHAHAHA[/code]) by making an I/O action that just reports there has been an error (say, [code]errorExit :: IO ()[/code]) and then check for possible erronous input and if there is erronous input, perform the error reporting I/O action. Another way is to use exceptions, which we will meet soon.
-
-More coming soon! Be on the look out for more LYAH ... really soon! Yeah yeah yeah!
