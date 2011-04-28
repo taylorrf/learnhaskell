@@ -1,39 +1,39 @@
 title: Um pouco mais de funções recursivas
 
-text: Now that we know how to generally think recursively, let's implement a few functions using recursion. First off, we'll implement [code]replicate[/code]. [code]replicate[/code] takes an [code]Int[/code] and some element and returns a list that has several repetitions of the same element. For instance, [code]replicate 3 5[/code] returns [code][5,5,5][/code]. Let's think about the edge condition. My guess is that the edge condition is 0 or less. If we try to replicate something zero times, it should return an empty list. Also for negative numbers, because it doesn't really make sense.
+text: Agora que nós sabemos como genericamente pensar recursivamente, vamos implementar algumas funções usando recursão. Primeiramente, implementaremos [code]replicate[/code]. [code]replicate[/code] recebe um [code]Int[/code] e algum elemento e retorna uma lista que tem muitas repetições do mesmo elemento. Por exemplo [code]replicate 3 5[/code] retorna [code][5,5,5][/code]. Pensemos sobre a condição limite. Meu palpite é que a condição limite seja 0 ou menos. Se nós tentarmos replicar alguma coisa zero vezes, isso deverá retornar uma lista vazia. O mesmo para número negativos, porque isso realmente não faria sentido.
 
 
 
-We used guards here instead of patterns because we're testing for a boolean condition. If [code]n[/code] is less than or equal to 0, return an empty list. Otherwise return a list that has [code]x[/code] as the first element and then [code]x[/code] replicated n-1 times as the tail. Eventually, the [code](n-1)[/code] part will cause our function to reach the edge condition.
+Nós usamos guardas aqui em vez de padrões porque estamos interessados em uma condição booleana. Se [code]n[/code] é menor ou igual a 0, retorna uma lista vazia. Se não, retorna uma lista que tem [code]x[/code] como o primeiro elemento e então [code]x[/code] replicado n-1 vezes como a calda. Eventualmente, a parte [code](n-1)[/code] fará com que nossa função alcance uma condição limite.
 
-<em>Nota:</em> [code]Num[/code] is not a subclass of [code]Ord[/code]. That means that what constitutes for a number doesn't really have to adhere to an ordering. So that's why we have to specify both the [code]Num[/code] and [code]Ord[/code] class constraints when doing addition or subtraction and also comparison.
+<em>Nota:</em> [code]Num[/code] não é uma subclass de [code]Ord[/code]. Isso significa que o que constitui um número não necessariamente precisa aderir a uma ordenação. É por isso que temos que especificar ambas as restrições de classe [code]Num[/code] e [code]Ord[/code] quando fazemos adição ou subtração e também comparação.
 
-Next up, we'll implement [code]take[/code]. It takes a certain number of elements from a list. For instance, [code]take 3 [5,4,3,2,1][/code] will return [code][5,4,3][/code]. If we try to take 0 or less elements from a list, we get an empty list. Also if we try to take anything from an empty list, we get an empty list. Notice that those are two edge conditions right there. So let's write that out:
-
-
-
-The first pattern specifies that if we try to take a 0 or negative number of elements, we get an empty list. Notice that we're using [code]_[/code] to match the list because we don't really care what it is in this case. Also notice that we use a guard, but without an [code]otherwise[/code] part. That means that if [code]n[/code] turns out to be more than 0, the matching will fall through to the next pattern. The second pattern indicates that if we try to take anything from an empty list, we get an empty list. The third pattern breaks the list into a head and a tail. And then we state that taking [code]n[/code] elements from a list equals a list that has [code]x[/code] as the head and then a list that takes [code]n-1[/code] elements from the tail as a tail. Try using a piece of paper to write down how the evaluation would look like if we try to take, say, 3 from [code][4,3,2,1][/code].
-
-[code]reverse[/code] simply reverses a list. Think about the edge condition. What is it? Come on ... it's the empty list! An empty list reversed equals the empty list itself. O-kay. What about the rest of it? Well, you could say that if we split a list to a head and a tail, the reversed list is equal to the reversed tail and then the head at the end.
+Em seguida, vamos implementar [code]take[/code]. Ela pega um certo número de elementos de uma lista. Por exemplo, [code]take 3 [5,4,3,2,1][/code] retornará [code][5,4,3][/code]. Se tentarmos pegar 0 ou menos elementos de uma lista, receberemos uma lista vazia. Também, se tentamos pegar algo de uma lista vazia, receberemos uma lista vazia. Note que essas são as duas condições limite. Então, vamos à escrita da função:
 
 
 
-There we go!
+O primeiro padrão especifica que, se tentarmos pegar 0 ou um número negativo de elementos, receberemos a lista vazia. Note que estamos usando [code]_[/code] para comparar com a lista porque nós realmente não nos importamos com o que ela é nesse caso. Também note que nós usamos um guarda, mas sem uma parte [code]otherwise[/code]. Isso significa que, se acontecer de [code]n[/code] ser maior que 0, o reconhecimento de padrões cairá para o próximo padrão. O segundo padrão indica que, se tentarmos pegar alguma coisa de uma lista vazia, receberemos uma lista vazia. O terceiro padrão quebra a lista numa cabeça e numa calda. E então nós dizemos que pegar [code]n[/code] elementos de uma lista é igual a uma lista que tem [code]x[/code] como a cabeça e então uma lista que pega [code]n-1[/code] elementos da calda como calda. Tente usar um pedaço de papel para escrever como a avaliação pareceria se tentássemos pegar, digamos, 3 de [code][4,3,2,1][/code].
 
-Because Haskell supports infinite lists, our recursion doesn't really have to have an edge condition. But if it doesn't have it, it will either keep churning at something infinitely or produce an infinite data structure, like an infinite list. The good thing about infinite lists though is that we can cut them where we want. [code]repeat[/code] takes an element and returns an infinite list that just has that element. A recursive implementation of that is really easy, watch.
-
-
-
-Calling [code]repeat 3[/code] will give us a list that starts with [code]3[/code] and then has an infinite amount of 3's as a tail. So calling [code]repeat 3[/code] would evaluate like [code]3:repeat 3[/code], which is [code]3:(3:repeat 3)[/code], which is [code]3:(3:(3:repeat 3))[/code], etc. [code]repeat 3[/code] will never finish evaluating, whereas [code]take 5 (repeat 3)[/code] will give us a list of five 3's. So essentially it's like doing [code]replicate 5 3[/code].
-
-[code]zip[/code] takes two lists and zips them together. [code]zip [1,2,3] [2,3][/code] returns [code][(1,2),(2,3)][/code], because it truncates the longer list to match the length of the shorter one. How about if we zip something with an empty list? Well, we get an empty list back then. So there's our edge condition. However, [code]zip[/code] takes two lists as parameters, so there are actually two edge conditions.
+[code]reverse[/code] simplesmente inverte uma lista. Pense sobre a condição limite. O que ela seria? Vamos lá ... é a lista vazia! Uma lista vazia invertida é igual à própria lista vazia. O-kay. E o resto? Bem, você poderia dizer que, se dividirmos uma lista em cabeça e calda, a lista invertida será igual à calda invertida e então a cabeça no final.
 
 
 
-First two patterns say that if the first list or second list is empty, we get an empty list. The third one says that two lists zipped are equal to pairing up their heads and then tacking on the zipped tails. Zipping [code][1,2,3][/code] and [code]['a','b'][/code] will eventually try to zip [code][3][/code] with [code][][/code]. The edge condition patterns kick in and so the result is [code](1,'a'):(2,'b'):[][/code], which is exactly the same as [code][(1,'a'),(2,'b')][/code]
+E cá estamos nós!
 
-Let's implement one more standard library function &mdash; [code]elem[/code]. It takes an element and a list and sees if that element is in the list. The edge condition, as is most of the times with lists, is the empty list. We know that an empty list contains no elements, so it certainly doesn't have the droids we're looking for.
+Como Haskell aceita listas infinitas, nossa recursão não necessariamente precisa ter uma condição limite. Mas, se ela não tiver, nós ou ficaremos repetindo algo infinitamente ou produziremos uma estrutura de dados infinita, como uma lista infinita. O lado bom das listas infinitas é que nós podemos cortá-las onde quisermos. [code]repeat[/code] pega um elemento e retorna uma lista infinita que tem apenas aquele elemento. Uma implementação recursiva disso é realmente fácil. Olhe:
 
 
 
-Pretty simple and expected. If the head isn't the element then we check the tail. If we reach an empty list, the result is [code]False[/code].
+Chamar [code]repeat 3[/code] nos dará uma lista que começa com [code]3[/code] e então tem uma quantidade infinita de 3 como calda. Então chamar [code]repeat 3[/code] avaliaria em algo como [code]3:repeat 3[/code], que é [code]3:(3:repeat 3)[/code], que é [code]3:(3:(3:repeat 3))[/code], etc. [code]repeat 3[/code] nunca terminará de avaliar, enquanto [code]take 5 (repeat 3)[/code] nos dará uma lista de cinco 3's. Então, essencialmente, é o mesmo que fazer [code]replicate 5 3[/code].
+
+[code]zip[/code] pega duas listas e mescla as duas. [code]zip [1,2,3] [2,3][/code] retorna [code][(1,2),(2,3)][/code], porque ela trunca a lista maior para combinar com o tamanho da lista menor. E se nós chamássemos zip passando uma lista vazia? Bem, nós recebemos, então, uma lista vazia. Então essa será nossa condição limite. Contudo, [code]zip[/code] pega duas listas como parâmetro, e assim haverá duas condições limite.
+
+
+
+Os primeiros dois padrões dizem que, se a primeira ou a segunda lista é vazia, nós pegamos uma lista vazia. O terceiro diz que a chamada de zip em duas listas é igual a parear as suas cabeças e então continuar a chamar zip nas caldas. A chamada de zip nas listas [code][1,2,3][/code] e [code]['a','b'][/code] eventualmente tentará chamar zip em [code][3][/code] e [code][][/code]. Chega-se ao padrão da condição limite e assim o resultado é [code](1,'a'):(2,'b'):[][/code], que é exatamente o mesmo que [code][(1,'a'),(2,'b')][/code].
+
+Vamos implementar mais uma função da biblioteca padrão &mdash; [code]elem[/code]. Ela pega um elemento e uma lista e vê se aquele elemento está na lista. A condição limite, como na maioria das vezes com listas, é a lista vazia. Nós sabemos que uma lista vazia não contém elemento algum, então ela certamente não tem os droids que estamos procurando.
+
+
+
+Bastante simples e previsível. Se a cabeça não é o elemento, então nós checamos a calda. Se alcançamos uma lista vazia, então o resultado é [code]False[/code].
