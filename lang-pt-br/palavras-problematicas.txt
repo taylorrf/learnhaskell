@@ -1,0 +1,31 @@
+palavras-problematicas.txt
+
+O arquivo tem por objetivo listar as palavras com tradução "difícil" e começar a
+discussão sobre como seria conveniente que elas fossem traduzidas, levando em
+consideração o nível de conhecimento do leitor habitual do livro e o quanto a
+não-tradução dessas palavras já está difundida no meio desse leitor.
+
+--------------------------------------------------------------------------------
+Palavras não-traduzidas (que são "reservadas" da linguagem ou que guardam algum
+valor muito próximo da sintaxe da linguagem)
+
+typeclass
+subclass
+otherwise
+"where" binding --> ligação "where"
+
+--------------------------------------------------------------------------------
+Palavras "complicadas" de traduzir
+
+edge condition                                          condição limite
+maximum                                                 máximo
+max                                                     maior
+singleton                                               lista de um só elemento
+fibonacci number                                        número de fibonacci
+head (da lista)                                         cabeça
+tail (da lista)                                         calda
+pattern matching                                        reconhecimento de padrões
+evaluate                                                avaliar em
+to zip                                                  mesclar / chamar "zip" em
+type signature                                          assinatura de tipo
+list comprehension                                      compreensão de lista (conforme wikipedia)
