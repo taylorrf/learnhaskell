@@ -2,40 +2,40 @@ chapter: Types e Typeclasses
 
 title: Acredite no type
 
-text: Previously we mentioned that Haskell has a static type system. The type of every expression is known at compile time, which leads to safer code. If you write a program where you try to divide a boolean type with some number, it won't even compile. That's good because it's better to catch such errors at compile time instead of having your program crash. Everything in Haskell has a type, so the compiler can reason quite a lot about your program before compiling it.
-	
-Unlike Java or Pascal, Haskell has type inference. If we write a number, we don't have to tell Haskell it's a number. It can infer that on its own, so we don't have to explicitly write out the types of our functions and expressions to get things done. We covered some of the basics of Haskell with only a very superficial glance at types. However, understanding the type system is a very important part of learning Haskell.
+text: Já falamos que Haskell possui um sistema de tipos estático. O tipo de toda expressão é conhecido na hora da compilação, o que resulta num código mais seguro. Se você escrever um programa que tente dividir um tipo booleano por um número, ele nem compilará. IsTo é bom porque é melhor detectarmos erros logo ao terminar de programar do que se deparar com travamentos indesejados. Tudo em Haskell tem um tipo, então o compilador pode considerar várias possibilidades antes mesmo de compilá-lo.
 
-A type is a kind of label that every expression has. It tells us in which category of things that expression fits. The expression [code]True[/code] is a boolean, [code]"hello"[/code] is a string, etc.
+Ao contrário de Java ou Pascal, Haskell tem inferência de tipo. Se for digitado um número, não precisamos avisar ao Haskell que é um número. Ele consegue identificar isso automaticamente, não damos os tipos de funções e expressões explicitamente. Nós veremos apenas o básico de Haskell com uma visão apenas superficial sobre tipos. No entanto, entender o sistema de tipos é muito importante para o aprendizado de Haskell.
 
-Now we'll use GHCI to examine the types of some expressions. We'll do that by using the [code]:t[/code] command which, followed by any valid expression, tells us its type. Let's give it a whirl.
+Tipo é algo como uma etiqueta que toda expressão têm. Nos diz em qual categoria ela se encaixa. A expressão [code] True [/code] é booleana, [code] "hello" [qcode] é uma String, etc.
 
-Here we see that doing [code]:t[/code] on an expression prints out the expression followed by [code]::[/code] and its type. [code]::[/code] is read as "has type of". Explicit types are always denoted with the first letter in capital case. [code]'a'[/code], as it would seem, has a type of [code]Char[/code]. It's not hard to conclude that it stands for <i>character</i>. [code]True[/code] is of a [code]Bool[/code] type. That makes sense. But what's this? Examining the type of [code]"HELLO!"[/code] yields a [code][Char][/code]. The square brackets denote a list. So we read that as it being <i>a list of characters</i>. Unlike lists, each tuple length has its own type. So the expression of [code](True, 'a')[/code] has a type of [code](Bool, Char)[/code], whereas an expression such as [code]('a','b','c')[/code] would have the type of [code](Char, Char, Char)[/code]. [code]4 == 5[/code] will always return [code]False[/code], so its type is [code]Bool.[/code]
+Agora usaremos o GHCI para descobrir os tipos de algumas expressões. Faremos isso usando o comando [code] :t [/code] que, seguido de qualquer expressão válida, retorna o seu tipo. Vamos dar uma olhada.
 
-
-Functions also have types. When writing our own functions, we can choose to give them an explicit type declaration. This is generally considered to be good practice except when writing very short functions. From here on, we'll give all the functions that we make type declarations. Remember the list comprehension we made previously that filters a string so that only caps remain? Here's how it looks like with a type declaration.
+Fazendo isso, vemos que [code] :t [/code] mostra a expressão seguida de [code] :: [/code] e seu tipo. [code] :: [/code] pode ser lido como "do tipo". Tipos explícitos sempre são referidos pela sua primeira letra maiúscula. [code] 'a' [/code], como é visto, é do tipo [code] Char [/code]. Não é difícil de identificar que vem da palavra <i>caracter</i>. [code] True [/code] é [code] Boolean [/code]. Faz sentido. Mas... como? Vemos que o tipo de [code] "HELLO!" [/code] é [code] [Char] [/code]. Os colchetes denotam uma lista. Então lemos isso como uma <i>lista de caracteres</i>. Ao contrário de listas, cada valor da tupla tem seu tipo. Então a expressão [code] (True, 'a') [/code] tem o tipo [code] (Bool, Char) [/code], e uma expressão como [code] ('a','b','c') [/code] deverá retornar [code] (Char, Char, Char) [/code]. [code] 4 == 5 [/code] sempre retornará [code] False [/code], que é do tipo [code] Bool [/code].
 
 
-[code]removeNonUppercase[/code] has a type of [code][Char] -&gt; [Char][/code], meaning that it maps from a string to a string. That's because it takes one string as a parameter and returns another as a result. The [code][Char][/code] type is synonymous with [code]String[/code] so it's clearer if we write [code]removeNonUppercase :: String -&gt; String[/code]. We didn't have to give this function a type declaration because the compiler can infer by itself that it's a function from a string to a string but we did anyway. But how do we write out the type of a function that takes several parameters? Here's a simple function that takes three integers and adds them together:
+Funções também tem tipos. Ao escrever suas próprias funções, podemos declarar explicitamente seus tipos. Isso geralmente é considerado uma boa prática exceto quando a função é muito curta. A partir daqui, daremos vários exemplos de que fazem uso desse tipo de declaração. Lembra-se da lista que criamos anteriormente e que usava filtros para retornar somente a parte maiúscula da String? Isso é muito parecido com uma declaração de tipo.
 
 
-The parameters are separated with [code]-&gt;[/code] and there's no special distinction between the parameters and the return type. The return type is the last item in the declaration and the parameters are the first three. Later on we'll see why they're all just separated with [code]-&gt;[/code] instead of having some more explicit distinction between the return types and the parameters like [code]Int, Int, Int -&gt; Int[/code] or something.
-
-If you want to give your function a type declaration but are unsure as to what it should be, you can always just write the function without it and then check it with [code]:t[/code]. Functions are expressions too, so [code]:t[/code] works on them without a problem.
-
-Here's an overview of some common types.
-
-[code]Int[/code] stands for integer. It's used for whole numbers. [code]7[/code] can be an [code]Int[/code] but [code]7.2[/code] cannot. [code]Int[/code] is bounded, which means that it has a minimum and a maximum value. Usually on 32-bit machines the maximum possible [code]Int[/code] is 2147483647 and the minimum is -2147483648.
-
-[code]Integer[/code] stands for, er ... also integer. The main difference is that it's not bounded so it can be used to represent really really big numbers. I mean like really big. [code]Int[/code], however, is more efficient.
+[code] removeNonUppercase [/code] tinha o tipo [code][Char] -&gt; [Char][/code], o que significa que lidava com duas Strings, isso devido a receber uma String e retornar uma String. O tipo [code] [Char] [/code] é sinônimo de [code] String [/code] então ficaria mais claro se fosse escrito [code] removeNonUppercase :: String -&gt; String [/code]. Não precisamos fazer essa declaração de tipo para o compilador porque ele pode inferir por si só que é uma função que recebe uma String e retorna uma String. Mas como damos o tipo de uma função que tem vários parâmetros? Segue uma função simples que pega três inteiros e os soma:
 
 
-[code]Float[/code] is a real floating point with single precision.
+Os parâmetros são separados por [code] -&gt; [/code] e não há nenhuma distinção entre tipos de parâmetros e retorno. O tipo do retorno é o último e os parâmetros são os três primeiros. Mais adiante veremos o porquê deles serem apenas separados por um [code] -&gt; [/code] ao invés de ter um destaque maior como em [code] Int, Int, Int -&gt; Int [/code] ou algo do gênero.
 
-[code]Double[/code] is a real floating point with double the precision!
+Se você deseja especificar o tipo da função mas não tem certeza de qual o é, você pode escreve-la normalmente e depois descobrir com o [code] :t [/code]. Funções também são expressões, então [code] :t [/code] funciona sem problemas.
 
-[code]Bool[/code] is a boolean type. It can have only two values: [code]True[/code] and [code]False[/code].
+Aqui temos um apanhado geral dos principais tipos.
 
-[code]Char[/code] represents a character. It's denoted by single quotes. A list of characters is a string.
+[code] Int [/code] é inteiro. É usado por números inteiros. [code] 7 [/code] pode ser um [code] Int [/code] mas [code] 7.2 [/code] não. [code] Int [/code] possui limitações de tamanho, o que significa ter um máximo e um mínimo. Geralmente computadore 32bit tem um [code] Int [/code] máximo de 2147483647 e um mínimo de -2147483648.
 
-Tuples are types but they are dependent on their length as well as the types of their components, so there is theoretically an infinite number of tuple types, which is too many to cover in this tutorial. Note that the empty tuple [code]()[/code] is also a type which can only have a single value: [code]()[/code]
+[code] Integer [/code] significa... também inteiro. A principal diferença é que não tem limitações e pode ser usado por números realmente grandes. Digo, extremamente grandes. [code] Int [/code], contudo, é mais eficiente.
+
+
+[code] Float [/code] é um número real em ponto flutuante de precisão simples.
+
+[code] Double [/code] é um número real em ponto flutuante com o dobro(!) de precisão.
+
+[code] Bool [/code] é um tipo booleano. Pode ter apenas dois valores: Ou [code] True [/code] ou [code] False [/code].
+
+[code] Char [/code] representa um caracter. É delimitado por aspas simples. Uma lista de caracteres é denominada String.
+
+Tuplas são tipos mas possuem uma variação de acordo com a quantidade e valores que contém, então teoricamente temos tuplas com infinitos tipos, o que é bastante para esse tutorial. Note que uma tupla vazia [code] () [/code] é também um tipo e pode assumir apenas um valor: [code] () [/code]
