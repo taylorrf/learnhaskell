@@ -16,7 +16,7 @@ Observe que o [code]:[/code] recebe um número e uma lista de números ou um car
 
 [code][1,2,3][/code] é na verdade açucar sintático para [code]1:2:3:[][/code]. [code][][/code] é uma lista vazia. Se acrescentarmos [code]3[/code] nele, ele irá se tornar [code][3][/code]. Se acrescentarmos [code]2[/code], se tornará [code][2,3][/code] e assim por diante.
 
-<p class="hintbox"><em>Nota:</em> [code][][/code], [code][[]][/code] e [code][[],[],[]][/code] são coisas diferentes. O primeiro é uma lista vazia, o segundo é uma lista que contém uma lista vazia, o terceiro é uma lista que contém três listas vazias.
+<em>Nota:</em> [code][][/code], [code][[]][/code] e [code][[],[],[]][/code] são coisas diferentes. O primeiro é uma lista vazia, o segundo é uma lista que contém uma lista vazia, o terceiro é uma lista que contém três listas vazias.
 
 Se você deseja obter um elemento de uma lista pelo seu índice, utilize [code]!![/code]. O índice inicia a partir de 0.
 
@@ -67,7 +67,5 @@ Observe que se tentarmos tirar mais elementos do há na lista, ele retorna só a
 [code]product[/code] recebe uma lista de números e retorna o seu produto. 
 
 [code]elem[/code] recebe alguma coisa e uma lista de coisas e nos diz se esta coisa é um elemento da lista. Geralmente é chamado como uma função <i>infix</i> porque é mais fácil de ler dessa maneira.
-
-tem algo como a lista de coisas e diz-nos se essa coisa é um elemento da lista. É geralmente chamado como uma função infix porque é mais fácil de ler dessa maneira.
 
 Estas são algumas funções básicas para operações em listas. Iremos dar mais uma olhada em funções de listas <a href="modules#data-list">depois</a>.
