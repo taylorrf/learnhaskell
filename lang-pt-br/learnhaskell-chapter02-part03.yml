@@ -1,74 +1,73 @@
 title: Uma introdução às listas
 
-text: Much like shopping lists in the real world, lists in Haskell are very useful. It's the most used data structure and it can be used in a multitude of different ways to model and solve a whole bunch of problems. Lists are SO awesome. In this section we'll look at the basics of lists, strings (which are lists) and list comprehensions.
+text: Assim como as listas de compras no mundo real, listas em Haskell são extremamente úteis. Esta é a estrutura de dados mais utilizada e pode ser utilizada em muitas e variadas formas para modelar e resolver uma série de problemas. Listas são MUITO legais. Neste capitulo nós iremos dar uma olhada no básico de listas, strings (que são listas) e compreensões de listas. 
 
-In Haskell, lists are a homogenous data structure. It stores several elements of the same type. That means that we can have a list of integers or a list of characters but we can't have a list that has a few integers and then a few characters. And now, a list!
+Em Haskell, listas são estruturas de dados homogêneas. Ela armazena varios elementos do mesmo tipo. Isto quer dizer que podemos ter uma lista com inteiros ou uma lista de carácteres, porém não podemos ter uma lista com inteiros e alguns carácteres. E agora, uma lista! 
 
-Note: We can use the [code]let[/code] keyword to define a name right in GHCI. Doing [code]let a = 1[/code] inside GHCI is the equivalent of writing [code]a = 1[/code] in a script and then loading it.
+Nota: Nós podemos utilizar a palavra-chave [code]let[/code] para definir o nome correto no GHCI. Fazer [code]let a = 1[/code] dentro do GHCI é o equivalente a escrever [code]a = 1[/code] em um script e carrega-lo. 
 
-As you can see, lists are denoted by square brackets and the values in the lists are separated by commas. If we tried a list like [code][1,2,'a',3,'b','c',4][/code], Haskell would complain that characters (which are, by the way, denoted as a character between single quotes) are not numbers. Speaking of characters, strings are just lists of characters. [code]"hello"[/code] is just syntactic sugar for [code]['h','e','l','l','o'][/code]. Because strings are lists, we can use list functions on them, which is really handy. 
+Como você pode ver, listas são caracterizadas por utilizar colchetes e os valores nas listas são separados por vírgulas. Se nós tentarmos uma lista como [code][1,2,'a',3,'b','c',4][/code], o Haskell irá reclamar que os carácteres (que são, alias, demarcados entre aspas simples) não são números. Falando em carácteres, string sãos simplesmente listas de carácteres. [code]"hello"[/code] é só um açucar sintático para [code]['h','e','l','l','o'][/code]. Como strings são listas, nós podemos utilizar funções de listas nelas, o que é realmente útil.
 
-A common task is putting two lists together. This is done by using the [code]++[/code] operator.
+Uma prática comum é colocar duas listas juntas. Fazemos isso utilizando o operador [code]++[/code].
 
-Watch out when repeatedly using the [code]++[/code] operator on long strings. When you put together two lists (even if you append a singleton list to a list, for instance: [code][1,2,3] ++ [4][/code]), internally, Haskell has to walk through the whole list on the left side of [code]++[/code]. That's not a problem when dealing with lists that aren't too big. But putting something at the end of a list that's fifty million entries long is going to take a while. However, putting something at the beginning of a list using the [code]:[/code] operator (also called the cons operator) is instantaneous.
+Veremos repetidamente o uso do operador [code]++[/code] em strings grandes. Quando juntamos duas listas (mesmo se você adicionar uma lista de um elemento só em outra lista, como por exemplo:[code][1,2,3] ++ [4][/code]), internamente o Haskell irá percorrer toda a lista que esta do lado esquerdo do [code]++[/code]. Isto não é um problema quando não estamos lidando com listas muito grande. Porém colocar algo no final de uma lista com cinquenta milhões de elementos irá demorar um pouco. No entantod, colocar alguma coisa no ínicio de uma lista utilizando o operador [code]:[/code] (também chamado de <i>contra</i> operador) será instantâneo.
 
-Notice how [code]:[/code] takes a number and a list of numbers or a character and a list of characters, whereas [code]++[/code] takes two lists. Even if you're adding an element to the end of a list with [code]++[/code], you have to surround it with square brackets so it becomes a list.
+Observe que o [code]:[/code] recebe um número e uma lista de números ou um carácter e uma lista de caracteres, enquanto o [code]++[/code] recebe duas listas. Mesmo que você esteja adicionando um elemento ao final de uma lista com [code]++[/code], você terá que demarca-la com colchetes para que se torne lista.
 
-[code][1,2,3][/code] is actually just syntactic sugar for [code]1:2:3:[][/code]. [code][][/code] is an empty list. If we prepend [code]3[/code] to it, it becomes [code][3][/code]. If we prepend [code]2[/code] to that, it becomes [code][2,3][/code], and so on.
+[code][1,2,3][/code] é na verdade açucar sintático para [code]1:2:3:[][/code]. [code][][/code] é uma lista vazia. Se acrescentarmos [code]3[/code] nele, ele irá se tornar [code][3][/code]. Se acrescentarmos [code]2[/code], se tornará [code][2,3][/code] e assim por diante.
 
-<p class="hintbox"><em>Note:</em> [code][][/code], [code][[]][/code] and[code][[],[],[]][/code] are all different things. The first one is an empty list, the seconds one is a list that contains one empty list, the third one is a list that contains three empty lists.
+<p class="hintbox"><em>Nota:</em> [code][][/code], [code][[]][/code] e [code][[],[],[]][/code] são coisas diferentes. O primeiro é uma lista vazia, o segundo é uma lista que contém uma lista vazia, o terceiro é uma lista que contém três listas vazias.
 
-If you want to get an element out of a list by index, use [code]!![/code]. The indices start at 0.
+Se você deseja obter um elemento de uma lista pelo seu índice, utilize [code]!![/code]. O índice inicia a partir de 0.
 
-But if you try to get the sixth element from a list that only has four elements, you'll get an error so be careful!
+Mas se você tentar obter o sexto elemento de uma lista que contém somente quatro elementos, você obterá um erro portanto seja cuidadoso!
 
-Lists can also contain lists. They can also contain lists that contain lists that contain lists ...
+Listas também podem conter listas. Elas também podem conter listas que contêm listas que contêm listas...
 
+As listas dentro de uma lista podem conter <i>lengths</i> diferentes, mas eles não podem ser de tipos diferentes. Assim como você não pode ter uma lista que tem alguns caracteres e alguns números, você não pode ter uma lista que contém algumas listas de caracteres e algumas listas de números.
 
-The lists within a list can be of different lengths but they can't be of different types. Just like you can't have a list that has some characters and some numbers, you can't have a list that has some lists of characters and some lists of numbers.
+As listas poderão ser comparadas se os coisas que elas contêm puderem ser comparadas. Quando utilizamos [code]&lt;[/code], [code]&lt;=[/code], [code]&gt;[/code] e [code]&gt;=[/code] para comparar listas, eles são comparados na <a href="http://pt.wikipedia.org/wiki/Ordem_lexicogr%C3%A1fica" target="_blank">ordem lexicográfica</a>. Primeiro os cabeçalhos são comparados. Se eles forem iguais então os segundos elementos são comparados, etc.
 
-Lists can be compared if the stuff they contain can be compared. When using [code]&lt;[/code], [code]&lt;=[/code], [code]&gt;[/code] and [code]&gt;=[/code] to compare lists, they are compared in lexicographical order. First the heads are compared. If they are equal then the second elements are compared, etc.
+O que mais você pode fazer com listas? Aqui estão algumas funções básicas para operações em listas.
 
-What else can you do with lists? Here are some basic functions that operate on lists.
+[code]head[/code] recebe uma lista e retorna a sua cabeça. A cabeça de uma lista é basicamente o primeiro elemento.
 
-[code]head[/code] takes a list and returns its head. The head of a list is basically its first element.
+[code]tail[/code] recebe uma lista e retorna a sua cauda. Em outras palavras, ele decepa a cabeça de uma lista.
 
-[code]tail[/code] takes a list and returns its tail. In other words, it chops off a list's head.
+[code]last[/code] recebe uma lista e retorna o seu último elemento.
 
-[code]last[/code] takes a list and returns its last element.
+[code]init[/code] recebe uma lista e retorna tudo com excessão do último elemento.
 
-[code]init[/code] takes a list and returns everything except its last element.
+Se pensarmos em uma lista como um monstro, aqui está o que é o que.
 
-If we think of a list as a monster, here's what's what.
-
-
-But what happens if we try to get the head of an empty list?
+Mas o que acontece se tentarmos obter o <i>head</i> de uma lista vazia?
 
 
-Oh my! It all blows up in our face! If there's no monster, it doesn't have a head. When using [code]head[/code], [code]tail[/code], [code]last[/code] and [code]init[/code], be careful not to use them on empty lists. This error cannot be caught at compile time so it's always good practice to take precautions against accidentally telling Haskell to give you some elements from an empty list.
+WOW! Tudo explode bem na nossa cara! Isso não é um mostro, não tem cabeça! Quando for utilizar [code]head[/code], [code]tail[/code], [code]last[/code] e [code]init[/code], tenha o cuidado para não utilizar em listas vazias. Este erro não pode ser capturado em tempo de compilação por isso é sempre bom tomar certos cuidados antes de pedir para o Haskell lhe dar algum elemento de uma lista vazia.
 
-[code]length[/code] takes a list and returns its length, obviously.
+[code]length[/code] recebe uma lista e retorna o seu <i>length</i>, óbviamente.
+
+[code]null[/code] verifica se a lista é vazia. Se for, então retorna [code]True[/code], senão retorna [code]False[/code]. Utilize esta função no lugar de [code]xs == [][/code] (Caso você tiver uma lista chamada [code]xs[/code])
+
+[code]reverse[/code] reverte uma lista.
+
+[code]take[/code] recebe um número e uma lista. Ele extrai muitos elementos desde o ínicio da lista. Observe.
 
 
-[code]null[/code] checks if a list is empty. If it is, it returns [code]True[/code], otherwise it returns [code]False[/code]. Use this function instead of [code]xs == [][/code] (if you have a list called [code]xs[/code])
+Observe que se tentarmos tirar mais elementos do há na lista, ele retorna só a lista. Se nós tentarmos retornar 0 elementos, receberemos uma lista vazia.
 
-[code]reverse[/code] reverses a list.
+[code]drop[/code] funciona de forma similar, só que retira o número de elementos a partir do ínicio da lista.
 
-[code]take[/code] takes number and a list. It extracts that many elements from the beginning of the list. Watch.
+[code]maximum[/code] recebe uma lista de coisas que podem ser colocadas em algum tipo de ordem e retorna o seu maior elemento.
 
+[code]minimum[/code] retorna o menor.
 
-See how if we try to take more elements than there are in the list, it just returns the list. If we try to take 0 elements, we get an empty list.
+[code]sum[/code] recebe uma lista de números e retorna a sua soma.
 
-[code]drop[/code] works in a similar way, only it drops the number of elements from the beginning of a list.
+[code]product[/code] recebe uma lista de números e retorna o seu produto. 
 
-[code]maximum[/code] takes a list of stuff that can be put in some kind of order and returns the biggest element.
+[code]elem[/code] recebe alguma coisa e uma lista de coisas e nos diz se esta coisa é um elemento da lista. Geralmente é chamado como uma função <i>infix</i> porque é mais fácil de ler dessa maneira.
 
-[code]minimum[/code] returns the smallest.
+tem algo como a lista de coisas e diz-nos se essa coisa é um elemento da lista. É geralmente chamado como uma função infix porque é mais fácil de ler dessa maneira.
 
-[code]sum[/code] takes a list of numbers and returns their sum.
-
-[code]product[/code] takes a list of numbers and returns their product.
-
-[code]elem[/code] takes a thing and a list of things and tells us if that thing is an element of the list. It's usually called as an infix function because it's easier to read that way.
-
-Those were a few basic functions that operate on lists. We'll take a look at more list functions in section #TODO: include section name and link here.
+Estas são algumas funções básicas para operações em listas. Iremos dar mais uma olhada em funções de listas <a href="modules#data-list">depois</a>.
