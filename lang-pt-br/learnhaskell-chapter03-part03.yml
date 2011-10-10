@@ -1,4 +1,4 @@
-title: Typeclasses 101
+title: Basicão de Typeclasses
 
 text: Uma Typeclass (classe de tipos) é como uma interface que define um comportamento. Se um tipo é parte de uma typeclass, quer dizer que ela suporta e implementa o comportamento espeficicado pela classe de tipo. Muita gente vindo de orientação a objetos se confunde e acha estar diante de uma classe de OO. Bom... não. Você pode pensar que são como as interfaces de Java, mas muito melhor.
 
@@ -43,7 +43,7 @@ Os membros de [code] Enum [/code] são tipos que possuem uma sequência. A maior
 
 [code] minBound [/code] e [code] maxBound [/code] são diferenciados por ter tipo [code] (Bounded a) =&gt; a [/code]. São constantes polimórficas.
 
-Todas tuplas também estão em [code]Bounded[/code], caso não estejam vazias.
+Todas tuplas também estão em [code] Bounded [/code], caso não estejam vazias.
 
 [code] Num [/code] é uma typeclass numérica. Seus membros têm a função de agir como números. Vamos ver o tipo de um número.
 
@@ -53,7 +53,7 @@ Esses são os tipos da typeclass [code] Num [/code]. Se ver o tipo de [code] * [
 
 Recebe três números do mesmo tipo. É por isso que [code] (5 :: Int) * (6 :: Integer) [/code] resultará em erro e [code] 5 * (6 :: Integer) [/code] funcionará e retornará um [code] Integer [/code] porque 5 pode tomar a forma de um [code] Int [/code] ou de um [code] Integer [/code].
 
-To join [code] Num [/code], a type must already be friends with [code] Show [/code] and [code] Eq [/code].
+Para estar em [code] Num [/code], o tipo já deve estar em [code] Show [/code] e [code] Eq [/code].
 
 [code] Integral [/code] também é uma typeclass numérica. [code] Num [/code] inclui todos os números, incluindo reais e integrais, [code] Integral [/code] apenas integrais inteiros. Nessa typeclass são [code] Int [/code] e [code] Integer [/code].
 
