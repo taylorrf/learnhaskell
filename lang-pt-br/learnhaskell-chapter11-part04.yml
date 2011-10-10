@@ -1,0 +1,108 @@
+title: The newtype keyword
+
+<em>data</em> keyword.  We've also learned how to give existing types synonyms with the <em>type</em> keyword. In this section, we'll be taking a look at how to make new types out of existing data types by using the <em>newtype</em> keyword and why we'd want to do that in the first place.
+
+In the previous section, we saw that there are actually more ways for the list type to be an applicative functor. One way is to have [code]&lt;*&gt;[/code] take every function out of the list that is its left parameter and apply it to every value in the list that is on the right, resulting in every possible combination of applying a function from the left list to a value in the right list. 
+
+The second way is to take the first function on the left side of [code]&lt;*&gt;[/code] and apply it to the first value on the right, then take the second function from the list on the left side and apply it to the second value on the right, and so on. Ultimately, it's kind of like zipping the two lists together. But lists are already an instance of [code]Applicative[/code], so how did we also make lists an instance of [code]Applicative[/code] in this second way? If you remember, we said that the [code]ZipList a[/code] type was introduced for this reason, which has one value constructor, [code]ZipList[/code], that has just one field. We put the list that we're wrapping in that field. Then, [code]ZipList[/code] was made an instance of [code]Applicative[/code], so that when we want to use lists as applicatives in the zipping manner, we just wrap them with the [code]ZipList[/code] constructor and then once we're done, unwrap them with [code]getZipList[/code]:
+
+So, what does this have to do with this <i>newtype</i> keyword? Well, think about how we might write the data declaration for our [code]ZipList a[/code] type. One way would be to do it like so:
+
+A type that has just one value constructor and that value constructor has just one field that is a list of things. We might also want to use record syntax so that we automatically get a function that extracts a list from a [code]ZipList[/code]:
+
+This looks fine and would actually work pretty well. We had two ways of making an existing type an instance of a type class, so we used the <i>data</i> keyword to just wrap that type into another type and made the other type an instance in the second way.
+
+The <i>newtype</i> keyword in Haskell is made exactly for these cases when we want to just take one type and wrap it in something to present it as another type. In the actual libraries, [code]ZipList a[/code] is defined like this:
+
+Instead of the <i>data</i> keyword, the <i>newtype</i> keyword is used. Now why is that? Well for one, <i>newtype</i> is faster. If you use the <i>data</i> keyword to wrap a type, there's some overhead to all that wrapping and unwrapping when your program is running. But if you use <i>newtype</i>, Haskell knows that you're just using it to wrap an existing type into a new type (hence the name), because you want it to be the same internally but have a different type. With that in mind, Haskell can get rid of the wrapping and unwrapping once it resolves which value is of what type.
+
+So why not just use <i>newtype</i> all the time instead of <i>data</i> then? Well, when you make a new type from an existing type by using the <i>newtype</i> keyword, you can only have one value constructor and that value constructor can only have one field. But with <i>data</i>, you can make data types that have several value constructors and each constructor can have zero or more fields:
+
+When using <i>newtype</i>, you're restricted to just one constructor with one field.
+
+We can also use the <i>deriving</i> keyword with <i>newtype</i> just like we would with <i>data</i>. We can derive instances for [code]Eq[/code], [code]Ord[/code], [code]Enum[/code], [code]Bounded[/code], [code]Show[/code] and [code]Read[/code].
+If we derive the instance for a type class, the type that we're wrapping has to be in that type class to begin with. It makes sense, because <i>newtype</i> just wraps an existing type. So now if we do the following, we can print and equate values of our new type:
+
+Let's give that a go:
+
+In this particular <i>newtype</i>, the value constructor has the following type:
+
+
+It takes a [code][Char][/code] value, such as [code]"my sharona"[/code] and returns a [code]CharList[/code] value. From the above examples where we used the [code]CharList[/code] value constructor, we see that really is the case. Conversely, the [code]getCharList[/code] function, which was generated for us because we used record syntax in our <i>newtype</i>, has this type:
+
+It takes a [code]CharList[/code] value and converts it to a [code][Char][/code] value. You can think of this as wrapping and unwrapping, but you can also think of it as converting values from one type to the other.
+
+<h3>Using newtype to make type class instances</h3>
+
+
+Many times, we want to make our types instances of certain type classes, but the type parameters just don't match up for what we want to do. It's easy to make [code]Maybe[/code] an instance of [code]Functor[/code], because the [code]Functor[/code] type class is defined like this:
+
+So we just start out with:
+
+And then implement [code]fmap[/code]. All the type parameters add up because the [code]Maybe[/code] takes the place of [code]f[/code] in the definition of the [code]Functor[/code] type class and so if we look at [code]fmap[/code] like it only worked on [code]Maybe[/code], it ends up behaving like:
+
+Isn't that just peachy? Now what if we wanted to make the tuple an instance of [code]Functor[/code] in such a way that when we [code]fmap[/code] a function over a tuple, it gets applied to the first component of the tuple? That way, doing [code]fmap (+3) (1,1)[/code] would result in [code](4,1)[/code]. It turns out that writing the instance for that is kind of hard. With [code]Maybe[/code], we just say [code]instance Functor Maybe where[/code] because only type constructors that take exactly one parameter can be made an instance of [code]Functor[/code]. But it seems like there's no way to do something like that with [code](a,b)[/code] so that the type parameter [code]a[/code] ends up being the one that changes when we use [code]fmap[/code]. To get  around this, we can <i>newtype</i> our tuple in such a way that the second type parameter represents the type of the first component in the tuple:
+
+And now, we can make it an instance of [code]Functor[/code] so that the function is mapped over the first component:
+
+As you can see, we can pattern match on types defined with <i>newtype</i>. We pattern match to get the underlying tuple, then we apply the function [code]f[/code] to the first component in the tuple and then we use the [code]Pair[/code] value constructor to convert the tuple back to our [code]Pair b a[/code].
+If we imagine what the type [code]fmap[/code] would be if it only worked on our new pairs, it would be:
+
+
+Again, we said [code]instance Functor (Pair c) where[/code] and so
+[code]Pair c[/code] took the place of the [code]f[/code]
+in the type class definition for [code]Functor[/code]:
+
+
+So now, if we convert a tuple into a [code]Pair b a[/code], we can use [code]fmap[/code] over it and the function will be mapped over the first component:
+
+
+<h3>On newtype laziness</h3>
+
+
+We mentioned that <i>newtype</i> is usually faster than <i>data</i>. The only thing that can be done with <i>newtype</i> is turning an existing type into a new type, so internally, Haskell can represent the values of types defined with <i>newtype</i> just like the original ones, only it has to keep in mind that the their types are now distinct. This fact means that not only is <i>newtype</i> faster, it's also lazier. Let's take a look at what this means.
+
+Like we've said before, Haskell is lazy by default, which means that only when we try to actually print the results of our functions will any computation take place. Furthemore, only those computations that are necessary for our function to tell us the result will get carried out. The [code]undefined[/code] value in Haskell represents an erronous computation. If we try to evaluate it (that is, force Haskell to actually compute it) by printing it to the terminal, Haskell will throw a hissy fit (technically referred to as an exception):
+
+However, if we make a list that has some [code]undefined[/code] values in it but request only the head of the list, which is not [code]undefined[/code], everything will go smoothly because Haskell doesn't really need to evaluate any other elements in a list if we only want to see what the first element is:
+
+
+Now consider the following type:
+
+It's your run-of-the-mill algebraic data type that was defined with the <i>data</i> keyword. It has one value constructor, which has one field whose type is [code]Bool[/code]. Let's make a function that pattern matches on a [code]CoolBool[/code] and returns the value [code]"hello"[/code] regardless of whether the [code]Bool[/code] inside the [code]CoolBool[/code] was [code]True[/code] or [code]False[/code]:
+
+Instead of applying this function to a normal [code]CoolBool[/code],let's throw it a curveball and apply it to [code]undefined[/code]!
+
+Yikes! An exception! Now why did this exception happen? Types defined with the <i>data</i> keyword can have multiple value constructors (even though [code]CoolBool[/code] only has one). So in order to see if the value given to our function conforms to the [code](CoolBool _)[/code] pattern, Haskell has to evaluate the value just enough to see which value constructor was used when we made the value. And when we try to evaluate an [code]undefined[/code] value, even a little, an exception is thrown.
+
+Instead of using the <i>data</i> keyword for [code]CoolBool[/code],let's try using <i>newtype</i>:
+
+We don't have to change our [code]helloMe[/code] function, because the pattern matching syntax is the same if you use <i>newtype</i> or <i>data</i> to define your type. Let's do the same thing here and apply [code]helloMe[/code] to an [code]undefined[/code] value:
+
+It worked! Hmmm, why is that? Well, like we've said, when we use <i>newtype</i>, Haskell can internally represent the values of the new type in the same way as the original values. It doesn't have to add another box around them, it just has to be aware of the values being of different types. And because Haskell knows that types made with the <i>newtype</i> keyword can only have one constructor, it doesn't 
+have to evaluate the value passed to the function to make sure that it conforms to the [code](CoolBool _)[/code] pattern because <i>newtype</i> types can only have one possible value constructor and one field!
+
+This difference in behavior may seem trivial, but it's actually pretty important because it helps us realize that even though types defined with <i>data</i> and <i>newtype</i> behave similarly from the programmer's point of view because they both have value constructors and fields, they are actually two different mechanisms. Whereas <i>data</i> can be used to make your own types from scratch, <i>newtype</i> is for making a completely new type out of an existing type. Pattern matching on <i>newtype</i> values isn't like taking something out of a box (like it is with <i>data</i>), it's more about making a direct conversion from one type to another.
+
+<h3>[code]type[/code] vs. [code]newtype[/code] vs. [code]data[/code]</h3>
+
+At this point, you may be a bit confused about what exactly the difference between <i>type</i>, <i>data</i> and <i>newtype</i> is, so let's refresh our memory a bit.
+
+The <em>type</em> keyword is for making type synonyms. What that means is that we just give another name to an already existing type so that the type is easier to refer to. Say we did the following:
+
+All this does is to allow us to refer to the [code][Int][/code] type as [code]IntList[/code]. They can be used interchangeably. We don't get an [code]IntList[/code] value constructor or anything like that.
+Because [code][Int][/code] and [code]IntList[/code] are only two ways to refer to the same type, it doesn't matter which name we use in our type annotations:
+
+We use type synonyms when we want to make our type signatures more descriptive by giving types names that tell us something about their purpose in the context of the functions where they're being used. For instance, when we used an association list of type [code][(String,String)][/code] to represent a phone book, we gave it the type synonym of [code]PhoneBook[/code] so that the type signatures of our functions were easier to read.
+
+The <em>newtype</em> keyword is for taking existing types and wrapping them in new types, mostly so that it's easier to make them instances of certain type classes. When we use <i>newtype</i> to wrap an existing type, the type that we get is separate from the original type. If we make the following <i>newtype</i>:
+
+We can't use [code]++[/code] to put together a [code]CharList[/code] and a list of type [code][Char][/code]. We can't even use [code]++[/code] to put together two [code]CharList[/code]s, because [code]++[/code] works only on lists and the [code]CharList[/code] type isn't a list, even though it could be said that it contains one. We can, however, convert two [code]CharList[/code]s to lists, [code]++[/code] them and then convert that back to a [code]CharList[/code].
+
+When we use record syntax in our <i>newtype</i> declarations, we get functions for converting between the new type and the original type: namely the value constructor of our <i>newtype</i> and the function for extracting the value in its field. The new type also isn't automatically made an instance of the type classes that the original type belongs to, so we have to derive or manually write them.
+
+In practice, you can think of <i>newtype</i> declarations as <i>data</i> declarations that can only have one constructor and one field. If you catch yourself writing such a <i>data</i> declaration, consider using <i>newtype</i>.
+
+The <em>data</em> keyword is for making your own data types and with them, you can go hog wild. They can have as many constructors and fields as you wish and can be used to implement any algebraic data type by yourself. Everything from lists and [code]Maybe[/code]-like types to trees.
+
+If you just want your type signatures to look cleaner and be more descriptive, you probably want type synonyms. If you want to take an existing type and wrap it in a new type in order to make it an instance of a type class, chances are you're looking for a <i>newtype</i>. And if you want to make something completely new, odds are good that you're looking for the <i>data</i> keyword.
