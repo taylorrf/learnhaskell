@@ -1,22 +1,83 @@
-Projeto
+Sobre
 ============
 
-Este é o projeto de tradução do livro "learn your a Haskell for great good" para o português do Brasil.
+Projeto de tradução do livro "learn your a Haskell for great good" para o português do Brasil.
+
+Versão online em português:
+http://haskell.tailorfontela.com.br
+
+Versão online em inglês:
+http://www.learnyouahaskell.com
 
 
 Como contribuir
 -----------------
-Todos podem participar.
-
 Para revisões de tradução ou tradução de capitulos faça um fork deste repositório e submeta sua contribuição.
 
-No caso de traduções, não esqueça de entrar em contato (http://tailorfontela.com.br/contato/) antes de começar para avisar qual capítulo você irá traduzir. Para revisões de capitulos já traduzidos sinta-se a vontade para submeter suas revisões.
+No caso de traduções, verifique o status de cada capitulo abaixo, caso já esteja sendo [ traduzido ] escolha outro capitulo ou uma parte que ainda precisa de tradução.
 
-A versão online com as últimas traduções para o português pode ser acessada no seguinte link:
-http://haskell.tailorfontela.com.br
-
-
-A versão online em inglês do livro pode ser acessada em:
-http://www.learnyouahaskell.com
+ 
+Revisões e correções ortográficas de capitulos já [ traduzido ]s são bem-vindas.
 
 
+Status da Tradução
+-------------------
+
+chapter01-part02 - [ traduzido ]
+chapter01-part03 - [ traduzido ]
+chapter01 	 - [ traduzido ]
+chapter02-part02 - [ traduzido ]
+chapter02-part03 - [ traduzido ]
+chapter02-part04 - em tradução por @taylorrf
+chapter02-part05 - em aberto
+chapter02-part06 - em aberto
+chapter02 	 - em aberto
+chapter03-part02 - [ traduzido ]
+chapter03-part03 - [ traduzido ]
+chapter03 	 - [ traduzido ]
+chapter04-part02 - em aberto
+chapter04-part03 - em aberto
+chapter04-part04 - em aberto
+chapter04-part05 - em aberto
+chapter04 	 - em tradução por @irio
+chapter05-part02 - [ traduzido ]	
+chapter05-part03 - [ traduzido ]	
+chapter05-part04 - [ traduzido ]	
+chapter05-part05 - [ traduzido ]	
+chapter05 	 - [ traduzido ]
+chapter06-part02 - [ traduzido ]
+chapter06-part03 - em aberto
+chapter06-part04 - em aberto
+chapter06-part05 - em aberto
+chapter06-part06 - em aberto
+chapter06-part07 - em aberto
+chapter06	 - [ traduzido ]
+chapter07-part02 - em aberto
+chapter07-part03 - em aberto
+chapter07-part04 - em aberto
+chapter07-part05 - em aberto
+chapter07-part06 - em aberto
+chapter07 	 - em aberto	 
+chapter08-part02 - em aberto
+chapter08-part03 - em aberto
+chapter08-part04 - em aberto
+chapter08-part05 - em aberto
+chapter08-part06 - em aberto
+chapter08-part07 - em aberto
+chapter08-part08 - em aberto
+chapter08-part09 - em aberto
+chapter08-part10 - em aberto
+chapter08 	 - em aberto	 
+chapter09-part02 - em aberto
+chapter09-part03 - em aberto
+chapter09-part04 - em aberto
+chapter09-part05 - em aberto
+chapter09-part06 - em aberto
+chapter09 	 - em aberto
+chapter10-part02 - em aberto
+chapter10 	 - em aberto
+chapter11-part02 - em aberto
+chapter11-part03 - em aberto
+chapter11-part04 - em aberto
+chapter11-part05 - em aberto
+chapter11 	 - em aberto
