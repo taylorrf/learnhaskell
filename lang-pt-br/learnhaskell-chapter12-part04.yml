@@ -1,3 +1,83 @@
 title: Walk the line
 
-text:
+text: Now that we know how to feed a [code]Maybe a[/code] value to a function of type [code]a -&gt; Maybe b[/code] while taking into account the context of possible failure, let's see how we can use [code]&gt;&gt;=[/code] repeatedly to handle computations of several [code]Maybe a[/code] values.
+
+Pierre has decided to take a break from his job at the fish farm and try tightrope walking. He's not that bad at it, but he does have one problem: birds keep landing on his balancing pole! They come and they take a short rest, chat with their avian friends and then take off in search of breadcrumbs. This wouldn't bother him so much if the number of birds on the left side of the pole was always equal to the number of birds on the right side. But sometimes, all the birds decide that they like one side better and so they throw him off balance, which results in an embarrassing tumble for Pierre (he's using a safety net).
+
+Let's say that he keeps his balance if the number of birds on the left side of the pole and on the right side of the pole is within three. So if there's one bird on the right side and four birds on the left side, he's okay. But if a fifth bird lands on the left side, then he loses his balance and takes a dive.
+
+We're going to simulate birds landing on and flying away from the pole and see if Pierre is still at it after a certain number of birdy arrivals and departures. For instance, we want to see what happens to Pierre if first one bird arrives on the left side, then four birds occupy the right side and then the bird that was on the left side decides to fly away.
+
+We can represent the pole with a simple pair of integers. The first component will signify the number of birds on the left side and the second component the number of birds on the right side:
+
+First we made a type synonym for [code]Int[/code], called [code]Birds[/code], because we're using integers to represent how many birds there are. And then we made a type synonym [code](Birds,Birds)[/code] and we called it [code]Pole[/code] (not to be confused with a person of Polish descent).
+
+Next up, how about we make a function that takes a number of birds and lands them on one side of the pole. Here are the functions:
+
+Pretty straightforward stuff. Let's try them out:
+
+To make birds fly away we just had a negative number of birds land on one side. Because landing a bird on the [code]Pole[/code] returns a [code]Pole[/code], we can chain applications of [code]landLeft[/code] and [code]landRight[/code]:
+
+When we apply the function [code]landLeft 1[/code] to [code](0,0)[/code] we get [code](1,0)[/code]. Then, we land a bird on the right side, resulting in [code](1,1)[/code]. Finally two birds land on the left side, resulting in [code](3,1)[/code]. We apply a function to something by first writing the function and then writing its parameter, but here it would be better if the pole went first and then the landing function. If we make a function like this:
+
+We can apply functions by first writing the parameter and then the function:
+
+By using this, we can repeatedly land birds on the pole in a more readable manner:
+
+Pretty cool! This example is equivalent to the one before where we repeatedly landed birds on the pole, only it looks neater. Here, it's more obvious that we start off with [code](0,0)[/code] and then land one bird one the left, then one on the right and finally two on the left. 
+
+So far so good, but what happens if 10 birds land on one side?
+
+10 birds on the left side and only 3 on the right? That's sure to send poor Pierre falling through the air! This is pretty obvious here but what if we had a sequence of landings like this:
+
+It might seem like everything is okay but if you follow the steps here, you'll see that at one time there are 4 birds on the right side and no birds on the left! To fix this, we have to take another look at our [code]landLeft[/code] and [code]landRight[/code] functions. From what we've seen, we want these functions to be able to fail. That is, we want them to return a new pole if the balance is okay but fail if the birds land in a lopsided manner. And what better way to add a context of failure to value than by using [code]Maybe[/code]! Let's rework these functions:
+
+Instead of returning a [code]Pole[/code] these functions now return a [code]Maybe Pole[/code]. They still take the number of birds and the old pole as before, but then they check if landing that many birds on the pole would throw Pierre off balance. We use guards to check if the difference between the number of birds on the new pole is less than 4. If it is, we wrap the new pole in a [code]Just[/code] and return that. If it isn't, we return a [code]Nothing[/code], indicating failure.
+
+Let's give these babies a go:
+
+Nice! When we land birds without throwing Pierre off balance, we get a new pole wrapped in a [code]Just[/code]. But when many more birds end up on one side of the pole, we get a [code]Nothing[/code]. This is cool, but we seem to have lost the ability to repeatedly land birds on the pole. We can't do [code]landLeft 1 (landRight 1 (0,0))[/code] anymore because when we apply [code]landRight 1[/code] to [code](0,0)[/code], we don't get a [code]Pole[/code], but a [code]Maybe Pole[/code]. [code]landLeft 1[/code] takes a [code]Pole[/code] and not a [code]Maybe Pole[/code].
+
+We need a way of taking a [code]Maybe Pole[/code] and feeding it to a function that takes a [code]Pole[/code] and returns a [code]Maybe Pole[/code]. Luckily, we have [code]&gt;&gt;=[/code], which does just that for [code]Maybe[/code]. Let's give it a go:
+
+Remember, [code]landLeft 2[/code] has a type of [code]Pole -&gt; Maybe Pole[/code]. We couldn't just feed it the [code]Maybe Pole[/code] that is the result of [code]landRight 1 (0,0)[/code], so we use [code]&gt;&gt;=[/code] to take that value with a context and give it to [code]landLeft 2[/code]. [code]&gt;&gt;=[/code] does indeed allow us to treat the [code]Maybe[/code] value as a value with context because if we feed a [code]Nothing[/code] into [code]landLeft 2[/code], the result is [code]Nothing[/code] and the failure is propagated:
+
+With this, we can now chain landings that may fail because [code]&gt;&gt;=[/code] allows us to feed a monadic value to a function that takes a normal one.
+
+Here's a sequence of birdy landings:
+
+At the beginning, we used [code]return[/code] to take a pole and wrap it in a [code]Just[/code]. We could have just applied [code]landRight 2[/code] to [code](0,0)[/code], it would have been the same, but this way we can be more consistent by using [code]&gt;&gt;=[/code] for every function.
+
+[code]Just (0,0)[/code] gets fed to [code]landRight 2[/code], resulting in [code]Just (0,2)[/code]. This, in turn, gets fed to [code]landLeft 2[/code], resulting in [code]Just (2,2)[/code], and so on.
+
+Remember this example from before we introduced failure into Pierre's routine:
+
+It didn't simulate his interaction with birds very well because in the middle there his balance was off but the result didn't reflect that. But let's give that a go now by using monadic application ([code]&gt;&gt;=[/code]) instead of normal application:
+
+Awesome. The final result represents failure, which is what we expected. Let's see how this result was obtained. First, [code]return[/code] puts [code](0,0)[/code] into a default context, making it a [code]Just (0,0)[/code]. Then, [code]Just (0,0) &gt;&gt;= landLeft 1[/code] happens. Since the [code]Just (0,0)[/code] is a [code]Just[/code] value, [code]landLeft 1[/code] gets applied to [code](0,0)[/code], resulting in a [code]Just (1,0)[/code], because the birds are still relatively balanced. Next, [code]Just (1,0) &gt;&gt;= landRight 4[/code] takes place and the result is [code]Just (1,4)[/code] as the balance of the birds is still intact, although just barely. [code]Just (1,4)[/code] gets  fed to [code]landLeft (-1)[/code]. This means that [code]landLeft (-1) (1,4)[/code] takes place. Now because of how [code]landLeft[/code] works, this results in a [code]Nothing[/code], because the resulting pole is off balance. Now that we have a [code]Nothing[/code], it gets fed to [code]landRight (-2)[/code], but because it's a [code]Nothing[/code], the result is automatically [code]Nothing[/code], as we have nothing to apply [code]landRight (-2)[/code] to.
+
+We couldn't have achieved this by just using [code]Maybe[/code] as an applicative. If you try it, you'll get stuck, because applicative functors don't allow for the applicative values to interact with each other very much. They can, at best, be used as parameters to a function by using the applicative style. The applicative operators will fetch their results and feed them to the function in a manner appropriate for each applicative and then put the final applicative value together, but there isn't that much interaction going on between them. Here, however, each step relies on the previous one's result. On every landing, the possible result from the previous one is examined and the pole is checked for balance. This determines whether the landing will succeed or fail.
+
+We may also devise a function that ignores the current number of birds on the balancing pole and just makes Pierre slip and fall. We can call it [code]banana[/code]:
+
+Now we can chain it together with our bird landings. It will always cause our walker to fall, because it ignores whatever's passed to it and always returns a failure. Check it:
+
+The value [code]Just (1,0)[/code] gets fed to [code]banana[/code], but it produces a [code]Nothing[/code], which causes everything to result in a [code]Nothing[/code]. How unfortunate!
+
+Instead of making functions that ignore their input and just return a predetermined monadic value, we can use the [code]&gt;&gt;[/code] function, whose default implementation is this:
+
+Normally, passing some value to a function that ignores its parameter and always just returns some predetermined value would always result in that predetermined value. With monads however, their context and meaning has to be considered as well. Here's how [code]&gt;&gt;[/code] acts with [code]Maybe[/code]:
+
+If you replace [code]&gt;&gt;[/code] with [code]&gt;&gt;= \_ -&gt;[/code], it's easy to see why it acts like it does.
+
+We can replace our [code]banana[/code] function in the chain with a [code]&gt;&gt;[/code] and then a [code]Nothing[/code]:
+
+There we go, guaranteed and obvious failure!
+
+It's also worth taking a look at what this would look like if we hadn't made the clever choice of treating [code]Maybe[/code] values as values with a failure context and feeding them to functions like we did. Here's how a series of bird landings would look like: 
+
+We land a bird on the left and then we examine the possibility of failure and the possibility of success. In the case of failure, we return a [code]Nothing[/code]. In the case of success, we land birds on the right and then do the same thing all over again. Converting this monstrosity into a neat chain of monadic applications with [code]&gt;&gt;=[/code] is a classic example of how the [code]Maybe[/code] monad saves us a lot of time when we have to successively do computations that are based on computations that might have failed.
+
+Notice how the [code]Maybe[/code] implementation of [code]&gt;&gt;=[/code] features exactly this logic of seeing if a value is [code]Nothing[/code] and if it is, returning a [code]Nothing[/code] right away and if it isn't, going forward with what's inside the [code]Just[/code].
+
+In this section, we took some functions that we had and saw that they would work better if the values that they returned supported failure. By turning those values into [code]Maybe[/code] values and replacing normal function application with [code]&gt;&gt;=[/code], we got a mechanism for handling failure pretty much for free, because [code]&gt;&gt;=[/code] is supposed to preserve the context of the value to which it applies functions. In this case, the context was that our values were values with failure and so when we applied functions to such values, the possibility of failure was always taken into account.

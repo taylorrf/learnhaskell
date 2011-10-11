@@ -1,3 +1,25 @@
 title: The Monad type class
 
-text:
+text: Just like functors have the [code]Functor[/code] type class and applicative functors have the [code]Applicative[/code] type class, monads come with their own type class: [code]Monad[/code]! Wow, who would have thought? This is what the type class looks like:
+
+Let's start with the first line. It says [code]class Monad m where[/code]. But wait, didn't we say that monads are just beefed up applicative functors? Shouldn't there be a class constraint in there along the lines of [code]class (Applicative m) = &gt; Monad m where[/code] so that a type has to be an applicative functor first before it can be made a monad? Well, there should, but when Haskell was made, it hadn't occured to people that applicative functors are a good fit for Haskell so they weren't in there. But rest assured, every monad is an applicative functor, even if the [code]Monad[/code] class declaration doesn't say so.
+
+The first function that the [code]Monad[/code] type class defines is [code]return[/code]. It's the same as [code]pure[/code], only with a different name. Its type is [code](Monad m) =&gt; a -&gt; m a[/code]. It takes a value and puts itin a minimal default context that still holds that value. In other words, it takes something and wraps it in a monad. It always does the same thing as the [code]pure[/code] function from the [code]Applicative[/code] type class, which means we're already acquainted with [code]return[/code].  We already used [code]return[/code] when doing I/O. We used it to take a value and make a bogus I/O action that does nothing but yield that value.  For [code]Maybe[/code] it takes a alue and wraps it in a [code]Just[/code].
+
+Just a reminder: [code]return[/code] is nothing like the [code]return[/code] that's in most other languages. It doesn't end function execution or anything, it just takes a normal value and puts it in a context.
+
+The next function is [code]&gt;&gt;=[/code], or bind. It's like function application, only instead of taking a normal value and feeding it to a normal function, it takes a monadic value (that is, a value with a context) and feeds it to a function that takes a normal value but returns a monadic value. 
+
+Next up, we have [code]&gt;&gt;[/code]. We won't pay too much attention to it for now because it comes with a default implementation and we pretty much never implement it when making [code]Monad[/code] instances.
+
+The final function of the [code]Monad[/code] type class is [code]fail[/code]. We never use it explicitly in our code. Instead, it's used by Haskell to enable failure in a special syntactic construct for monads that we'll meet later. We don't need to concern ourselves with [code]fail[/code] too much for now.
+
+Now that we know what the [code]Monad[/code] type class looks like, let's take a look at how [code]Maybe[/code] is an instance of [code]Monad[/code]! [code]return[/code] is the same as [code]pure[/code], so that one's a no-brainer. We do what we did in the [code]Applicative[/code] type class and wrap it in a [code]Just[/code].
+
+The [code]&gt;&gt;=[/code] function is the same as our [code]applyMaybe[/code]. When feeding the [code]Maybe a[/code] to our function, we keep in mind the context and return a [code]Nothing[/code] if the value on the left is [code]Nothing[/code] because if there's no value then there's no way to apply our function to it. If it's a [code]Just[/code] we take what's inside and apply [code]f[/code] to it.
+
+We can play around with [code]Maybe[/code] as a monad:
+
+Nothing new or exciting on the first line since we already used [code]pure[/code] with [code]Maybe[/code] and we know that [code]return[/code] is just [code]pure[/code] with a different name. The next two lines showcase [code]&gt;&gt;=[/code] a bit more.
+
+Notice how when we fed [code]Just 9[/code] to the function [code]\x -&gt; return (x*10)[/code], the [code]x[/code] took on the value [code]9[/code] inside the function. It seems as though we were able to extract the value from a [code]Maybe[/code] without pattern-matching. And we still didn't lose the context of our [code]Maybe[/code] value, because when it's [code]Nothing[/code], the result of using [code]&gt;&gt;=[/code] will be [code]Nothing[/code] as well.
