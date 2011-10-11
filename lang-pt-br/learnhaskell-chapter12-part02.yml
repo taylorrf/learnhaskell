@@ -1,3 +1,39 @@
 title: Getting our feet wet with Maybe
 
-text:
+text: Now that we have a vague idea of what monads are about, let's see if we can make that idea a bit less vague.
+
+Much to no one's surprise, [code]Maybe[/code] is a monad, so let's explore it a bit more and see if we can combine it with what we know about monads.
+
+Make sure you understand <a href="functors-applicative-functors-and-monoids#applicative-functors">applicatives</a> at this point. It's good if you have a feel for how the various [code]Applicative[/code] instances work and what kind of computations they represent, because monads are nothing more than taking our existing applicative knowledge and upgrading it.
+
+A value of type [code]Maybe a[/code] represents a value of type [code]a[/code] with the context of possible failure attached. A value of [code]Just "dharma"[/code] means that the string [code]"dharma"[/code] is there whereas a value of [code]Nothing[/code] represents its absence, or if you look at the string as the result of a computation, it means that the computation has failed.
+
+When we looked at [code]Maybe[/code] as a functor, we saw that if we want to [code]fmap[/code] a function over it, it gets mapped over the insides if it's a [code]Just[/code] value, otherwise the [code]Nothing[/code] is kept because there's nothing to map it over!
+
+Like this:
+
+As an applicative functor, it functions similarly. However, applicatives also have the function wrapped. [code]Maybe[/code] is an applicative functor in such a way that when we use [code]&lt;*&gt;[/code] to apply a function inside a [code]Maybe[/code] to a value that's inside a [code]Maybe[/code], they both have to be [code]Just[/code] values for the result to be a [code]Just[/code] value, otherwise the result is [code]Nothing[/code]. It makes sense because if you're missing either the function or the thing you're applying it to, you can't make something up out of thin air, so you have to propagate the failure:
+
+When we use the applicative style to have normal functions act on [code]Maybe[/code] values, it's similar. All the values have to be [code]Just[/code] values, otherwise it's all for [code]Nothing[/code]!
+
+And now, let's think about how we would do [code]&gt;&gt;=[/code] for [code]Maybe[/code]. Like we said, [code]&gt;&gt;=[/code] takes a monadic value, and a function that takes a normal value and returns a monadic value and manages to apply that function to the monadic value. How does it do that, if the function takes a normal value? Well, to do that, it has to take into account the context of that monadic value.
+
+In this case, [code]&gt;&gt;=[/code] would take a [code]Maybe a[/code] value and a function of type [code]a -&gt; Maybe b[/code]
+
+and somehow apply the function to the [code]Maybe a[/code]. To figure out how it does that, we can use the intuition that we have from [code]Maybe[/code] being an applicative functor. Let's say that we have a function [code]\x -&gt; Just (x+1)[/code]. It takes a number, adds [code]1[/code] to it and wraps it in a [code]Just[/code]:
+
+If we feed it [code]1[/code], it evaluates to [code]Just 2[/code]. If we give it the number [code]100[/code], the result is [code]Just 101[/code]. Very straightforward. Now here's the kicker: how do we feed a [code]Maybe[/code] value to this function? If we think about how [code]Maybe[/code] acts as an applicative functor, answering this is pretty easy. If we feed it a [code]Just[/code] value, take what's inside the [code]Just[/code] and apply the function to it. If give it a [code]Nothing[/code], hmm, well, then we're left with a function but [code]Nothing[/code] to apply it to. In that case, let's just do what we did before and say that the result is [code]Nothing[/code].
+
+Instead of calling it [code]&gt;&gt;=[/code], let's call it [code]applyMaybe[/code] for now. It takes a [code]Maybe a[/code] and a function that returns a [code]Maybe b[/code] and manages to apply that function to the [code]Maybe a[/code]. Here it is in code:
+
+Okay, now let's play with it for a bit. We'll use it as an infix function so that the [code]Maybe[/code] value is on the left side and the function on the right:
+
+In the above example, we see that when we used [code]applyMaybe[/code] with a [code]Just[/code] value and a function, the function simply got applied to the value inside the [code]Just[/code]. When we tried to use it with a [code]Nothing[/code], the whole result was [code]Nothing[/code]. What about if the function returns a [code]Nothing[/code]? Let's see:
+
+Just what we expected. If the monadic value on the left is a [code]Nothing[/code], the whole thing is [code]Nothing[/code]. And if the function on the right returns a [code]Nothing[/code], the result is [code]Nothing[/code] again. This is very similar to when we used [code]Maybe[/code] as an applicative and we got a [code]Nothing[/code] result if somewhere in there was a [code]Nothing[/code].
+
+It looks like that for [code]Maybe[/code], we've figured out how to take a fancy value and feed it to a function that takes a normal value and returns a fancy one. We did this by keeping in mind that a [code]Maybe[/code] value represents a computation that might have failed.
+
+You might be asking yourself, how is this useful? It may seem like applicative functors are stronger than monads, since applicative functors allow us to take a normal function and make it operate on values with contexts. We'll see that monads can do that as well because they're an upgrade of applicative functors, and that they can also do some cool stuff that applicative functors can't.
+
+We'll come back to [code]Maybe[/code] in a minute, but first, let's check out the type class that belongs to monads.

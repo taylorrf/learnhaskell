@@ -1,3 +1,26 @@
 chapter: A Fistful of Monads
 
-text:
+text: When we first talked about functors, we saw that they were a useful concept for values that can be mapped over. Then, we took that concept one step further by introducing applicative functors, which allow us to view values of certain data types as values with contexts and use normal functions on those values while preserving the meaning of those contexts.
+
+In this chapter, we'll learn about monads, which are just beefed up applicative functors, much like applicative functors are only beefed up functors.
+
+When we started off with functors, we saw that it's possible to map functions over various data types. We saw that for this purpose, the [code]Functor[/code] type class was introduced and it had us asking the question: when we have a function of type [code]a -&gt; b[/code] and some data type [code]f a[/code], how do we map that function over the data type to end up with [code]f b[/code]? We saw how to map something over a [code]Maybe a[/code], a list [code][a][/code], an [code]IO a[/code] etc. We even saw how to map a function [code]a -&gt; b[/code] over other functions of type [code]r -&gt; a[/code] to get functions of type [code]r -&gt; b[/code]. To answer this question of how to map a function over some data type, all we had to do was look at the type of [code]fmap[/code]:
+
+And then make it work for our data type by writing the appropriate [code]Functor[/code] instance.
+
+Then we saw a possible improvement of functors and said, hey, what if that function [code]a -&gt; b[/code] is already wrapped inside a functor value? Like, what if we have [code]Just (*3)[/code], how do we apply that to [code]Just 5[/code]? What if we don't want to apply it to [code]Just 5[/code] but to a [code]Nothing[/code] instead? Or if we have [code][(*2),(+4)][/code], how would we apply that to [code][1,2,3][/code]? How would that work even? For this, the [code]Applicative[/code] type class was introduced, in which we wanted the answer to the following type:
+
+We also saw that we can take a normal value and wrap it inside a data type. For instance, we can take a [code]1[/code] and wrap it so that it becomes a [code]Just 1[/code]. Or we can make it into a [code][1][/code]. Or an I/O action that does nothing and just yields [code]1[/code]. The function that does this is called [code]pure[/code].
+
+Like we said, an applicative value can be seen as a value with an added context. A <i>fancy</i> value, to put it in technical terms. For instance, the character [code]'a'[/code] is just a normal character, whereas [code]Just 'a'[/code] has some added context. Instead of a [code]Char[/code], we have a [code]Maybe Char[/code], which tells us that its value might be a character, but it could also be an absence of a character.
+
+It was neat to see how the [code]Applicative[/code] type class allowed us to use normal functions on these values with context and how that context was preserved. Observe:
+
+Ah, cool, so now that we treat them as applicative values, [code]Maybe a[/code] values represent computations that might have failed, [code][a][/code] values represent computations that have several results (non-deterministic computations), [code]IO a[/code] values represent values that have side-effects, etc.
+
+Monads are a natural extension of applicative functors and with them we're concerned with this: if you have a value with a context, [code]m a[/code], how do you apply to it a function that takes a normal [code]a[/code] and returns a value with a context? That is, how do you apply a function of type [code]a -&gt; m b[/code] to a value of type [code]m a[/code]? So essentially, we will want this function:
+
+<b>If we have a fancy value and a function that takes a normal value but returns a fancy value, how do we feed that fancy value into the function?</b> This is the main question that we will concern ourselves when dealing with monads. We write [code]m a[/code] instead of [code]f a[/code] because the [code]m[/code] stands for [code]Monad[/code], but monads are just applicative functors that support [code]&gt;&gt;=[/code]. The [code]&gt;&gt;=[/code] function is pronounced as <i>bind</i>.
+
+When we have a normal value [code]a[/code] and a normal function [code]a -&gt; b[/code] it's really easy to feed the value to the function — you just apply the function to the value normally and that's it. But when we're dealing with values that come with certain contexts, it takes 
+a bit of thinking to see how these fancy values are fed to functions and how to take into account their behavior, but you'll see that it's easy as one two three.
