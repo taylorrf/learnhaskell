@@ -1,8 +1,8 @@
-title: Guards, guards!
+title: Guardas, guardas!
 
-text: Whereas patterns are a way of making sure a value conforms to some form and deconstructing it, guards are a way of testing whether some property of a value (or several of them) are true or false. That sounds a lot like an if statement and it's very similar. The thing is that guards are a lot more readable when you have several conditions and they play really nicely with patterns.
+text: Enquanto patterns é um jeito de ter certeza de que um valor tenha a forma desejada e torna possível desmembra-lo, guardas são uma forma de testar se uma (ou mais) propriedades são verdadeiras ou falsas. Se isso te parece demais com um if, está no caminho certo. A diferença é que guardas são mais fáceis de ler quando têm muitas condições e funcionam bem com patterns.
 
-Instead of explaining their syntax, let's just dive in and make a function using guards. We're going to make a simple function that berates you differently depending on your <a href="http://en.wikipedia.org/wiki/Body_mass_index">BMI</a> (body mass index). Your BMI equals your weight divided by your height squared. If your BMI is less than 18.5, you're considered underweight. If it's anywhere from 18.5 to 25 then you're considered normal. 25 to 30 is overweight and more than 30 is obese. So here's the function (we won't be calculating it right now, this function just gets a BMI and tells you off)
+Ao invés de parar para explicar a sintaxe, vamos direto criar uma função usando guardas. Faremos uma função simples que repreende o usuário de uma forma específica, dependendo do seu <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a>. Seu <acronym title="Índice de massa corporal">IMC</acronym> é igual à sua massa dividida pelo quadrado de sua altura. Se seu <acronym title="Índice de massa corporal">IMC</acronym>  está abaixo de 18,5, você é considerado magro. Se está entre 18,5 e 25, é saudável. Entre 25 e 30, acima do peso. Maior, obeso. Então, esta é a função (ela não calcula, somente mostra a mensagem)
 
 
 
