@@ -2,62 +2,63 @@ chapter: Sintaxe em Funções
 
 title: Pattern matching
 
-text: Esse capítulo irá cobrir algumas construções sintáticas interessantes do Haskell, e começaremos por pattern matching. Pattern matching consiste na pesquisa por padrões em determinados dados e, caso tenha sucesso, fazer algo com o ele.
-Ao definir funções, você pode definir códigos específicos para cada padrão. Isso gera um código mais conciso, simples e legível. Você pode avaliar qualquer tipo de dado &mdash; números, caracteres, listas, tuplas... Vamos fazer uma função bem simples que verifica se o número dado é sete ou não.
+text: Esse capítulo irá cobrir algumas estruturas sintáticas interessantes de Haskell, começando por pattern matching. Pattern matching consiste na pesquisa por patterns (padrões) e, caso satisfatória, fazer algo com o dado testado.
+Na criação de funções, você pode definir códigos específicos para cada padrão. Isso gera um código mais conciso, simples e legível. Você pode avaliar qualquer tipo de dado &mdash; números, caracteres, listas, tuplas... Vamos fazer uma função bem simples que verifica se o número dado é sete ou não.
 
-Ao chamar [code] lucky [/code], os padrões serão testados de cima para baixo e, de acordo com o resultado, executado ou não seu corpo. Aqui, o único modo dessa pattern ter sucesso é se se for 7. Senão, vamos para a segunda, que executada de qualquer maneira devido ao [code] x [/code]. Essa função ainda poderia ser implementada por uma estrutura if. Mas e se quisermos uma função que diga o número se o parâmetro for de 1 até 5 ou [code] "Não está entre 1 e 5" [/code] para outros? Sem pattern matching, teríamos que escrever uma estrura if then else bem confusa. No entanto, com:
+Ao chamar [code] lucky [/code], os padrões serão testados de cima para baixo e, de acordo com o resultado, executado ou não seu corpo. Aqui, o único modo desse pattern ter sucesso é se se for 7. Senão, vamos para a segunda, que é executada sob qualquer valor, devido ao [code] x [/code]. Essa função poderia ainda ser implementada por uma estrutura if, mas e se quisermos uma função que diga o número se o parâmetro está entre 1 e 5 ou [code] "Não está entre 1 e 5" [/code]? Sem pattern matching, teríamos que escrever uma estrura if then else bem confusa. No entanto com:
 
-Veja que se movessemos a última pattern (o else geral) no topo, sempre diria [code] "Not between 1 and 5" [/code], seria executado sob qualquer número e as linhas seguintes não teriam oportunidade de serem executas.
-Lembra da função fatorial que implementamos anteriormente? Definimos o fatorial de um número [code] n [/code] como sendo [code] product [1..n] [/code]. Nós ainda podemos usar recursividade, que é como geralmente é definida na matemática. Começamos explicitando que o fatorial de 0 é 1. Então dizemos que o fatorial de qualquer número inteiro positivo é ele multiplicado pelo fatorial do predecessor. Assim fica traduzido para o idioma Haskell.
+Veja que se movessemos a última pattern (o else geral) no topo, sempre diria [code] "Não está entre 1 e 5" [/code], seria executado sob qualquer número testado e as linhas seguintes não teriam oportunidade de serem executas.
+Lembra da função fatorial que implementamos anteriormente? Definimos o fatorial de um número [code] n [/code] como sendo [code] product [1..n] [/code]. Nós ainda podemos usar recursividade, que é como geralmente é definida na matemática. Começamos explicitando o fatorial de 0: 1. Então dizemos que o fatorial de qualquer número inteiro positivo é ele multiplicado pelo fatorial do predecessor. Assim é que fica traduzido para o idioma Haskell:
 
-Essa é a primeira vez que definimos uma função recursiva. Resursão é importante em Haskell e iremos ver com mais calma mais tarde. Mas para dar água na boca, veremos agora o acontece ao tentarmos calcular o fatorial de, digamos, 3: tenta descobrir o resultado de [code] 3 * factorial 2 [/code]. O fatorial de 2 é [code] 2 * factorial 1 [/code], então até agora temos [code] 3 * (2 * factorial 1) [/code]. [code] factorial 1 [/code] é [code] 1 * factorial 0 [/code], então [code] 3 * (2 * (1 * factorial 0)) [/code]. E ai que temos o truque &mdash; definimos o fatorial de 0 ser 1 com a intenção de não executar a terceira linha, então só retorna 1. O resultado final é o equivalente a [code] 3 * (2 * (1 * 1)) [/code]. Se tivéssemos colocado a linha para a recursão como primeira da função, o 0 seria incluido e o cálculo seria infinito. Por isso a ordem é muito importante ao definir patterns e é melhor colocar as mais específicas no início e deixar as gerais para o fim.
+Essa é a primeira vez que definimos uma função recursiva. Resursão é importante em Haskell e iremos rever com o passar das linhas. Mas para dar água na boca, veremos agora o acontece ao tentarmos calcular o fatorial de, digamos, 3: a função tenta descobrir o resultado de [code] 3 * factorial 2 [/code]. O fatorial de 2 é [code] 2 * factorial 1 [/code], então até agora temos [code] 3 * (2 * factorial 1) [/code]. [code] factorial 1 [/code] é [code] 1 * factorial 0 [/code], então [code] 3 * (2 * (1 * factorial 0)) [/code]. E ai que temos o truque &mdash; definimos o fatorial de 0 como 1 com a intenção de não executar a segunda linha dessa vez, então retorna aí 1. O resultado final é o equivalente a [code] 3 * (2 * (1 * 1)) [/code]. Se tivéssemos colocado a linha de recursão como primeira da função, o 0 seria incluído e o cálculo seria infinito. Por isso a ordem é muito importante ao definir patterns e é melhor colocar as mais específicas no início e deixar as gerais para depois.
 
-Pattern matching também podem falhar, como no caso de definirmos uma função como essa:
+Pattern matching também pode falhar, como no caso de definirmos uma função como essa:
 
 e tentarmos chamá-la com um parâmetro inesperado:
 
-Isso acontece por não termos patterns genéricas. Ao criar patterns, sempre devemos incluir patterns que cubram todas as excessões para que o programa não pare de modo indevido caso usemos um valor inesperado.
+Isso acontece por não termos patterns padrões. Ao criar patterns, sempre devemos incluir patterns que cubram todas as excessões para que o programa não pare de modo indevido caso usemos um valor inesperado.
 
-Pattern matching também pode ser usada em tuplas. Se precisamos fazer uma função que recebe dois vetores em um plano bidimensional (em forma de pares) e o some, somamos seus x primeiro e depois seus y. Assim é como faríamos se não conhecessemos pattern matching:
+Pattern matching também pode ser usada em tuplas. Se precisamos fazer uma função que receba dois valores de um ponto num plano bidimensional (em forma de pares) e os some, somamos primeiro os x para depois os y. Assim é como faríamos se não conhecessemos pattern matching:
 
 Bom, funciona. Mas existe um modo muito melhor de se fazer a mesma coisa. Vamos modificar essa função para que passe a usar pattern matching.
 
 Aí está. Muito melhor. Veja que temos um pattern padrão. O tipo de [code] addVectors [/code] (em ambos casos) é [code] addVectors :: (Num a) =&gt; (a, a) -&gt; (a, a) - &gt; (a, a) [/code], então garantimos que receberemos dois pares como parâmetros.
+
 [code] fst [/code] e [code] snd [/code] também precisam de parâmetros em pares. Mas e com triplas? Não há nenhuma função que trabalhe com elas, mas podemos fazer a nossa própria.
 
 
-[code] _ [/code] significa o mesmo que em list comprehensions. Se o compilador não deve se importar com o que já ali, coloca-se [code] _ [/code].
+[code] _ [/code] significa o mesmo que em list comprehensions. Se o compilador não deve se importar com o que está ali, coloca-se [code] _ [/code].
 o que me lembra que patterns matching também podem ser usadas em list comprehensions. Veja...
 
-Se a pattern falhar, se moverá para o próximo elemento.
+Se o pattern falhar, se moverá para o próximo elemento.
 
-As prórias listas podem ser usadas em pattern matching. Podem ser comparadas em listas vazias [code] [] [/code] qualquer pattern matching que envolva [code] : [/code] e uma lista vazia. Mas já que [code] [1,2,3] [/code] é apenas um nome bonito para [code] 1:2:3:[] [/code], você também pode usar o pattern anterior. Um pattern como [code] x:xs [/code] irá deixar o primeiro elemento como [code] x [/code] e o resto como [code] xs [/code], sendo tendo apenas um elemento - [code]xs[/code] nesse caso será uma lista vazia.
+As prórias listas podem ser usadas em patterns. Podem ser testadas se são listas vazias [code] [] [/code] ou qualquer pattern matching que tenha [code] : [/code] e uma lista vazia. Mas já que [code] [1,2,3] [/code] é apenas um nome bonito para [code] 1:2:3:[] [/code], você também pode usar o pattern anterior. Um pattern como [code] x:xs [/code] irá deixar o primeiro elemento como [code] x [/code] e o resto como [code] xs [/code] - tendo apenas um elemento [code] xs [/code] será uma lista vazia.
 
-Nota: O padrão [code] x:xs [/code] é muito usado, principalmente em funções recursivas. O (possível) problema é de [code] : [/code] funcionar apenas com lista de length 1 ou maior.
+Nota: O padrão [code] x:xs [/code] é muito usado, principalmente em funções recursivas. O problema é [code] : [/code] funcionar apenas em listas de length 1 ou maior.
 
-Se você quer deixar, digamos, os três primeiros elementos de uma lista numa variável e o resto e outra, você pode escrever algo como [code] x:y:z:zs [/code]. Só funcionará com lista de 3 ou mais elementos.
+Se você quizer deixar, digamos, os três primeiros elementos de uma lista numa variável e o resto em outra, você pode escrever algo como [code] x:y:z:zs [/code]. Só funcionará com lista de 3 ou mais elementos.
 
 Agora que conseguimos comparar um pattern a uma lista, vamos criar nossa própria implementação da função [code] head [/code].
 
 Vejamos se funciona:
 
-Excelente! Saiba ainda que se quer especificar diversas variáveis (mesmo que uma delas seja [code]_[/code] e que não é realmente associada), temos que colocar entre parênteses. Lembre-se também da função [code] error [/code] que usamos. Recebe uma string e gera um runtime error, usando a string para informar do erro ocorrido. Já que causa a finalização do programa, é bom usar moderadamente. Mas chamar [code] head [/code] com uma lista vazia não faz sentido, então...
+Excelente! Saiba ainda que se quiser especificar diversas variáveis (mesmo que uma delas seja [code] _ [/code], que não recebe nenhum valor), temos que colocar entre parênteses. Lembre-se também da função [code] error [/code] que usamos. Recebe uma string e gera um runtime error, usando a string para informar do erro ocorrido. Já que causa a finalização do programa, é bom usar moderadamente. Mas chamar [code] head [/code] com uma lista vazia não faz sentido, então...
 
 Vamos então criar uma função muito útil que nos diz os primeiros elementos de uma lista de um modo mais (des)interessante.
 
-Esta função é considerada segura porque prevê uma lista vazia, uma lista com apenas um elemento, uma com dois e outra com mais elementos. O [code] (x:[]) [/code] e [code] (x:y:[]) [/code] poderiam ser escritos como [code] [x] [/code] e [code] [x,y] [/code] (como é algo mais simples, despensa-se os parênteses). Ao contrário de [code] (x:y:_) [/code], que são para listas de mais de dois elementos e não podem ser escritos por colchetes.
+Esta função é considerada segura porque prevê uma lista vazia, uma lista com apenas um elemento, uma com dois e outra com mais elementos. [code] (x:[]) [/code] e [code] (x:y:[]) [/code] poderiam ser escritos como [code] [x] [/code] e [code] [x,y] [/code] (como é algo mais simples, despensa-se os parênteses). Ao contrário de [code] (x:y:_) [/code], que são para listas de mais de dois elementos e não podem ser escritos por colchetes.
 
 Nós já implementamos nossa [code] length [/code] usando list comprehension. Agora tentaremos fazer usando pattern matching e um pouco de recursão:
 
 
-Isso é similar à função de fatorial que escrevemos anteriormente. Primeiro definimos o resultado do valor conhecido &mdash; a lista vazia. Isso é conhecido como edge condition. Então no segundo pattern dividimos a coitada da lista em primeiro elemento e resto. Dissemos que a length da lista é igual a 1 somado com a length do "resto". Usamos [code] _ [/code] para o primeiro elemento porque não nos importamos com o seu valor. Perceba que nos preocupamos com os dois lados: uma lista vazia na primeira linha e uma com mais de um elemento na segunda.
+Isso é similar à função de fatorial que escrevemos anteriormente. Primeiro definimos o resultado do valor conhecido &mdash; a lista vazia. Isso é conhecido como edge condition. Então no segundo pattern dividimos a coitada da lista em primeiro elemento e resto. Dizemos que a length da lista é igual a 1 somado com a length do resto. Usamos [code] _ [/code] para o primeiro elemento porque não nos importamos com o seu valor. Perceba que nos preocupamos com os dois lados: uma lista vazia na primeira linha e uma com mais de um elemento na segunda.
 
-Então vamos descobrir o que acontece ao chamar [code] length' [/code] com [code] "ham" [/code]. Primeiro, é testado se é uma lista vazia. Já que não é, passa-se para o segundo pattern. Aí passamos no teste e o resultado da length é [code] 1 + length' "am" [/code], porque dividimos a lista em primeiro e resto e descartamos o primeiro elemento. Até aí tudo bem. [code] length' [/code] de [code] "am" [/code] é, semelhantemente, [code] 1 + length' "m" [/code]. Então agora temos [code] 1 + (1 + length' "m") [/code]. [code] length' "m" [/code] é [code]1 + length' "" [/code] (que também poderia ser escrito como [code] 1 + length' [] [/code]). E já definimos que [code] length' [] [/code] é [code] 0 [/code]. Logo, no fim temos [code] 1 + (1 + (1 + 0)) [/code].
+Então vamos descobrir o que acontece ao chamar [code] length' [/code] com [code] "ham" [/code]. Primeiro, é testado se é uma lista vazia. Já que não é, passa-se para o segundo pattern. Aí passamos no teste e o resultado da length é [code] 1 + length' "am" [/code], porque dividimos a lista em primeiro e resto e descartamos o primeiro elemento. Até aí tudo bem. [code] length' [/code] de [code] "am" [/code] é, semelhantemente, [code] 1 + length' "m" [/code]. Então agora temos [code] 1 + (1 + length' "m") [/code]. [code] length' "m" [/code] é [code]1 + length' "" [/code] (que também poderia ser escrito como [code] 1 + length' [] [/code]). E já definimos que [code] length' [] [/code] é [code] 0 [/code]. No fim temos [code] 1 + (1 + (1 + 0)) [/code].
 
-Vamos implementar [code] sum [/code]. Sabemos que a soma de uma lista vazia deve ser 0. Escrevemos então como um pattern. E também sabemos que a soma de uma lista é o primeiro elemento mais a soma do resto da lista. Se usarmos o mesmo método, temos:
+Vamos implementar [code] sum [/code]. Sabemos que a soma de uma lista vazia deve ser 0. Escrevemos então como um pattern. E também sabemos que a soma de uma lista é o primeiro elemento mais a soma do resto da lista. Se usamos o mesmo método, temos:
 
-Ainda há uma coisa chamada as patterns. Eles são uma mão na roda quando precisamos usar um pattern e continuar com ele acessível, mesmo depois de usado. Você cria um as pattern precedendo um pattern com um @. Por exemplo, o pattern xs@(x:y:ys). Ele poderia ser reescrito usando x:y:ys, mas você consegue usá-lo facilmente com um xs, sem precisar repetir-se. Um exemplo bem simples:
+Ainda há uma coisa chamada as patterns. Eles são uma mão na roda quando precisamos usar um pattern e continuar com ele acessível. Você cria um as pattern precedendo um pattern com um [code] @ [/code]. Por exemplo, o pattern [code] xs@(x:y:ys) [/code]. Ele poderia ser reescrito usando [code] x:y:ys [/code], mas você consegue usá-lo facilmente com um [code] xs [/code], sem precisar repetir-se. Um exemplo bem simples:
 
 Normalmente usamos as patterns para evitar repetição de patterns grandes usadas durante a declaração de uma função.
 
-One more thing - você não pode usar ++ em patterns. Se você tentar usar pattern (xs ++ ys), qual seria a primeira e qual seria a segunda lista? Não faz muito sentido. Faria algum usar (xs ++ [x,y,z]) ou (xs ++ [x]), mas pela estrutura das listas, não é possível.
+One more thing - você não pode usar [code] ++ [/code] em patterns. Se você tentasse usar o pattern [code] (xs ++ ys) [/code], qual seria a primeira e qual a segunda lista? Não faz muito sentido. Faria algum usar [code] (xs ++ [x,y,z]) [/code] ou [code] (xs ++ [x]) [/code], mas pela estrutura das listas, não é possível.
