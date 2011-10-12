@@ -1,0 +1,26 @@
+title: Taking a walk
+
+text: Like we've learned in biology class, there are many different kinds of trees, solet's pick a seed that we will use to plant ours. Here it is:
+
+So our tree is either empty or it's a node that has an element and twosub-trees. Here's a fine example of such a tree, which I give to you, thereader, for free!
+
+And here's this tree represented graphically:
+
+Notice that [code]W[/code] in the tree there? Say we want tochange it into a [code]P[/code]. How would we go about doing that?Well, one way would be to pattern match on our tree until we find the elementthat's located by first going right and then left and changing said element.Here's the code for this:
+
+Yuck! Not only is this rather ugly, it's also kind of confusing. What happenshere? Well, we pattern match on our tree and name its root element [code]x[/code] (that's becomes the [code]'P'[/code] in theroot) and its left sub-tree [code]l[/code]. Instead of giving aname to its right sub-tree, we further pattern match on it. We continue thispattern matching until we reach the sub-tree whose root is our [code]'W'[/code]. Once we've done this, we rebuild the tree, only thesub-tree that contained the [code]'W'[/code] at its root nowhas a [code]'P'[/code].
+
+Is there a better way of doing this? How about we make our function take a treealong with a list of directions. The directions will be either [code]L[/code] or [code]R[/code], representing left andright respectively, and we'll changethe element that we arrive at if we follow the supplied directions. Here it is:
+
+If the first element in the our list of directions is [code]]L[/code], we construct a new tree that's like the old tree, only
+its left sub-tree has an element changed to [code]'P'[/code]. Whenwe recursively call [code]changeToP[/code], we give it only thetail of the list of directions, because we already took a left. We do the samething in the case of an [code]R[/code]. If the list of directions isempty, that means that we're at our destination, so we return a tree that's likethe one supplied, only it has [code]'P'[/code] as its rootelement.
+
+To avoid printing out the whole tree, let's make a function that takes a list ofdirections and tells us what the element at the destination is:
+
+This function is actually quite similar to [code]changeToP[/code],only instead of remembering stuff along the way and reconstructing the tree, itignores everything except its destination. Here we change the [code]'W'[/code] to a [code]'P'[/code] and see if thechange in our new tree sticks:
+
+Nice, this seems to work. In these functions, the list of directions acts as asort of <i>focus</i>, because it pinpoints one exact sub-tree from our tree.A direction list of [code][R][/code] focuses on the sub-treethat's right of the root, for example. An empty direction list focuses on themain tree itself.
+
+While this technique may seem cool, it can be rather inefficient, especially ifwe want to repeatedly change elements. Say we have a really huge tree and a longdirection list that points to some element all the way at the bottom of thetree. We use the direction list to take a walk along the tree and change anelement at the bottom. If we want to change another element that's close to theelement that we've just changed, we have to start from the root of the tree andwalk all the way to the bottom again! What a drag.
+
+In the next section, we'll find a better way of focusing on a sub-tree, one thatallows us to efficiently switch focus to sub-trees that are nearby.
