@@ -10,7 +10,7 @@ Como você pode ver, listas são caracterizadas por utilizar colchetes e os valo
 
 Uma prática comum é colocar duas listas juntas. Fazemos isso utilizando o operador [code]++[/code].
 
-Veremos repetidamente o uso do operador [code]++[/code] em strings grandes. Quando juntamos duas listas (mesmo se você adicionar uma lista de um elemento só em outra lista, como por exemplo:[code][1,2,3] ++ [4][/code]), internamente o Haskell irá percorrer toda a lista que esta do lado esquerdo do [code]++[/code]. Isto não é um problema quando não estamos lidando com listas muito grande. Porém colocar algo no final de uma lista com cinquenta milhões de elementos irá demorar um pouco. No entantod, colocar alguma coisa no ínicio de uma lista utilizando o operador [code]:[/code] (também chamado de <i>contra</i> operador) será instantâneo.
+Veremos repetidamente o uso do operador [code]++[/code] em strings grandes. Quando juntamos duas listas (mesmo se você adicionar uma lista de um elemento só em outra lista, como por exemplo:[code][1,2,3] ++ [4][/code]), internamente o Haskell irá percorrer toda a lista que esta do lado esquerdo do [code]++[/code]. Isto não é um problema quando não estamos lidando com listas muito grande. Porém colocar algo no final de uma lista com cinquenta milhões de elementos irá demorar um pouco. No entanto, colocar alguma coisa no ínicio de uma lista utilizando o operador [code]:[/code] (também chamado de <i>contra</i> operador) será instantâneo.
 
 Observe que o [code]:[/code] recebe um número e uma lista de números ou um carácter e uma lista de caracteres, enquanto o [code]++[/code] recebe duas listas. Mesmo que você esteja adicionando um elemento ao final de uma lista com [code]++[/code], você terá que demarca-la com colchetes para que se torne lista.
 
@@ -30,7 +30,7 @@ As listas poderão ser comparadas se os coisas que elas contêm puderem ser comp
 
 O que mais você pode fazer com listas? Aqui estão algumas funções básicas para operações em listas.
 
-[code]head[/code] recebe uma lista e retorna a sua cabeça. A cabeça de uma lista é basicamente o primeiro elemento.
+[code]head[/code] recebe uma lista e retorna o seu <i>head</i>. O <i>head</i> (cabeça) de uma lista é basicamente o primeiro elemento.
 
 [code]tail[/code] recebe uma lista e retorna a sua cauda. Em outras palavras, ele decepa a cabeça de uma lista.
 
