@@ -1,0 +1,25 @@
+title: Focusing on lists
+
+text: Zippers can be used with pretty much any data structure, so it's no surprisethat they can be used to focus on sub-lists of lists. After all, lists arepretty much like trees, only where a node in a tree has an element (or not) andseveral sub-trees, a node in a list has an element and only a single sub-list.When we <a href="making-our-own-types-and-typeclasses#recursive-data-structures">implementedour own lists</a>, we defined our data type like so:
+
+Contrast this with our definition of our binary tree and it's easy to see howlists can be viewed as trees where each node has only one sub-tree.
+
+A list like [code][1,2,3][/code] can be written as [code]1:2:3:[][/code]. It consists of the head of the list, whichis [code]1[/code] and then the list's tail, which is [code]2:3:[][/code]. In turn, [code]2:3:[][/code]also has a head, which is [code]2[/code] and a tail, which is [code]3:[][/code]. With [code]3:[][/code], the[code]3[/code] is the head and the tail is the empty list [code][][/code].
+
+Let's make a zipper for lists. To change the focus on sub-lists of a list, we move eitherforward or back (whereas with trees we moved either up or left or right). Thefocused part will be a sub-tree and along with that we'll leave breadcrumbs aswe move forward. Now what would a single breadcrumb for a list consist of? Whenwe were dealing with binary trees, we said that a breadcrumb has to hold theelement in the root of the parent node along with all the sub-trees that wedidn't choose. It also had to remember if we went left or right. So, it had tohave all the information that a node has except for the sub-tree that we choseto focus on.
+
+Lists are simpler than trees, so we don't have to remember if wewent left or right, because there's only one way to go deeper into a list.Because there's only one sub-tree to each node, we don't have to remember thepaths that we didn't take either. It seems that all we have to remember is theprevious element. If we have a list like [code][3,4,5][/code] andwe know that the previous element was [code]2[/code], we can goback by just putting that element at the head of our list, getting [code][2,3,4,5][/code].
+
+Because a single breadcrumb here is just the element, we don't really have toput it inside a data type, like we did when we made the [code]Crumb[/code] data type for tree zippers:
+
+The first list represents the list that we're focusing on and the second listis the list of breadcrumbs. Let's make functions that go forward and back into lists:
+
+When we're going forward, we focus on the tail of the current list and leave thehead element as a breadcrumb. When we're moving backwards, we take the latestbreadcrumb and put it at the beginning of the list.
+
+Here are these two functions in action:
+
+We see that the breadcrumbs in the case of lists are nothing more but a reversedpart of our list. The element that we move away from always goes into the headof the breadcrumbs, so it's easy to move back by just taking that element fromthe head of the breadcrumbs and making it the head of our focus.
+
+This also makes it easier to see why we call this a zipper, because this reallylooks like the slider of a zipper moving up and down.
+
+If you were making a text editor, you could use a list of strings to representthe lines of text that are currently opened and you could then use a zipper sothat you know which line the cursor is currently focused on. By using a zipper,it would also make it easier to insert new lines anywhere in the text or deleteexisting ones.
