@@ -1,42 +1,39 @@
-title: Let it be
+title: Pode ser também
 
-text: Very similar to where bindings are let bindings. Where bindings are a syntactic construct that let you bind to variables at the end of a function and the whole function can see them, including all the guards. Let bindings let you bind to variables anywhere and are expressions themselves, but are very local, so they don't span across guards. Just like any construct in Haskell that is used to bind values to names, let bindings can be used for pattern matching. Let's see them in action! This is how we could define a function that gives us a cylinder's surface area based on its height and radius:
-
-
-
-The form is [code]let &lt;bindings&gt; in &lt;expression&gt;[/code]. The names that you define in the <i>let</i> part are accessible to the expression after the <i>in</i> part. As you can see, we could have also defined this with a <i>where</i> binding. Notice that the names are also aligned in a single column. So what's the difference between the two? For now it just seems that <i>let</i> puts the bindings first and the expression that uses them later whereas <i>where</i> is the other way around.
-
-The difference is that <i>let</i> bindings are expressions themselves. <i>where</i> bindings are just syntactic constructs. Remember when we did the if statement and it was explained that an if else statement is an expression and you can cram it in almost anywhere?
+text: Muito semelhantes às associações where, existem as let. Associações where são construções sintáticas te permitem dar valores a variáveis no fim de uma função, ao mesmo tempo que permitem que toda função a veja, incluindo guards. Associações let dão valores a funções e também são expressões, mas tem um escopo mais restrito por não serem acessíveis dentro de guards. Assim como toda construção em Haskell que permite dar valores a nomes, construções let podem ser usadas em pattern matching. Vejamos em ação! Poderíamos fazer assim uma função que nos dá a área da superfície de um cilíndro baseado em sua altura e raio:
 
 
+Deve-se seguir a forma [code] let &lt;bindings&gt; in &lt;expression&gt; [/code]. Os nomes definidos na parte <i>let</i> são acessíveis mesmo na expressão seguinte <i>in</i>. Como deve ter percebido, poderíamos ter definido essa associação com um <i>where</i>. Veja ainda que os nomes também estão alinhados na mesma coluna. Então qual é a diferença entre os dois? Por hora, <i>let</i> coloca as associações antes da expressão que as usa, o contrário da <i>where</i>.
 
-You can also do that with let bindings.
+Outra diferença é que associações <i>let</i> são expressões por si próprias. <i>where</i> são apenas construções sintáticas. Lembre-se de quando vimos o if e explicamos que a estrutura if/else é uma expressão que pode ser enfiada em qualquer lugar que você imagine?
 
 
+Isso também pode ser feito com associações let.
 
-They can also be used to introduce functions in a local scope:
+
+Elas ainda podem ser alternativas para criação e uso de funções de escopo local:
 
 
 
-If we want to bind to several variables inline, we obviously can't align them at columns. That's why we can separate them with semicolons.
+Se quisermos definir várias variáveis inline, obviamente não podemos alinhá-las em colunas. É por isso que também podemos separá-las por pontos e vírgulas.
 
 
 
-You don't have to put a semicolon after the last binding but you can if you want. Like we said before, you can pattern match with <i>let</i> bindings. They're very useful for quickly dismantling a tuple into components and binding them to names and such.
+Você não necessariamente precisa colocar um ponto e vírgula depois da última associação se não quiser. Como já dissemos, podemos usar pattern match em associações <i>let</i>. Isso é muito útil ao quebrar uma tupla e dar nomes a cada componente.
 
 
 
-You can also put <i>let</i> bindings inside list comprehensions. Let's rewrite our previous example of calculating lists of weight-height pairs to use a <i>let</i> inside a list comprehension instead of defining an auxilliary function with a <i>where</i>.
+Também pode-se colocar associações <i>let</i> dentro de list comprehensions. Vamos reescrever nosso exemplo anterior que recebe listas de pares massa-altura para usar um <i>let</i> e dispensar a definição de uma função auxiliar interna com o <i>where</i>.
 
 
 
-We include a <i>let</i> inside a list comprehension much like we would a predicate, only it doesn't filter the list, it only binds to names. The names defined in a <i>let</i> inside a list comprehension are visible to the output function (the part before the [code]|[/code]) and all predicates and sections that come after of the binding. So we could make our function return only the BMIs of fat people:
+Incluímos o <i>let</i> dentro da list comprehension como predicado, mas não com a intenção de filtrar a lista, apenas dar nomes a elementos. Nomes definidos num <i>let</i> dentro de uma list comprehension são visíveis à função a que pertence (o que antecede o [code] | [/code]) e a todos os predicados e seções que seguem à associação. Então simplesmente podemos fazer nossa funão retornar o IMC apenas de pessoas gordas:
 
 
 
-We can't use the [code]bmi[/code] name in the [code](w, h) &lt;- xs[/code] part because it's defined prior to the <i>let</i> binding.
+Só não podemos usar o nome [code]imc[/code] em [code] (w, h) &lt;- xs [/code] porque é executado antes da definição do <i>let</i>.
 
-We omitted the <i>in</i> part of the <i>let</i> binding when we used them in list comprehensions because the visibility of the names is already predefined there. However, we could use a <i>let in</i> binding in a predicate and the names defined would only be visible to that predicate. The <i>in</i> part can also omitted when defining functions and constants directly in GHCI. If we do that, then the names will be visible throughout the entire interactive session.
+Omitimos o <i>in</i> do <i>let</i> porque usamos-o em uma list comprehensions, que já pré-define a visibilidade de nomes. No entanto, poderíamos usar <i>let in</i> no predicado e seus nomes serem acessíveis apenas dentro do predicado. O <i>in</i> ainda pode ser omitido ao definir funções e constantes diretamente no GHCI. Caso o façamos, os nomes serão visíveis por toda a sessão de interação.
 
-If <i>let</i> bindings are so cool, why not use them all the time instead of <i>where</i> bindings, you ask? Well, since <i>let</i> bindings are expressions and are fairly local in their scope, they can't be used across guards. Some people prefer <i>where</i> bindings because the names come after the function they're being used in. That way, the function body is closer to its name and type declaration and some that's more readable.
+Você pode estar se perguntando: Se associações <i>let</i> são tão perfeitas, porque não usá-las ao invés de <i>where</i>? Bom, já que associações <i>let</i> são mais restritivas quanto ao seu escopo, elas não podem ser usadas entre guards. Algumas pessoas preferem usar <i>where</i> porque os nomes vêm depois da função que os usam. Desse modo, o corpo da função fica próximo de nomes e declaração de tipo, ficando mais legível.
 
