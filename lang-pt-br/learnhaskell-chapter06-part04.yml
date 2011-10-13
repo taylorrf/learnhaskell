@@ -4,32 +4,18 @@ text: Lambdas are basically anonymous functions that are used because we need so
 
 If you look about 5 inches up, you'll see that we used a <i>where</i> binding in our [code]numLongChains[/code] function to make the [code]isLong[/code] function for the sole purpose of passing it to [code]filter[/code]. Well, instead of doing that, we can use a lambda:
 
-
-
-
 Lambdas are expressions, that's why we can just pass them like that. The expression [code](\xs -&gt; length xs &gt; 15)[/code] returns a function that tells us whether the length of the list passed to it is greater than 15.
 
 People who are not well acquainted with how currying and partial application works often use lambdas where they don't need to. For instance, the expressions [code]map (+3) [1,6,3,2][/code] and [code]map (\x -&gt; x + 3) [1,6,3,2][/code] are equivalent since both [code](+3)[/code] and [code](\x -&gt; x + 3)[/code] are functions that take a number and add 3 to it. Needless to say, making a lambda in this case is stupid since using partial application is much more readable.
 
 Like normal functions, lambdas can take any number of parameters:
 
-
-
-
 And like normal functions, you can pattern match in lambdas. The only difference is that you can't define several patterns for one parameter, like making a [code][][/code] and a [code](x:xs)[/code] pattern for the same parameter and then having values fall through. If a pattern matching fails in a lambda, a runtime error occurs, so be careful when pattern matching in lambdas!
 
-
-
-
 Lambdas are normally surrounded by parentheses unless we mean for them to extend all the way to the right. Here's something interesting: due to the way functions are curried by default, these two are equivalent:
-
-
-
 
 If we define a function like this, it's obvious why the type declaration is what it is. There are three [code]-&gt;[/code]'s in both the type declaration and the equation. But of course, the first way to write functions is far more readable, the second one is pretty much a gimmick to illustrate currying.
 
 However, there are times when using this notation is cool. I think that the [code]flip[/code] function is the most readable when defined like so:
-
-
 
 Even though that's the same as writing [code]flip' f x y = f y x[/code], we make it obvious that this will be used for producing a new function most of the time. The most common use case with [code]flip[/code] is calling it with just the function parameter and then passing the resulting function on to a map or a filter. So use lambdas in this way when you want to make it explicit that your function is mainly meant to be partially applied and passed on to a function as a parameter.
