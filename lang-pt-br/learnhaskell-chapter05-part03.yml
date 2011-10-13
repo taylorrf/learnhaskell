@@ -2,38 +2,26 @@ title: Um pouco mais de funções recursivas
 
 text: Agora que nós sabemos como genericamente pensar recursivamente, vamos implementar algumas funções usando recursão. Primeiramente, implementaremos [code]replicate[/code]. [code]replicate[/code] recebe um [code]Int[/code] e algum elemento e retorna uma lista que tem muitas repetições do mesmo elemento. Por exemplo [code]replicate 3 5[/code] retorna [code][5,5,5][/code]. Pensemos sobre a condição limite. Meu palpite é que a condição limite seja 0 ou menos. Se nós tentarmos replicar alguma coisa zero vezes, isso deverá retornar uma lista vazia. O mesmo para número negativos, porque isso realmente não faria sentido.
 
-
-
 Nós usamos guardas aqui em vez de padrões porque estamos interessados em uma condição booleana. Se [code]n[/code] é menor ou igual a 0, retorna uma lista vazia. Se não, retorna uma lista que tem [code]x[/code] como o primeiro elemento e então [code]x[/code] replicado n-1 vezes como a calda. Eventualmente, a parte [code](n-1)[/code] fará com que nossa função alcance uma condição limite.
 
 <em>Nota:</em> [code]Num[/code] não é uma subclass de [code]Ord[/code]. Isso significa que o que constitui um número não necessariamente precisa aderir a uma ordenação. É por isso que temos que especificar ambas as restrições de classe [code]Num[/code] e [code]Ord[/code] quando fazemos adição ou subtração e também comparação.
 
-Em seguida, vamos implementar [code]take[/code]. Ela pega um certo número de elementos de uma lista. Por exemplo, [code]take 3 [5,4,3,2,1][/code] retornará [code][5,4,3][/code]. Se tentarmos pegar 0 ou menos elementos de uma lista, receberemos uma lista vazia. Também, se tentamos pegar algo de uma lista vazia, receberemos uma lista vazia. Note que essas são as duas condições limite. Então, vamos à escrita da função:
-
-
+Em seguida, vamos implementar [code]take[/code]. Ela pega um certo número de elementos de uma lista. Por exemplo, [code]take 3 [5,4,3,2,1][/code] retornando [code][5,4,3][/code]. Se tentarmos pegar 0 ou menos elementos de uma lista, receberemos uma lista vazia. Também, se tentamos pegar algo de uma lista vazia, receberemos uma lista vazia. Note que essas são as duas condições limite. Então, vamos à escrita da função:
 
 O primeiro padrão especifica que, se tentarmos pegar 0 ou um número negativo de elementos, receberemos a lista vazia. Note que estamos usando [code]_[/code] para comparar com a lista porque nós realmente não nos importamos com o que ela é nesse caso. Também note que nós usamos um guarda, mas sem uma parte [code]otherwise[/code]. Isso significa que, se acontecer de [code]n[/code] ser maior que 0, o reconhecimento de padrões cairá para o próximo padrão. O segundo padrão indica que, se tentarmos pegar alguma coisa de uma lista vazia, receberemos uma lista vazia. O terceiro padrão quebra a lista numa cabeça e numa calda. E então nós dizemos que pegar [code]n[/code] elementos de uma lista é igual a uma lista que tem [code]x[/code] como a cabeça e então uma lista que pega [code]n-1[/code] elementos da calda como calda. Tente usar um pedaço de papel para escrever como a avaliação pareceria se tentássemos pegar, digamos, 3 de [code][4,3,2,1][/code].
 
 [code]reverse[/code] simplesmente inverte uma lista. Pense sobre a condição limite. O que ela seria? Vamos lá ... é a lista vazia! Uma lista vazia invertida é igual à própria lista vazia. O-kay. E o resto? Bem, você poderia dizer que, se dividirmos uma lista em cabeça e calda, a lista invertida será igual à calda invertida e então a cabeça no final.
 
-
-
 E cá estamos nós!
 
 Como Haskell aceita listas infinitas, nossa recursão não necessariamente precisa ter uma condição limite. Mas, se ela não tiver, nós ou ficaremos repetindo algo infinitamente ou produziremos uma estrutura de dados infinita, como uma lista infinita. O lado bom das listas infinitas é que nós podemos cortá-las onde quisermos. [code]repeat[/code] pega um elemento e retorna uma lista infinita que tem apenas aquele elemento. Uma implementação recursiva disso é realmente fácil. Olhe:
-
-
 
 Chamar [code]repeat 3[/code] nos dará uma lista que começa com [code]3[/code] e então tem uma quantidade infinita de 3 como calda. Então chamar [code]repeat 3[/code] avaliaria em algo como [code]3:repeat 3[/code], que é [code]3:(3:repeat 3)[/code], que é [code]3:(3:(3:repeat 3))[/code], etc. [code]repeat 3[/code] nunca terminará de avaliar, enquanto [code]take 5 (repeat 3)[/code] nos dará uma lista de cinco 3's. Então, essencialmente, é o mesmo que fazer [code]replicate 5 3[/code].
 
 [code]zip[/code] pega duas listas e mescla as duas. [code]zip [1,2,3] [2,3][/code] retorna [code][(1,2),(2,3)][/code], porque ela trunca a lista maior para combinar com o tamanho da lista menor. E se nós chamássemos zip passando uma lista vazia? Bem, nós recebemos, então, uma lista vazia. Então essa será nossa condição limite. Contudo, [code]zip[/code] pega duas listas como parâmetro, e assim haverá duas condições limite.
 
-
-
 Os primeiros dois padrões dizem que, se a primeira ou a segunda lista é vazia, nós pegamos uma lista vazia. O terceiro diz que a chamada de zip em duas listas é igual a parear as suas cabeças e então continuar a chamar zip nas caldas. A chamada de zip nas listas [code][1,2,3][/code] e [code]['a','b'][/code] eventualmente tentará chamar zip em [code][3][/code] e [code][][/code]. Chega-se ao padrão da condição limite e assim o resultado é [code](1,'a'):(2,'b'):[][/code], que é exatamente o mesmo que [code][(1,'a'),(2,'b')][/code].
 
 Vamos implementar mais uma função da biblioteca padrão &mdash; [code]elem[/code]. Ela pega um elemento e uma lista e vê se aquele elemento está na lista. A condição limite, como na maioria das vezes com listas, é a lista vazia. Nós sabemos que uma lista vazia não contém elemento algum, então ela certamente não tem os droids que estamos procurando.
-
-
 
 Bastante simples e previsível. Se a cabeça não é o elemento, então nós checamos a calda. Se alcançamos uma lista vazia, então o resultado é [code]False[/code].
