@@ -1,35 +1,34 @@
 title: Onde!?
 
-text: In the previous section, we defined a BMI calculator function and berator like this:
+text: Na seção anterior, definimos uma função de calculadora de <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a> que era algo parecido com isso:
 
 
 
-Notice that we repeat ourselves here three times. We repeat ourselves three times. Repeating yourself (three times) while programming is about as desirable as getting kicked inna head. Since we repeat the same expression three times, it would be ideal if we could calculate it once, bind it to a name and then use that name instead of the expression. Well, we can modify our function like this:
+Note ainda que nos repetimos três vezes. Nós nos repetimos três vezes. Repetir-se (três vezes) no código é tão desejável quando levar um chute bem no meio da testa. Já que repetimos a expressão três vezes, seria melhor se calculássemos apenas uma vez, gravássemos numa variável e usa-la nos próximos comandos ao invés da expressão. Para isso, modificamos nossa função para isso:
 
 
 
-We put the keyword [code]where[/code] after the guards (usually it's best to indent it as much as the pipes are indented) and then we define several names or functions. These names are visible across the guards and give us the advantage of not having to repeat ourselves. If we decide that we want to calculate BMI a bit differently, we only have to change it once. It also improves readability by giving names to things and can make our programs faster since stuff like our [code]bmi[/code] variable here is calculated only once. We could go a bit overboard and present our function like this:
+
+Colocamos a palavra-chave [code] where [/code] (geralmente identamos até onde estão os pipes) e definimos variáveis ou funções. Esses nomes são visíveis dentro dos guards e nos permitem não ficar nos repetindo. Se decidirmos que iremos calcular o <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a> de um modo diferente, precisamos mudar apenas uma vez. Podemos avançar um pouco e deixar nossa função assim:
 
 
 
-The names we define in the where section of a function are only visible to that function, so we don't have to worry about them polluting the namespace of other functions. Notice that all the names are aligned at a single column. If we don't align them nice and proper, Haskell gets confused because then it doesn't know they're all part of the same block.
+Os nomes criação na seção where só são visíveis dentro da função, então não temos de nos preocupar com elas poluindo o namespace de outras funções. Note também que todos os nomes foram alinhados na mesma coluna. Se não o fizéssemos, Haskell ficaria confuso e não saberia que eles fazem parte do mesmo bloco.
 
-<i>where</i> bindings aren't shared across function bodies of different patterns. If you want several patterns of one function to access some shared name, you have to define it globally.
+Associações <i>where</i> não são compartilhadas entre diferentes patterns. Se você quer que vários patterns da mesma função compartilhem um determinado nome, você deve especificá-lo como global.
 
-You can also use where bindings to <em>pattern match</em>! We could have rewritten the where section of our previous function as:
-
-
-
-Let's make another fairly trivial function where we get a first and a last name and give someone back their initials.
+Você ainda pode usar <em>pattern match</em> em where banners! Poderíamos reescrever a seção where anterior como:
 
 
-
-We could have done this pattern matching directly in the function's parameters (it would have been shorter and clearer actually) but this just goes to show that it's possible to do it in where bindings as well.
-
-Just like we've defined constants in where blocks, you can also define functions. Staying true to our healthy programming theme, let's make a function that takes a list of weight-height pairs and returns a list of BMIs.
+Faremos ainda outra função extremamente necessária que recebe nome e sobrenome e retorna suas iniciais.
 
 
 
-And that's all there is to it! The reason we had to introduce [code]bmi[/code] as a function in this example is because we can't just calculate one BMI from the function's parameters. We have to examine the list passed to the function and there's a different BMI for every pair in there.
+Poderíamos fazer esse pattern matching diremaente nos parâmetros da função (o que resultaria em um código mais limpo) mas é que não podemos e usar esse tipo de vínculo diretamente nos parâmetros da função).
 
-<i>where</i> bindings can also be nested. It's a common idiom to make a function and define some helper function in its <i>where</i> clause and then to give those functions helper functions as well, each with its own <i>where</i> clause.
+Assim como definimos constantes em blocos where, você ainda pode definir funções. Voltando ao nosso amado tema de programação, vamos fazer uma função que pega uma lista de pesos/altura e retorna sua lista de <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a>.
+
+
+E por hoje é só! A razão pela qual demos o [code] <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a> [/code] como exemplo de função é que não poderíamos calcular diretamente nos seus parâmetros.  Se vermos a lista passada pela função, veremos que cada par possui um <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a> diferenciado.
+
+Associações <i>where</i>  também podem ser aninhadas. É comum criar uma função e definir algum helper com suas cláusulas com funções e daí criar funções helper com suas próprias cláusulas  <i>where</i>.
