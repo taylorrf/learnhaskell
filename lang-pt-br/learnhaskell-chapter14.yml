@@ -1,0 +1,9 @@
+chapter: Zippers
+
+text: While Haskell's purity comes with a whole bunch of benefits, it makes us tacklesome problems differently than we would in impure languages. Because ofreferential transparency, one value is as good as another in Haskell if itrepresents the same thing.
+
+So if we have a tree full of fives (high-fives, maybe?) and we want to changeone of them into a six, we have to have some way of knowing exactly which fivein our tree we want to change. We have to know where it is in our tree. Inimpure languages, we could just note where in our memory the five is located andchange that. But in Haskell, one five is as good as another, so we can'tdiscriminate based on where in our memory they are. We also can't really <i>change</i> anything; when we say that we change a tree, we actuallymean that we take a tree and return a new one that's similar to the originaltree, but slightly different.
+
+One thing we can do is to remember a path from the root of the tree to the elementthat we want to change. We could say, take this tree, go left, go right and thenleft again and change the element that's there. While this works, it can beinefficient. If we want to later change an element that's near the element thatwe previously changed, we have to walk all the way from the root of the tree toour element again!
+
+In this chapter, we'll see how we can take some data structure and focus on apart of it in a way that makes changing its elements easy and walking around itefficient. Nice!

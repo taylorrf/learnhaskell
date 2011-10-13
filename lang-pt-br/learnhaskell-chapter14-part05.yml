@@ -1,0 +1,63 @@
+title: A very simple file system
+
+text: Now that we know how zippers work, let's use trees to represent a very simplefile system and then make a zipper for that file system, which will allow us tomove between folders, just like we usually do when jumping around our filesystem.
+
+If we take a simplistic view of the average hierarchical file system, we seethat it's mostly made up of files and folders. Files are units of data and comewith a name, whereas folders are used to organize those files and can containfiles or other folders. So let's say that an item in a file system is either afile, which comes with a name and some data, or a folder, which has a name andthen a bunch of items that are either files or folders themselves. Here's a datatype for this and some type synonyms so we know what's what:
+
+A file comes with two strings, which represent its name and the data it holds. Afolder comes with a string that is its name and a list of items. If that list isempty, then we have an empty folder.
+
+Here's a folder with some files and sub-folders:
+
+That's actually what my disk contains right now.
+
+- A zipper for our file system
+
+Now that we have a file system, all we need is a zipper so we can zip and zoomaround it and add, modify and remove files as well as folders. Like with binarytrees and lists, we're going to be leaving breadcrumbs that contain info aboutall the stuff that we chose not to visit. Like we said, a single breadcrumbshould be kind of like a node, only it should contain everything except thesub-tree that we're currently focusing on. It should also note where the holeis so that once we move back up, we can plug our previous focus into the hole.
+
+In this case, a breadcrumb should be like a folder, only it should be missingthe folder that we currently chose. Why not like a file, you ask? Well, becauseonce we're focusing on a file, we can't move deeper into the file system, so itdoesn't make sense to leave a breadcrumb that says that we came from a file. Afile is sort of like an empty tree.
+
+If we're focusing on the folder [code]"root"[/code] and we thenfocus on the file [code]"dijon_poupon.doc"[/code], what should thebreadcrumb that we leave look like? Well, it should contain the name of itsparent folder along with the items that come before the file that we're focusingon and the items that come after it. So all we need is a [code]Name[/code] and two lists of items. By keeping separate lists forthe items that come before the item that we're focusing and for the items thatcome after it, we know exactly where to place it once we move back up. So thisway, we know where the hole is.
+
+Here's our breadcrumb type for the file system:
+
+And here's a type synonym for our zipper:
+
+Going back up in the hierarchy is very simple. We just take the latestbreadcrumb and assemble a new focus from the current focus and breadcrumb.Like so:
+
+Because our breadcrumb knew what the parent folder's name was, as well as theitems that came before our focused item in the folder (that's [code]ls[/code]) and the ones that came after (that's [code]rs[/code]), moving up was easy.
+
+How about going deeper into the file system? If we're in the[code]"root"[/code] and we want to focus on[code]"dijon_poupon.doc"[/code], the breadcrumb that we leave is going toinclude the name [code]"root"[/code] along with the items thatprecede [code]"dijon_poupon.doc"[/code] and the ones that comeafter it.
+
+Here's a function that, given a name, focuses on a file of folder that's locatedin the current focused folder:
+
+[code]fsTo[/code] takes a [code]Name[/code] and a[code]FSZipper[/code] and returns a new [code]FSZipper[/code] that focuses on the filewith the given name. That file has to be in the current focused folder. Thisfunction doesn't search all over the place, it just looks at the current folder.
+
+First we use [code]break[/code] to break the list of items in afolder into those that precede the file that we're searching for and those thatcome after it. If you remember, [code]break[/code] takes apredicate and a list and returns a pair of lists. The first list in the pairholds items for which the predicate returns [code]False[/code].Then, once the predicate returns [code]True[/code] for an item, itplaces that item and the rest of the list in the second item of the pair. Wemade an auxilliary function called [code]nameIs[/code] that takesa name and a file system item and returns [code]True[/code] ifthe names match.
+
+So now, [code]ls[/code] is a list that contains the items thatprecede the item that we're searching for, [code]item[/code] isthat very item and [code]rs[/code] is the list of items that comeafter it in its folder. Now that we have this, we just present the item that wegot from [code]break[/code] as the focus and build a breadcrumbthat has all the data it needs.
+
+Note that if the name we're looking for isn't in the folder, the pattern [code]item:rs[/code] will try to match on an empty list and we'llget an error. Also, if our current focus isn't a folder at all but a file, weget an error as well and the program crashes.
+
+Now we can move up and down our file system. Let's start at the root and walk tothe file [code]"skull_man(scary).bmp"[/code]:
+
+[code]newFocus[/code] is now a zipper that's focused on the [code]"skull_man(scary).bmp"[/code] file. Let's get the firstcomponent of the zipper (the focus itself) and see if that's really true:
+
+Let's move up and then focus on its neighboring file[code]"watermelon_smash.gif"[/code]:
+
+- Manipulating our file system
+
+Now that we know how to navigate our file system, manipulating it is easy.Here's a function that renames the currently focused file or folder:
+
+Now we can rename our [code]"pics"[/code] folder to
+
+[code]"cspi"[/code]:
+
+We descended to the [code]"pics"[/code] folder, renamed it andthen moved back up.
+
+How about a function that makes a new item in the current folder? Behold:
+
+Easy as pie. Note that this would crash if we tried to add an item but weren'tfocusing on a folder, but were focusing on a file instead.
+
+Let's add a file to our [code]"pics"[/code] folder and then moveback up to the root:
+
+What's really cool about all this is that when we modify our file system, itdoesn't actually modify it in place but it returns a whole new file system. That way, wehave access to our old file system (in this case, [code]myDisk[/code]) as well as the new one (the first component of [code]newFocus[/code]). So by using zippers, we get versioning for free, meaning that we can alwaysrefer to older versions of data structures even after we've changed them, so tospeak. This isn't unique to zippers, but is a property of Haskell because itsdata structures are immutable. With zippers however, we get the ability toeasily and efficiently walk around our data structures, so the persistence ofHaskell's data structures really begins to shine.

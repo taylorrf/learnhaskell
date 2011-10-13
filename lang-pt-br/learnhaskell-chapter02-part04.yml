@@ -1,24 +1,25 @@
 title: Texas ranges
-text:What if we want a list of all numbers between 1 and 20? Sure, we could just type them all out but obviously that's not a solution for gentlemen who demand excellence from their programming languages. Instead, we'll use ranges. Ranges are a way of making lists that are arithmetic sequences of elements that can be enumerated. Numbers can be enumerated. One, two, three, four, etc. Characters can also be enumerated. The alphabet is an enumeration of characters from A to Z. Names can't be enumerated. What comes after "John"? I don't know.
 
-To make a list containing all the natural numbers from 1 to 20, you just write [code][1..20][/code]. That is the equivalent of writing [code][1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20][/code] and there's no difference between writing one or the other except that writing out long enumeration sequences manually is stupid.
+text:E se você precisar de uma lista com todos os números entre 1 e 20? Claro, iriamos digitando todos eles porém óbviamente esta não seria uma solução para cavalheiros que desejam excelência em sua linguagem de programação. Em função disso, nós utilizamos ranges. Ranges é um jeito de construir listas que são uma sequência aritmética de elementos devidamente enumerados. Números podem ser enumerados. Um, dois, três, quatro, etc. Carácteres também podem ser enumerados. O alfabeto é uma enumeração de caractéres de A a Z. Nomes também podem ser enumerados. O que vem depois de "John"? Não faço idéia.
 
-Ranges are cool because you can also specify a step. What if we want all even numbers between 1 and 20? Or every third number between 1 and 20?
+Para constituir uma lista que contenha todos os números naturais de 1 a 20, você simplesmente deve escrever [code][1..20][/code]. Isto é o equivalente a ter escrito [code][1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20][/code] e não há diferença entre um e outro com a excessão de que escrever longas sequências enumeradas manualmente é algo bastante estúpido.
 
-It's simply a matter of separating the first two elements with a comma and then specifying what the upper limit is. While pretty smart, ranges with steps aren't as smart as some people expect them to be. You can't do [code][1,2,4,8,16..100][/code] and expect to get all the powers of 2. Firstly because you can only specify one step. And secondly because some sequences that aren't arithmetic are ambiguous if given only by a few of their first terms.
+Ranges também são legais porque você pode definir uma etapa específica. E se nós quisermos todos os números ímpares entre 1 e 20? Ou se nós quisermos sempre ter o terceiro número entre 1 e 20?
 
-To make a list with all the numbers from 20 to 1, you can't just do [code][20..1][/code], you have to do [code][20,19..1][/code].
+Esta é uma questão simples de separar os primeiros dois elementos com uma vírgula e então especificar qual o limíte máximo. Embora bastante esperto, ranges com diversas etapas não são tão espertos como muitas pessoas esperam que ele seja. Você não pode fazer [code][1,2,4,8,16..100][/code]  e esperar que isso lhe retorne a potência de 2. Primeiramente porque você pode especificar somente uma etapa. E segundo que algumas sequências não são aritméticas mas sim ambíguas se tivermos somente alguns dos primeiros termos.
 
-Watch out when using floating point numbers in ranges! Because they are not completely precise (by definition), their use in ranges can yield some pretty funky results.
+Para ter uma lista com todos os números entre 20 e 1, você não pode simplesmente fazer [code][20..1][/code], você deve fazer [code][20,19..1][/code].
 
-My advice is not to use them in list ranges.
+Veja como utilizamos números ponto flutuante em ranges! Como eles não são completamente precisos (por definição), o uso deles em ranges pode retornar alguns resultados que cheiram bem mal.
 
-You can also use ranges to make infinite lists by just not specifying an upper limit. Later we'll go into more detail on infinite lists. For now, let's examine how you would get the first 24 multiples of 13. Sure, you could do [code][13,26..24*13][/code]. But there's a better way: [code]take 24 [13,26..][/code]. Because Haskell is lazy, it won't try to evaluate the infinite list immediately because it would never finish. It'll wait to see what you want to get out of that infinite lists. And here it sees you just want the first 24 elements and it gladly obliges.
+Meu aviso é que não se faça uso deles em listas ranges.
 
-A handful of functions that produce infinite lists:
+Você também pode utilizar ranges para fazer listas infinitas, basta não especificar qual o límite máximo. Depois nós iremos adentrar com mais detalhes nas litas infinitas. No momento, vamos examinar como que você pode ter os primeiros 24 multiplos de 13. Claro, você quer fazer [code][13,26..24*13][/code]. Porém eis aqui um jeito melhor: [code]take 24 [13,26..][/code]. Como Haskell é preguiçoso, ele não vai tentar analisar uma lista infinita imediatamente porque isto nunca vai acabar. Ele vai ficar esperando pra ver no que esta lista infinita vai dar. E aqui ele vê que você quer apenas os primeiros 24 elementos e de bom grado lhe retorna eles.
 
-[code]cycle[/code] takes a list and cycles it into an infinite list. If you just try to display the result, it will go on forever so you have to slice it off somewhere.
+Algumas funções para produzirmos listas infinitas:
 
-[code]repeat[/code] takes an element and produces an infinite list of just that element. It's like cycling a list with only one element.
+[code]cycle[/code] recebe uma lista e gera ciclos infinitos dela. Se você tentar mostrar o resultado,  continuará para sempre até que você tente corta-lo fora em algum lugar.
 
-Although it's simpler to just use the [code]replicate[/code] function if you want some number of the same element in a list. [code]replicate 3 10[/code] returns [code][10,10,10][/code].
+[code]repeat[/code] recebe um elemento e produz uma lista infinita dele. Isto é como o ciclo de uma lista com somente um elemento.
+
+No entanto será mais simples utilizar a função [code]replicate[/code] caso você deseje algumas repetições do mesmo elemento em uma lista. [code]replicate 3 10[/code] retornará [code][10,10,10][/code].

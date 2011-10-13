@@ -1,0 +1,82 @@
+title: A trail of breadcrumbs
+
+text: Okay, so for focusing on a sub-tree, we want something better than just a listof directions that we always follow from the root of our tree. Would it help ifwe start at the root of the tree and move either left or right one step at atime and sort of leave breadcrumbs? That is, when we go left, we remember thatwe went left and when we go right, we remember that we went right. Sure, we cantry that.
+
+To represent our breadcrumbs, we'll also use a list of [code]Direction[/code] (which is either [code]L[/code] or [code]R[/code]), only instead of calling it[code]Directions[/code], we'll call it [code]Breadcrumbs[/code], because our directions will now be reversed since we're leaving them aswe go down our tree:
+
+Here's a function that takes a tree and some breadcrumbs and moves to the leftsub-tree while adding [code]L[/code] to the head of the list thatrepresents our breadcrumbs:
+
+We ignore the element at the root and the right sub-tree and just return theleft sub-tree along with the old breadcrumbs with [code]L[/code]as the head. Here's a function to go right:
+
+It works the same way. Let's use these functions to take our [code]freeTree[/code] and go right and then left:
+
+Okay, so now we have a tree that has [code]'W'[/code] in its root and [code]'C'[/code] in the root of its left sub-treeand [code]'R'[/code] in the root of its right sub-tree. Thebreadcrumbs are [code][L,R][/code], because we first went rightand then left.
+
+To make walking along our tree clearer, we can use the [code]-:[/code] function that we defined like so:
+
+Which allows us to apply functions to values by first writing the value, thenwriting a [code]-:[/code] and then the function. So instead of[code]goRight (freeTree, [])[/code], we can write [code](freeTree, []) -: goRight[/code]. Using this, we can rewritethe above so that it's more apparent that we're first going right and then left:
+
+- Going back up
+
+What if we now want to go back up in our tree? From our breadcrumbs we knowthat the current tree is the left sub-tree of its parent and that it is theright sub-tree of its parent, but that's it. They don't tell us enough about theparent of the current sub-tree for us to be able to go up in the tree. It would seem that apart from the direction that we took, asingle breadcrumb should also contain all other data that we need to go back up. In this case, that's the element in the parent tree along with its rightsub-tree.
+
+In general, a single breadcrumb should contain all the data needed toreconstruct the parent node. So it should have the information from all the pathsthat we didn't take and it should also know the direction that we did take, butit must not contain the sub-tree that we're currently focusing on. That's becausewe already have that sub-tree in the first component of the tuple, so if we alsohad it in the breadcrumbs, we'd have duplicate information.
+
+Let's modify our breadcrumbs so that they also contain information about everythingthat we previously ignored when moving left and right. Instead of [code]]Direction[/code], we'll make a new data type:
+
+Now, instead of just [code]L[/code], we have a [code]LeftCrumb[/code] that also contains the element in the node that wemoved from and the right tree that we didn't visit. Instead of [code]]R[/code], we have [code]RightCrumb[/code], whichcontains the element in the node that we moved from and the left tree that wedidn't visit.
+
+These breadcrumbs now contain all the data needed to recreate the tree that wewalked through. So instead of just being normal bread crumbs, they're now morelike floppy disks that we leave as we go along, because they contain a lot moreinformation than just the direction that we took.
+
+In essence, every breadcrumb is now like a tree node with a hole in it. When wemove deeper into a tree, the breadcrumb carries all the information that thenode that we moved away from carried <i>except</i> the sub-tree that we chose tofocus on. It also has to note where the hole is. In the case of a[code]LeftCrumb[/code], we know that we moved left, so thesub-tree that's missing is the left one.
+
+Let's also change our [code]Breadcrumbs[/code] type synonym toreflect this:
+
+Next up, we have to modify the [code]goLeft[/code] and [code]goRight[/code] functions to store information about thepaths that we didn't take in our breadcrumbs, instead of ignoring thatinformation like they did before. Here's [code]goLeft[/code]:
+
+You can see that it's very similar to our previous [code]goLeft[/code], only instead of just adding a [code]L[/code] to the head of ourlist of breadcrumbs, we add a [code]LeftCrumb[/code] to signifythat we went left and we equip our [code]LeftCrumb[/code] with theelement in the node that we moved from (that's the [code]x[/code])and the right sub-tree that we chose not to visit.
+
+Note that this function assumes that the current tree that's under focus isn't [code]Empty[/code]. An empty tree doesn't have any sub-trees, soif we try to go left from an empty tree, an error will occur because the patternmatch on [code]Node[/code] won't succeed and there's no patternthat takes care of [code]Empty[/code].
+
+[code]goRight[/code] is similar:
+
+We were previously able to go left and right. What we've gotten now is theability to actualy go back up by remembering stuff about the parent nodes andthe paths that we didn't visit. Here's the [code]goUp[/code]function:
+
+We're focusing on the tree [code]t[/code] and we check what thelatest [code]Crumb[/code] is. If it's a [code]LeftCrumb[/code], then we construct a new tree where our tree [code]t[/code] is the leftsub-tree and we use the information about the right sub-tree that we didn'tvisit and the element to fill out the rest of the [code]Node[/code]. Because we moved back so to speak and picked up the last breadcrumb to recreatewith it the parent tree, the new list of breadcrumbs doesn't contain it.
+
+Note that this function causes an error if we're already at the top of a treeand we want to move up. Later on, we'll use the [code]Maybe[/code]monad to represent possible failure when moving focus.
+
+With a pair of [code]Tree a[/code] and [code]Breadcrumbs a[/code], we have all the information to rebuild the whole tree and we also have a focuson a sub-tree. This scheme also enables us to easily move up, left and right.Such a pair that contains a focused part of a data structure and its surroundings iscalled a zipper, because moving our focus up and down the data structure resembles theoperation of a zipper on a regular pair of pants. So it's cool to make a typesynonym as such:
+
+I'd prefer naming the type synonym [code]Focus[/code] because thatmakes it clearer that we're focusing on a part of a data structure, but the termzipper is more widely used to describe such a setup, so we'll stick with[code]Zipper[/code].
+
+
+- Manipulating trees under focus
+
+Now that we can move up and down, let's make a function that
+modifies the element in the root of the sub-tree that the zipper is focusing on:
+
+If we're focusing on a node, we modify its root element with the function
+[code]f[/code]. If we're focusing on an empty tree, we leave it asit is.  Now we can start off with a tree, move to anywhere we want and modify anelement, all while keeping focus on that element so that we can easily movefurther up or down. An example:
+
+We go left, then right and then modify the root element by replacing it with a
+[code]'P'[/code]. This reads even better if we use [code]-:[/code]:
+
+We can then move up if we want and replace anelement with a mysterious [code]'X'[/code]:
+
+Or if we wrote it with [code]-:[/code]:
+
+Moving up is easy because the breadcrumbs that we leave form the part of thedata structure that we're not focusing on, but it's inverted, sort of like turning asock inside out. That's why when we want to move up, we don't have to start fromthe root and make our way down, but we just take the top of our inverted tree,thereby uninverting a part of it and adding it to our focus.
+
+Each node has two sub-trees, even if those sub-trees are empty trees. So ifwe're focusing on an empty sub-tree, one thing we can do is to replace it with anon-empty subtree, thus attaching a tree to a leaf node. The code for this issimple:
+
+We take a tree and a zipper and return a new zipper that has its focus replacedwith the supplied tree. Not only can we extend trees this way by replacing emptysub-trees with new trees, we can also replace whole existing sub-trees. Let'sattach a tree to the far left of our [code]freeTree[/code]:
+
+[code]newFocus[/code] is now focused on the tree that we justattached and the rest of the tree lies inverted in the breadcrumbs. If we wereto use [code]goUp[/code] to walk all the way to the top of thetree, it would be the same tree as [code]freeTree[/code] but withan additional [code]'Z'[/code] on its far left.
+
+
+- I'm going straight to the top, oh yeah, up where the air is fresh and clean!
+
+Making a function that walks all the way to the top of the tree, regardless ofwhat we're focusing on, is really easy. Here it is:
+
+If our trail of beefed up breadcrumbs is empty, this means that we're already atthe root of our tree, so we just return the current focus. Otherwise, we go upto get the focus of the parent node and then recursively apply [code]topMost[/code] to that. So now we can walk around our tree, goingleft and right and up, applying [code]modify[/code] and [code]attach[/code] as we go along and then when we're done withour modifications, we use [code]topMost[/code] to focus on theroot of our tree and see the changes that we've done in proper perspective.

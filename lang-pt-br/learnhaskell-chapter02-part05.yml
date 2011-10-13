@@ -1,33 +1,35 @@
-title: I'm a list comprehension
-text: If you've ever taken a course in mathematics, you've probably run into set comprehensions. They're normally used for building more specific sets out of general sets. A basic comprehension for a set that contains the first ten even natural numbers is [image]. The part before the pipe is called the output function, [code]x[/code] is the variable, [code]N[/code] is the input set and [code]x &lt;= 10[/code] is the predicate. That means that the set contains the doubles of all natural numbers that satisfy the predicate.
+title: Eu sou a compreensão de lista
 
-If we wanted to write that in Haskell, we could do something like [code]take 10 [2,4..][/code]. But what if we didn't want doubles of the first 10 natural numbers but some kind of more complex function applied on them? We could use a list comprehension for that. List comprehensions are very similar to set comprehensions. We'll stick to getting the first 10 even numbers for now. The list comprehension we could use is [code][x*2 | x &lt;- [1..10]][/code]. [code]x[/code] is drawn from [code][1..10][/code] and for every element in [code][1..10][/code] (which we have bound to [code]x[/code]), we get that element, only doubled. Here's that comprehension in action.
+text: Se você já esteve em um curso de matemática, você provavelmente já viu compreensão de conjuntos. Isto é normalmente utilizado para a construção de conjuntos mais específicos de conjuntos em geral. Uma <i>compreensão</i> básica para um conjunto que contém os dez primeiros números naturais seria. A parte depois do <i>pipe</i> é chamada de output da função, [code]x[/code] é a variável, [code]N[/code] é o input e [code]x &lt;= 10[/code] o predicado. Isso significa que o conjunto contém as duplas de todos os números naturais que satisfazem o predicado.
 
-As you can see, we get the desired results. Now let's add a condition (or a predicate) to that comprehension. Predicates go after the binding parts and are separated from them by a comma. Let's say we want only the elements which, doubled, are greater than or equal to 12. 
+Se quisermos escrever isto em Haskell nós podemos fazer algo como [code]take 10 [2,4..][/code]. Mas se nós não quisermos dobrar os 10 primeiros números naturais mas sim aplicar alguma função mais complexa neles? Nós podemos utilizar <a href="http://pt.wikipedia.org/wiki/List_comprehension" target="_blank">compreensão de lista</a> para isto. Compreensão de lista é bastante similar com compreensão de conjuntos. Vamos começar com os 10 primeiros números pares agora. A compreensão de lista que podemos usar é [code][x*2 | x &lt;- [1..10]][/code]. [code]x[/code] é traçado a partir de [code][1..10][/code] e para cada elemento em [code][1..10][/code] (que temos vinculado a [code]x[/code]) teremos esse elemento dobrado. Aqui esta a compreensão em ação.
 
-Cool, it works. How about if we wanted all numbers from 50 to 100 whose remainder when divided with the number 7 is 3? Easy.
+Como você vê, obtemos os resultados desejados. Agora vamos adicionar uma condição (ou um predicado) nesta compreensão. Predicados ficam depois dessa parte obrigatória sendo separado por vírgula. Digamos que nós queremos somente os elementos que, dobrados, são maiores ou igual a 12.
 
-Success! Note that weeding out lists by predicates is also called <em>filtering</em>. We took a list of numbers and we filtered them by the predicate. Now for another example. Let's say we want a comprehension that replaces each odd number greater than 10 with [code]"BANG!"[/code] and each odd number that's less than 10 with [code]"BOOM!"[/code]. If a number isn't odd, we throw it out of our list. For convenience, we'll put that comprehension inside a function so we can easily reuse it.
+Legal, isto funciona. E se nós quisermos todos os números entre 50 e 100 onde o resto da divisão pelo número 7 fosse 3? Fácil.
 
-The last part of the comprehension is the predicate. The function [code]odd[/code] returns [code]True[/code] on an odd number and [code]False[/code]  on an even one. The element is included in the list only if all the predicates evaluate to [code]True[/code].
+Sucesso! Note que reduzir as listas por predicados é chamado de <em>filtragem</em>. Nós temos uma lista de números e nós filtramos eles pelo predicado. Vamos a outro exemplo. Digamos que você queira uma <i>compreensão</i> que substitua cada número ímpar maior do que 10 com [code]"BANG!"[/code] e cada número ímpar menor do que 10 com [code]"BOOM!"[/code]. Se o número não for ímpar, queremos ele fora da lista. Convenientemente nós colocamos esta <i>compreensão</i> dentro de uma função para reutilizar-mos isto facilmente.
 
-We can include several predicates. If we wanted all numbers from 10 to 20 that are not 13, 15 or 19, we'd do:
+A última parte da <i>compreensão</i> é o predicado. A função [code]odd[/code] retorna [code]True[/code] quando o número for ímpar e [code]False[/code] quando for par. O elemento é incluido na lista somente se todos os predicados examinados sejam [code]True[/code].
 
-Not only can we have multiple predicates in list comprehensions (an element must satisfy all the predicates to be included in the resulting list), we can also draw from several lists. When drawing from several lists, comprehensions produce all combinations of the given lists and then join them by the output function we supply. A list produced by a comprehension that draws from two lists of length 4 will have a length of 16, provided we don't filter them. If we have two lists, [code][2,5,10][/code] and [code][8,10,11][/code] and we want to get the products of all the possible combinations between numbers in those lists, here's what we'd do.
+Podemos também incluir vários predicados. Se nós quisermos todos os números entre 10 e 20 que não sejam 13, 15 ou 19, podemos fazer:
 
-As expected, the length of the new list is 9. What if we wanted all possible products that are more than 50?
+Não apenas podemos ter vários predicados em uma compreensão de lista (um elemento deve satisfazer todos os predicados para ser incluso no resultado da lista), como também podemos extrair várias listas. Quando extraimos diversas listas, a compreensão produz todas as combinações da lista desejada e junta com a função de output que nós fornecemos. Uma lista produzida pela compreensão da extração a partir de duas listas com length 4 terá um length de 16, desde que não seja filtrado. Se eu tiver duas listas, [code][2,5,10][/code] e [code][8,10,11][/code] e quiser obter o produto de todas as combinações possíveis entre números destas listas, aqui esta o que devemos fazer.
 
-How about a list comprehension that combines a list of adjectives and a list of nouns ... for epic hilarity.
+Como esperado, o length da nova lista é 9. E se eu quiser todas os possíveis produtos que sejam maiores do que 50?
 
-I know! Let's write our own version of [code]length[/code]! We'll call it [code]length'[/code].
+Que tal uma compreensão de lista que combina uma lista de adjetivos e uma lista de substantivos... só para dar umas risadas.
 
+Eu sei! Vamos escrever a nossa própria versão do [code]length[/code]! Chamaremos isto de [code]length'[/code].
+
+[code]_[/code] significa que não me importo com o que vamos extrair da lista, ao invés de escrever o nome da variável que nunca será usada, basta escrever [code]_[/code]. Esta função substitui todos os elementos da lista com [code]1[/code] e soma todos eles. A idéia é ter o resultado da soma e obter depois o length da nossa lista.
 
 [code]_[/code] means that we don't care what we'll draw from the list anyway so instead of writing a variable name that we'll never use, we just write [code]_[/code]. This function replaces every element of a list with [code]1[/code] and then sums that up. This means that the resulting sum will be the length of our list.
 
-Just a friendly reminder: because strings are lists, we can use list comprehensions to process and produce strings. Here's a function that takes a string and removes everything except uppercase letters from it.
+Lembrete de amigo: como strings são listas, nós devemos usar compreensão de listas para processar e produzir strings. Eis uma função que recebe uma string e remove tudo exceto letras maíusculas dela.
 
-Testing it out:
+Testando isto:
 
-The predicate here does all the work. It says that the character will be included in the new list only if it's an element of the list [code]['A'..'Z'][/code]. Nested list comprehensions are also possible if you're operating on lists that contain lists. A list contains several lists of numbers. Let's remove all odd numbers without flattening the list.
+O predicado aqui faz todo o serviço. Isto dirá para o carácter que ele será incluido em uma nova lista somente se ele for um elemento da lista [code]['A'..'Z'][/code]. Aninhar compreensões de lista também é possível se você estiver operando em uma lista que contém listas. Um lista que contém diversas listas de números. Vamos remover todos os números ímpar sem diminui-lás.
 
-You can write list comprehensions across several lines. So if you're not in GHCI, it's better to split longer list comprehensions across multiple lines, especially if they're nested.
+Você pode escrever compreensão de lista em diversas linhas. Se você não estiver no GHCI, é melhor que quebre longas compreensão de lista em diversas linhas, especialmente se forem aninhadas.
