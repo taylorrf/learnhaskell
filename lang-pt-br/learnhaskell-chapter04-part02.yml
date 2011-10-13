@@ -1,37 +1,35 @@
 title: Guardas, guardas!
 
-text: Enquanto patterns é um jeito de ter certeza de que um valor tenha a forma desejada e torna possível desmembra-lo, guardas são uma forma de testar se uma (ou mais) propriedades são verdadeiras ou falsas. Se isso te parece demais com um if, está no caminho certo. A diferença é que guardas são mais fáceis de ler quando têm muitas condições e funcionam bem com patterns.
+text: Enquanto patterns é um jeito de ter certeza de que um valor tenha a forma desejada e torna possível desmembra-lo, guards (guardas) são uma forma de testar se uma (ou mais) propriedades são verdadeiras ou falsas. Se isso te parece demais com um if, está no caminho certo. A diferença é que guards são mais fáceis de ler quando têm muitas condições e funcionam bem com patterns.
 
-Ao invés de parar para explicar a sintaxe, vamos direto criar uma função usando guardas. Faremos uma função simples que repreende o usuário de uma forma específica, dependendo do seu <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a>. Seu <acronym title="Índice de massa corporal">IMC</acronym> é igual à sua massa dividida pelo quadrado de sua altura. Se seu <acronym title="Índice de massa corporal">IMC</acronym>  está abaixo de 18,5, você é considerado magro. Se está entre 18,5 e 25, é saudável. Entre 25 e 30, acima do peso. Maior, obeso. Então, esta é a função (ela não calcula, somente mostra a mensagem)
-
-
-
-Guards are indicated by pipes that follow a function's name and its parameters. Usually, they're indented a bit to the right and lined up. A guard is basically a boolean expression. If it evaluates to [code]True[/code], then the corresponding function body is used. If it evaluates to [code]False[/code], checking drops through to the next guard and so on. If we call this function with [code]24.3[/code], it will first check if that's smaller than or equal to [code]18.5[/code]. Because it isn't, it falls through to the next guard. The check is carried out with the second guard and because 24.3 is less than 25.0, the second string is returned.
-
-This is very reminiscent of a big if else tree in imperative languages, only this is far better and more readable. While big if else trees are usually frowned upon, sometimes a problem is defined in such a discrete way that you can't get around them. Guards are a very nice alternative for this.
-
-Many times, the last guard is [code]otherwise[/code]. [code]otherwise[/code] is defined simply as [code]otherwise = True[/code] and catches everything. This is very similar to patterns, only they check if the input satisfies a pattern but guards check for boolean conditions. If all the guards of a function evaluate to [code]False[/code] (and we haven't provided an [code]otherwise[/code] catch-all guard), evaluation falls through to the next <em>pattern</em>. That's how patterns and guards play nicely together. If no suitable guards or patterns are found, an error is thrown.
-
-Of course we can use guards with functions that take as many parameters as we want. Instead of having the user calculate his own BMI before calling the function, let's modify this function so that it takes a height and width and calculates it for us.
+Ao invés de parar para explicar a sintaxe, vamos direto criar uma função usando guards. Faremos uma função simples que repreende o usuário de uma forma específica, dependendo do seu <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a>. Seu <acronym title="Índice de massa corporal">IMC</acronym> é igual à sua massa dividida pelo quadrado de sua altura. Se seu <acronym title="Índice de massa corporal">IMC</acronym>  está abaixo de 18,5, você é considerado magro. Se está entre 18,5 e 25, é saudável. Entre 25 e 30, acima do peso. Maior, obeso. Então, esta é a função (ela não calcula, somente mostra a mensagem)
 
 
+Guards são marcados por pipes, seguidos do nome de uma função e seus parâmetros. Geralmente, são alinhados e identados um pouco a direita. Um guarda geralmente é uma expressão booleana. Se é [code] True [/code], a função correspondente é executada. Se [code] False [/code], o resto da linha não é executada e é passado para a próxima. Se chamarmos essa função com [code] 24.3 [/code], será testado se é menor ou igual a [code] 18.5 [/code]. Já que não é, o próximo guard é testado. A verificação tem sucesso ao passar pelo segundo guard, já que 24,3 é menor que 25,0. Assim, é retornado o resultado do segundo guard.
 
-Let's see if I'm fat ...
+Os guards são remanescentes de uma árvore encadeada de if/elses da linguagens imperativas, mas muito mais legíveis. Apesar de árvores de if/elses encadeados serem extremamente desaconselhados, às vezes um problema é definido de um modo que não há muitas alternativas. Em Haskell, Guards são uma solução.
+
+Em vários casos, o último guard é [code] otherwise [/code]. [code] otherwise [/code] é definido com [code] otherwise = True [/code] e aprova tudo. É muito parecido com patterns, que testam por padrões ao invés de condições booleanas. Se todos os guards de uma função derem [code] False [/code] (e não tivermos especificado um guard [code] otherwise [/code]), é testado o próximo <em>pattern</em>. É assim que patterns e guards funcionam bem em conjunto. Se nenhum guard ou pattern se aplicar, é lançado um erro.
+
+E é claro que podemos usar guards com funções que recebam quantos parâmetros desejarmos. Ao invés de obrigarmos o usuário a calcular o seu próprio IMC antes de usar a função, vamos modificá-la para receber altura e peso e descobrir automaticamnte.
 
 
 
-Yay! I'm not fat! But Haskell just called me ugly. Whatever!
-
-Note that there's no [code]=[/code] right after the function name and its parameters, before the first guard. Many newbies get syntax errors because they sometimes put it there.
-
-Another very simple example: let's implement our own [code]max[/code] function. If you remember, it takes two things that can be compared and returns the larger of them.
-
-Guards can also be written inline, although I'd advise against that because it's less readable, even for very short functions. But to demonstrate, we could write [code]max'[/code] like this:
+Vamos descobrir se eu estou gordo...
 
 
 
-Ugh! Not very readable at all! Moving on: let's implement our own [code]compare[/code] by using guards.
+Ei! Não estou gordo! Mas Haskell me chamou de feio mesmo assim. Que seja.
+
+Veja que não há um [code] = [/code] depois do nome da função e seus parâmetros, mas antes do primeiro guard. Muitos iniciantes recebem erros de sintaxe por colocarem aí.
+
+Mais uma outra bem simples: vamos implementar nosso próprio [code] max [/code]. Se não se lembra, recebe dois parâmetros e retorna o maior.
+
+Guards também podem ser escritos em apenas uma linha, no entanto eu não recomendo graças a sua pouca legibilidade, mesmo em funções curtas. Mas para fins de demonstração, poderíamos escrever nosso [code] max' [/code] assim:
+
+
+Ugh! Nem um pouco legível! Próxima: nossa própria imprementação de [code] compare [/code] guards.
 
 
 
-Nota: Not only can we call functions as infix with backticks, we can also define them using backticks. Sometimes it's easier to read that way.
+Nota: Do mesmo modo que podemos chamar funções infixas usando crases em volta do seu nome, podemos defini-las. Às vezes se torna mais fácil de se ler.
