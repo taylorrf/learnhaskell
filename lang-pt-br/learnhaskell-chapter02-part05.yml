@@ -24,8 +24,6 @@ Eu sei! Vamos escrever a nossa própria versão do [code]length[/code]! Chamarem
 
 [code]_[/code] significa que não me importo com o que vamos extrair da lista, ao invés de escrever o nome da variável que nunca será usada, basta escrever [code]_[/code]. Esta função substitui todos os elementos da lista com [code]1[/code] e soma todos eles. A idéia é ter o resultado da soma e obter depois o length da nossa lista.
 
-[code]_[/code] means that we don't care what we'll draw from the list anyway so instead of writing a variable name that we'll never use, we just write [code]_[/code]. This function replaces every element of a list with [code]1[/code] and then sums that up. This means that the resulting sum will be the length of our list.
-
 Lembrete de amigo: como strings são listas, nós devemos usar compreensão de listas para processar e produzir strings. Eis uma função que recebe uma string e remove tudo exceto letras maíusculas dela.
 
 Testando isto:
