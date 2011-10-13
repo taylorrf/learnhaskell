@@ -4,31 +4,31 @@ text: Na seção anterior, definimos uma função de calculadora de <a href="htt
 
 
 
-Note ainda que nos repetimos três vezes. Nós nos repetimos três vezes. Repetir-se (três vezes) no código é tão desejável quando levar um chute bem no meio da testa. Já que repetimos a expressão três vezes, seria melhor se calculássemos apenas uma vez, gravássemos numa variável e usa-la nos próximos comandos ao invés da expressão. Para isso, modificamos nossa função para isso:
+Note ainda que nos repetimos três vezes. Nos repetimos três vezes. Repetir-se (três vezes) no código é tão desejável quando levar um chute bem no meio da testa. Ao invés de repetir a expressão três vezes, seria melhor se calculássemos apenas uma vez, guardássemos numa variável e a usássemos nos próximos comandos ao invés da expressão. Para isso, modificamos nossa função:
 
 
 
 
-Colocamos a palavra-chave [code] where [/code] (geralmente identamos até onde estão os pipes) e definimos variáveis ou funções. Esses nomes são visíveis dentro dos guards e nos permitem não ficar nos repetindo. Se decidirmos que iremos calcular o <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a> de um modo diferente, precisamos mudar apenas uma vez. Podemos avançar um pouco e deixar nossa função assim:
+Colocamos a palavra-chave [code] where [/code] (geralmente identamos até onde estão os pipes) e definimos variáveis ou funções. Esses nomes são visíveis apenas dentro dos guards e evitam problemas de escopo. Se decidirmos que iremos calcular o <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a> de um modo diferente, precisamos mudar apenas uma vez. Podemos ainda avançar um pouco e deixar nossa função assim:
 
 
 
-Os nomes criação na seção where só são visíveis dentro da função, então não temos de nos preocupar com elas poluindo o namespace de outras funções. Note também que todos os nomes foram alinhados na mesma coluna. Se não o fizéssemos, Haskell ficaria confuso e não saberia que eles fazem parte do mesmo bloco.
+Os nomes criação na seção <i>where</i> só são visíveis dentro da função, então não temos de nos preocupar com elas poluindo o namespace de outras funções. Note também que todos os nomes foram alinhados na mesma coluna. Se não o fizéssemos, Haskell ficaria confuso e não saberia que eles fazem parte do mesmo bloco.
 
 Associações <i>where</i> não são compartilhadas entre diferentes patterns. Se você quer que vários patterns da mesma função compartilhem um determinado nome, você deve especificá-lo como global.
 
-Você ainda pode usar <em>pattern match</em> em where banners! Poderíamos reescrever a seção where anterior como:
+Você ainda pode usar <em>pattern match</em> em associações <i>where</i>! Poderíamos reescrever a associação <i>where</i> anterior como:
 
 
 Faremos ainda outra função extremamente necessária que recebe nome e sobrenome e retorna suas iniciais.
 
 
 
-Poderíamos fazer esse pattern matching diremaente nos parâmetros da função (o que resultaria em um código mais limpo) mas é que não podemos e usar esse tipo de vínculo diretamente nos parâmetros da função).
+Poderíamos fazer com pattern matching diretamente nos parâmetros da função (o que resultaria em um código mais simples), mas isso é só para demonstrar que também é possível com associações <i>where</i>.
 
-Assim como definimos constantes em blocos where, você ainda pode definir funções. Voltando ao nosso amado tema de programação, vamos fazer uma função que pega uma lista de pesos/altura e retorna sua lista de <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a>.
+Assim como definimos constantes em associações <i>where</i>, também podem ser definidas funções. Voltando ao bom e velho código, vamos fazer uma função que pega uma lista de massas/altura e retorna uma outra de <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMCs</acronym></a> correspondentes.
 
 
-E por hoje é só! A razão pela qual demos o [code] <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a> [/code] como exemplo de função é que não poderíamos calcular diretamente nos seus parâmetros.  Se vermos a lista passada pela função, veremos que cada par possui um <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a> diferenciado.
+E isso é tudo! A razão pela qual demos o [code] <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a> [/code] como exemplo de função é que os parâmetros não são resultados finais. Se vermos a lista passada pela função, veremos que cada par possui um <a href="http://pt.wikipedia.org/wiki/%C3%8Dndice_de_massa_corporal"><acronym title="Índice de massa corporal">IMC</acronym></a> diferenciado.
 
-Associações <i>where</i>  também podem ser aninhadas. É comum criar uma função e definir algum helper com suas cláusulas com funções e daí criar funções helper com suas próprias cláusulas  <i>where</i>.
+Associações <i>where</i> também podem ser aninhadas. É comum aí criar funções com seus próprios <i>where</i> (e respectivos <i>where</i> internos) para funções não usadas fora do escopo.
