@@ -1,19 +1,17 @@
-title: Case expressions
+title: Expressões case
 
-text: Many imperative languages (C, C++, Java, etc.) have case syntax and if you've ever programmed in them, you probably know what it's about. It's about taking a variable and then executing blocks of code for specific values of that variable and then maybe including a catch-all block of code in case the variable has some value for which we didn't set up a case.
+text: Se você já programou em outras linguagens imperativas (C, C++, Java, etc.), sabe do que estou falando. É pegar uma variável e executar blocos de código específicos para cada valor pré-definido e possivelmente definir um bloco padrão no caso dela ter um valor inesperado.
 
-Haskell takes that concept and one-ups it. Like the name implies, case expressions are, well, expressions, much like if else expressions and <i>let</i> bindings. Not only can we evaluate expressions based on the possible cases of the value of a variable, we can also do pattern matching. Hmmm, taking a variable, pattern matching it, evaluating pieces of code based on its value, where have we heard this before? Oh yeah, pattern matching on parameters in function definitions! Well, that's actually just syntactic sugar for case expressions. These two pieces of code do the same thing and are interchangeable:
-
-
-
-As you can see, the syntax for case expressions is pretty simple:
+Haskell pega o conceito e o expande. Como o próprio nome sugere, expressões case são, bom, expressões, e muito semelhante com expressões if/else e associações <i>let</i>. Não só podemos testar expressões baseado em seu valor, como pode usar de pattern matching. Hmmmmm, pegar uma variável, procurar por um pattern, executar blocos de código para cada resultado... onde já vi isso? Ah claro, pattern matching em parâmetros de funções! Mas isso é só um atalho para executar uma expressão case. Esses dois códigos fazem a mesma coisa, então pode escolher qual você prefere:
 
 
 
-[code]expression[/code] is matched agianst the patterns. The pattern matching action is the same as expected: the first pattern that matches the expression is used. If it falls through the whole case expression and no suitable pattern is found, a runtime error occurs.
-
-Whereas pattern matching on function parameters can only be done when defining functions, case expressions can be used pretty much anywhere. For instance:
+Como vê, a sintaxe de expressões case são extremamente simples:
 
 
+[code] expression [/code] é testada por alguns patterns. Pattern matching funciona exatamente como se presume: o primeiro pattern que verificar-se verdadeiro é executado. Se todo o case for executado e nenhum pattern se encaixar, acontece um runtime error.
 
-They're are useful for pattern matching against something in the middle of an expression. Because pattern matching in function definitions is syntactic sugar for case expressions, we could have also defined this like so:
+Enquanto pattern matching dentro dos parâmetros só podem ser feitos ao definir funções, expressões case podem ser colocadas praticamente em qualquer lugar. Olha só:
+
+
+Elas são úteis para usar pattern matching no meio de expressões. Já que pattern matching em definições de função são um atalho para expressões case, poderíamos ainda ter feito desse jeito:
