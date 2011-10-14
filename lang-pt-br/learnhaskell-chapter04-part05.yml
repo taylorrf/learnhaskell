@@ -1,8 +1,8 @@
 title: Expressões case
 
-text: Como muitas outras linguagens imperativas (C, C++, Java, etc.) tem a estrura case, se você já programou em alguma delas, sabe do que estou falando. É pegar uma variável e executar blocos de código específicos para cada valor pré-definido e talvez definir um bloco padrão para caso ela tenha um inesperado.
+text: Se você já programou em outras linguagens imperativas (C, C++, Java, etc.), sabe do que estou falando. É pegar uma variável e executar blocos de código específicos para cada valor pré-definido e possivelmente definir um bloco padrão no caso dela ter um valor inesperado.
 
-Haskell pega o conceito e o expande. Como o próprio nome sugere, expressões case são, bom, expressões, algo muito semelhante com expressões if/else e associações <i>let</i>. Não só pode testar expressões baseado em seu valor, como pode usar de pattern matching. Hmmmmm, pegar uma variável, procurar por um pattern, executar blocos de código para cada resultado... onde já vi isso? Ah claro, pattern matching em definições de parâmetros de funções! Isso é só um atalho para executar uma expressão case. Esses dois códigos fazem a mesma coisa, então pode escolher qual você prefere:
+Haskell pega o conceito e o expande. Como o próprio nome sugere, expressões case são, bom, expressões, e muito semelhante com expressões if/else e associações <i>let</i>. Não só podemos testar expressões baseado em seu valor, como pode usar de pattern matching. Hmmmmm, pegar uma variável, procurar por um pattern, executar blocos de código para cada resultado... onde já vi isso? Ah claro, pattern matching em parâmetros de funções! Mas isso é só um atalho para executar uma expressão case. Esses dois códigos fazem a mesma coisa, então pode escolher qual você prefere:
 
 
 
@@ -14,4 +14,4 @@ Como vê, a sintaxe de expressões case são extremamente simples:
 Enquanto pattern matching dentro dos parâmetros só podem ser feitos ao definir funções, expressões case podem ser colocadas praticamente em qualquer lugar. Olha só:
 
 
-Elas são úteis para usar pattern matching no meio de expressões. Já que pattern matching em definições de função é um atalho para expressões case, poderíamos ainda ter feito desse jeito:
+Elas são úteis para usar pattern matching no meio de expressões. Já que pattern matching em definições de função são um atalho para expressões case, poderíamos ainda ter feito desse jeito:
