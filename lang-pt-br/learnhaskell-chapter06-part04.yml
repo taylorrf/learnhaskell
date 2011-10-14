@@ -1,21 +1,23 @@
 title: Lambdas
 
-text: Lambdas are basically anonymous functions that are used because we need some functions only once. Normally, we make a lambda with the sole purpose of passing it to a higher-order function. To make a lambda, we write a [code]\[/code] (because it kind of looks like the greek letter lambda if you squint hard enough) and then we write the parameters, separated by spaces. After that comes a [code]-&gt;[/code] and then the function body. We usually surround them by parentheses, because otherwise they extend all the way to the right.
+text: Lambdas são basicamente funções anônimas que utillizamos quando precisamos de alguma função somente uma vez. Normalmente, nós criamos um lambda com o propósito único de passa-lo para uma função de ordem superior. Para criar um lambda, digitamos um [code]\[/code] (porque isso se parece com a letra grega lambda caso você seja vesgo o suficiente) e então nós escrevemos os parâmetros separados por espaços. Depois vem o [code]-&gt;[/code] e então o corpo da função. Normalmente cercamos com parênteses, porque senão isso se extende para todo o lado direito.
 
-If you look about 5 inches up, you'll see that we used a <i>where</i> binding in our [code]numLongChains[/code] function to make the [code]isLong[/code] function for the sole purpose of passing it to [code]filter[/code]. Well, instead of doing that, we can use a lambda:
+Se você olhar uns 5 cêntimetros acima, você verá que nós utilizamos uma associação <i>where</i> em nossa função [code]numLongChains[/code] para fazer a função [code]isLong[/code] com o único propósito de passar isso para o [code]filter[/code]. Bem, ao invés de fazermos isso, podemos utilizar um lambda:
 
-Lambdas are expressions, that's why we can just pass them like that. The expression [code](\xs -&gt; length xs &gt; 15)[/code] returns a function that tells us whether the length of the list passed to it is greater than 15.
+Lambdas são expressões, este é o porque de só passarmos aquilo. A expressão [code](\xs -&gt; length xs &gt; 15)[/code] retorna uma função que nos diz se o length da lista que foi passada é maior do que 15.
 
-People who are not well acquainted with how currying and partial application works often use lambdas where they don't need to. For instance, the expressions [code]map (+3) [1,6,3,2][/code] and [code]map (\x -&gt; x + 3) [1,6,3,2][/code] are equivalent since both [code](+3)[/code] and [code](\x -&gt; x + 3)[/code] are functions that take a number and add 3 to it. Needless to say, making a lambda in this case is stupid since using partial application is much more readable.
+Pessoas que não se famializaram muito bem antes com o funcionamento de currying e aplicações parciais utilizam lambdas onde não deveriam. Por exemplo, as expressões [code]map (+3) [1,6,3,2][/code] e [code]map (\x -&gt; x + 3) [1,6,3,2][/code] são equivalentes desde que ambos [code](+3)[/code] e [code](\x -&gt; x + 3)[/code] sejam funções que peguem um número e adicione 3 nele. Não preciso dizer que criar um lambda neste caso seria uma estupidez já que com a utilização da aplicação parcial fica bem mais legível.
 
-Like normal functions, lambdas can take any number of parameters:
+Como uma função normal, lambdas podem receber quantos parâmetros você quiser:
 
-And like normal functions, you can pattern match in lambdas. The only difference is that you can't define several patterns for one parameter, like making a [code][][/code] and a [code](x:xs)[/code] pattern for the same parameter and then having values fall through. If a pattern matching fails in a lambda, a runtime error occurs, so be careful when pattern matching in lambdas!
+E como uma função normal, você pode utilizar um pattern match em lambdas. A única diferença é que você não define alguns patterns para um único parâmetro, como fazer um [code][][/code] e um pattern [code](x:xs)[/code] para o mesmo parâmetre e depois ter valores disso. Se um pattern matching falhar em um lambda, um erro de runtime ocorrerá, portanto seja cuidadoso com pattern matching em lambdas! 
 
-Lambdas are normally surrounded by parentheses unless we mean for them to extend all the way to the right. Here's something interesting: due to the way functions are curried by default, these two are equivalent:
+Lambdas são normalmente cercadas por parênteses a não ser que você queira extende-la por todo o lado direito. Um coisa interessante: como funções são curried por default, estes dois são equivalentes: 
 
-If we define a function like this, it's obvious why the type declaration is what it is. There are three [code]-&gt;[/code]'s in both the type declaration and the equation. But of course, the first way to write functions is far more readable, the second one is pretty much a gimmick to illustrate currying.
+Se definirmos uma função como essa, é óbvio que a declaração de tipo é o que é. Lá estão os [code]-&gt;[/code] em ambas declaração de tipo e a equação. Mas é claro, o primeiro jeito de escrever a função é bem mais legível enquanto o segundo é muito mais uma demostração do modo currying.
+
+Tanto faz, é legal quando utilizamos estas notações. Eu acho que aquela funçao [code]flip[/code] fica bem mais legível quando definimos assim: 
 
 However, there are times when using this notation is cool. I think that the [code]flip[/code] function is the most readable when defined like so:
 
-Even though that's the same as writing [code]flip' f x y = f y x[/code], we make it obvious that this will be used for producing a new function most of the time. The most common use case with [code]flip[/code] is calling it with just the function parameter and then passing the resulting function on to a map or a filter. So use lambdas in this way when you want to make it explicit that your function is mainly meant to be partially applied and passed on to a function as a parameter.
+Apesar disso ser o mesmo que escrever [code]flip' f x y = f y x[/code], fazemos assim óbviamente por ser o mais utilizado na criação de uma nova função na maioria dos casos. O caso mais comum na utilização do [code]flip[/code] é somente chama-lo com o parâmetro da função e então passar o resultado para um mapa ou um filtro. Utilize lambdas desse jeito quando você quiser deixar explicito que a sua função é destinada a ser parcialmente aplicada e passada em um função como um parâmetro.
