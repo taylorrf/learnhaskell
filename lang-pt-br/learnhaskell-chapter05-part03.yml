@@ -4,7 +4,7 @@ text: Agora que sabemos como pensar recursivamente, vamos implementar algumas fu
 
 Aqui usaremos guards em vez de patterns por estarmos interessados em uma condição booleana. Se [code] n [/code] é menor ou igual a 0, retorna uma lista vazia. Se não, retorna uma lista que tem [code] x [/code] como primeiro elemento e então [code] x [/code] replicado n-1 vezes como a calda (se tratando de listas e algoritmos, a nomenclatura cabeça e calda é bastante usada, acostume-se). Eventualmente, a parte [code] (n-1) [/code] fará com que nossa função chegue à condição limite.
 
-<em>Nota:</em> [code] Num [/code] não é uma subclass de [code]Ord[/code]. Isso significa que o que constitui um número não necessariamente precisa aderir a uma ordenação. É por isso que temos que especificar ambas as restrições de classe [code]Num[/code] e [code]Ord[/code] quando fazemos adição ou subtração e também comparação.
+<em>Nota:</em> [code] Num [/code] não é uma subclass de [code] Ord [/code]. Isso significa que o que constitui um número não necessariamente precisa aderir a uma ordenação. É por isso que temos que especificar ambas as restrições de classe [code] Num [/code] e [code] Ord [/code] quando fazemos adição ou subtração e também comparação.
 
 Em seguida, vamos implementar [code] take [/code], que retorna um certo número de elementos de uma lista. Por exemplo, [code] take 3 [5,4,3,2,1] [/code] retornando [code] [5,4,3] [/code]. Se tentarmos pegar 0 ou menos elementos de uma lista, receberemos uma lista vazia. Também, se tentamos pegar algo de uma lista vazia, receberemos uma lista vazia. Note que essas são as duas condições limite. Então, vamos à escrita da função:
 
