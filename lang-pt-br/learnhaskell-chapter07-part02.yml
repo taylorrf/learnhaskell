@@ -1,243 +1,234 @@
 title: Data.List
 
-text: The [code]Data.List[/code] module is all about lists, obviously. It provides some very useful functions for dealing with them. We've already met some of its functions (like [code]map[/code] and [code]filter[/code]) because the [code]Prelude[/code] module exports some functions from [code]Data.List[/code] for convenience. You don't have to import [code]Data.List[/code] via a qualified import because it doesn't clash with any [code]Prelude[/code] names except for those that [code]Prelude[/code] already steals from [code]Data.List[/code]. Let's take a look at some of the functions that we haven't met before.
+text: O módulo [code] Data.List [/code] obviamente lida com listas, provendo funções muito úteis que inclusive já conhecemos algumas (como [code] map [/code] e [code] filter [/code]) por [code] Prelude [/code] já importar algo por conveniência. Você não precisará importar [code] Data.List [/code] via importação qualificada porque não conflita com nada do [code] Prelude [/code] (exceto os já roubados automaticamente). Vamos dar uma olhada que algumas que ainda não conhecemos.
 
-[function]intersperse[/function] takes an element and a list and then puts that element in between each pair of elements in the list. Here's a demonstration:
+[function] intersperse [/function] recebe um elemento e uma lista e o repete entre cada um dos elementos da lista. Veja só:
 
 
 
-[function]intercalate[/function] takes a list of lists and a list. It then inserts that list in between all those lists and then flattens the result.
+[function] intercalate [/function] pega uma lista de listas e uma lista simples e a insere entre cada uma, retornando apenas uma lista com o resultado.
 
 
 
-[function]transpose[/function] transposes a list of lists. If you look at a list of lists as a 2D matrix, the columns become the rows and vice versa.
+[function] transpose [/function] transpõe uma lista de listas. Vendo uma lista de listas como uma matriz, as colunas viram linhas e vice-versa.
 
 
 
-Say we have the polynomials <i>3x<sup>2</sup> + 5x + 9</i>, <i>10x<sup>3</sup> + 9</i> and <i>8x<sup>3</sup> + 5x<sup>2</sup> + x - 1</i> and we want to add them together. We can use the lists [code][0,3,5,9][/code], [code][10,0,0,9][/code] and [code][8,5,1,-1][/code] to represent them in Haskell. Now, to add them, all we have to do is this:
+Supondo que queremos somar os polinômios <i>3x<sup>2</sup> + 5x + 9</i>, <i>10x<sup>3</sup> + 9</i> e <i>8x<sup>3</sup> + 5x<sup>2</sup> + x - 1</i>. Podemos representa-los por meio das listas [code] [0,3,5,9] [/code], [code] [10,0,0,9] [/code] e [code] [8,5,1,-1] [/code]. Agora para somar, precisamos fazer só o seguinte:
 
 
 
-When we transpose these three lists, the third powers are then in the first row, the second powers in the second one and so on. Mapping [code]sum[/code] to that produces our desired result.
+Quando transpomos essas três listas, as potências de 3 estão na primeira linha, as de 2 na segunda e assim por diante. Mapear [code] sum [/code] desses valores produz o resultado esperado.
 
-[function]foldl'[/function], [function]foldl1'[/function], [function]foldr'[/function] and [function]foldr1'[/function] are strict versions of their respective lazy incarnations. When using lazy folds on really big lists, you might often get a stack overflow error. The culprit for that is that due to the lazy nature of the folds, the accumulator value isn't actually updated as the folding happens. What actually happens is that the accumulator kind of makes a promise that it will compute its value when asked to actually produce the result. That happens for every intermediate accumulator and all those promises overflow your stack. The strict folds aren't lazy buggers and actually compute the intermediate values as they go along instead of filling up your stack with promises. So if you ever get stack overflow errors when doing lazy folds, try switching to their strict versions.
+[function] foldl' [/function], [function] foldl1' [/function], [function] foldr' [/function] e [function] foldr1' [/function] são mais trabalhadoras que suas versões preguiçosas. Ao usar folds preguiçosas em listas grandes, você pode se deparar com um <a href="http://pt.wikipedia.org/wiki/Pilha_de_chamada#Estouro_de_pilha">estouro de pilha</a>. O culpado disso é exatamente a natureza preguiçosa das funções, que ao invés de realmente realizar a operação com o acumulado, somente diz que quando for pedido um resultado, ele irá executar mais essa outra conta. O problema é quando todo esse bando de promessas ultrapassa o limite da memória. Os folds severos não são tão passíveis de bugs por já realizar as operações intermediárias ao invés de encher a pilha de falsas promessas. Então se você tiver esse tipo de problemas, tente usar suas versões trabalhadoras.
 
-[function]concat[/function] flattens a list of lists into just a list of elements.
+[function] concat [/function] concatena uma lista de listas em apenas uma lista.
 
 
 
-It will just remove one level of nesting. So if you want to completely flatten [code][[[2,3],[3,4,5],[2]],[[2,3],[3,4]]][/code], which is a list of lists of lists, you have to concatenate it twice.
+Somente removerá um nível de camadas. Então se você quer simplificar [code] [[[2,3],[3,4,5],[2]],[[2,3],[3,4]]] [/code] - uma lista de listas, precisa concatenar duas vezes.
 
-Doing [function]concatMap[/function] is the same as first mapping a function to a list and then concatenating the list with [code]concat[/code].
+[function] concatMap [/function] é o mesmo que mapear e depois concatenar uma lista.
 
 
 
 
-[function]and[/function] takes a list of boolean values and returns [code]True[/code] only if all the values in the list are [code]True[/code].
+[function] and [/function] recebe uma lista de valores booleanos e retorna [code] True [/code] se todos forem [code] True [/code].
 
 
 
 
-[function]or[/function] is like [code]and[/code], only it returns [code]True[/code] if any of the boolean values in a list is [code]True[/code].
+[function] or [/function] é relativamente parecido com o [code] and [/code], mas retorna [code] True [/code] se no mínimo um dos valores for [code] True [/code].
 
 
 
 
-[function]any[/function] and [function]all[/function] take a predicate and then check if any or all the elements in a list satisfy the predicate, respectively. Usually we use these two functions instead of mapping over a list and then doing [code]and[/code] or [code]or[/code].
+[function] any [/function] e [function] all [/function] verificam se um predicado é verdadeiro para no mínimo um ou todos elementos da lista (respectivamente). Geralmente usamos uma delas ao invés de mapear e depois usar [code] and [/code] ou [code] or [/code].
 
 
+[function] iterate [/function] toma uma função e um valor inicial. Aplica a função ao valor, depois aplica a função ao seu resultado, então ao seu resultado novamente... Retorna os resultados na forma de uma lista infinita.
 
-[function]iterate[/function] takes a function and a starting value. It applies the function to the starting value, then it applies that function to the result, then it applies the function to that result again, etc. It returns all the results in the form of an infinite list.
 
 
+[function] splitAt [/function] recebe um número e uma lista. Então separa a lista em <número> elementos, retornando uma tupla.
 
-[function]splitAt[/function] takes a number and a list. It then splits the list at that many elements, returning the resulting two lists in a tuple.
 
 
+[function] takeWhile [/function] é uma função simples. Vai pegando os elementos da lista enquanto a verficação resulta satisfatoriamente. Pode ser bastante útil.
 
-[function]takeWhile[/function] is a really useful little function. It takes elements from a list while the predicate holds and then when an element is encountered that doesn't satisfy the predicate, it's cut off. It turns out this is very useful.
 
 
 
+Digamos que queira saber a soma de todas as potências menores de 10000. Não podemos mapear [code] (^3) [/code], aplicar um filtro e tentar somar já que filtros em listas infinitas nunca terminam. Você pode saber que os elementos são ascendentes, mas Haskell não. Por isso que podemos fazer isso:
 
-Say we wanted to know the sum of all third powers that are under 10,000. We can't map [code](^3)[/code] to [code][1..][/code], apply a filter and then try to sum that up because filtering an infinite list never finishes. You may know that all the elements here are ascending but Haskell doesn't. That's why we can do this:
 
 
 
+Aplicamos [code] (^3) [/code] em uma lista infinita e, logo que o elemento 10000 é encontrado, a lista é cortada. Então somamos facilmente.
 
-We apply [code](^3)[/code] to an infinite list and then once an element that's over 10,000 is encountered, the list is cut off. Now we can sum it up easily.
+[function] dropWhile [/function] é semelhante, com a diferença dele descartar todos os elementos com resultado verdadeiro. Quando [code] False [/code] é encontrado, retorna o resto da lista. Uma função fascinante.
 
-[function]dropWhile[/function] is similar, only it drops all the elements while the predicate is true. Once predicate equates to [code]False[/code], it returns the rest of the list. An extremely useful and lovely function!
 
 
+Nos entregaram uma lista que representa os valores de estoque por datas. A lista é feita por tuplas onde o primeiro componente é o estoque, o segundo é o ano, o terceiro é o mês e o quarto é o dia. Queremos saber quando o estoque excederam os 1000 dólares pela primeira vez.
 
-We're given a list that represents the value of a stock by date. The list is made of tuples whose first component is the stock value, the second is the year, the third is the month and the fourth is the date. We want to know when the stock value first exceeded one thousand dollars!
 
 
+[function] span [/function] é algo como o [code] takeWhile [/code] mas que retorna duas listas. A primeira lista contém tudo que o [code] takeWhile [/code] retornaria com o mesmo teste. A segunda é a lista que seria descartada.
 
 
-[function]span[/function] is kind of like [code]takeWhile[/code], only it returns a pair of lists. The first list contains everything the resulting list from [code]takeWhile[/code] would contain if it were called with the same predicate and the same list. The second list contains the part of the list that would have been dropped.
 
 
+Enquanto que [code] span [/code] toma os elementos enquanto não aparecer o primeiro true como resultado do teste, [function] break [/function] para ao perceber que a função retornou true. Fazer [code] break p [/code] é o equivalente a [code] span (not . p) [/code].
 
 
-Whereas [code]span[/code] spans the list while the predicate is true, [function]break[/function] breaks it when the predicate is first true. Doing [code]break p[/code] is the equivalent of doing [code]span (not . p)[/code].
+Ao usar o [code] break [/code], a segunda lista terá o primeiro elemento como o que satisfaz o teste.
 
+[function] sort [/function] simplesmente ordena uma lista. O tipo dos elementos da lista devem ser parte da typeclass [code] Ord [/code], já que como seus elementos não podem ser colocados em uma ordem, obviamente não podem ser ordenados.
 
 
-When using [code]break[/code], the second list in the result will start with the first element that satisfies the predicate.
 
-[function]sort[/function] simply sorts a list. The type of the elements in the list has to be part of the [code]Ord[/code] typeclass, because if the elements of a list can't be put in some kind of order, then the list can't be sorted.
+[function] group [/function] recebe uma lista e agrupa em novas listas os elementos iguais.
 
 
 
+Se ordenarmos e depois agruparmos uma lista, podemos descobrir quantas vezes cada elemento aparece.
 
-[function]group[/function] takes a list and groups adjacent elements into sublists if they are equal.
 
 
+[function] inits [/function] e [function] tails [/function] são semelhantes a [code] init [/code] e [code] tail [/code], com a diferença que as primeiras vão aplicando recursivamente o método até o fim da lista. Confira:
 
-If we sort a list before grouping it, we can find out how many times each element appears in the list.
 
 
+Vamos usar fold para implementar uma pesquisa por sublistas em listas.
 
 
-[function]inits[/function] and [function]tails[/function] are like [code]init[/code] and [code]tail[/code], only they recursively apply that to a list until there's nothing left. Observe.
 
+Primeiro chamamos [code] tails [/code] com a lista que procuramos. Então compara-se cada "cauda" com a lista.
 
+Com isso, criamos algo com o funcionamento da função [function] isInfixOf [/function]. [function] isInfixOf [/function] procura por uma sublista em uma lista e retorna [code] True [/code] se for encontrada em algum lugar.
 
-Let's use a fold to implement searching a list for a sublist.
 
+[function] isPrefixOf [/function] e [function] isSuffixOf [/function] procuram por sublistas no fim e início de uma lista.
 
 
-First we call [code]tails[/code] with the list in which we're searching. Then we go over each tail and see if it starts with what we're looking for.
+[function] elem [/function] e [function] notElem [/function] verificam se um elemento está ou não dentro de uma lista.
 
-With that, we actually just made a function that behaves like [function]isInfixOf[/function]. [code]isInfixOf[/code] searches for a sublist within a list and returns [code]True[/code] if the sublist we're looking for is somewhere inside the target list.
+[function] partition [/function] recebe uma lista e um predicado e retorna um par de listas. A primeira lista resultante contém todos os elementos que satisfazem o predicado, a segunda que não.
 
 
 
-[function]isPrefixOf[/function] and [function]isSuffixOf[/function] search for a sublist at the beginning and at the end of a list, respectively.
 
+É importante saber diferenciar de [code] span [/code] e [code] break [/code].
 
 
-[function]elem[/function] and [function]notElem[/function] check if an element is or isn't inside a list. 
 
-[function]partition[/function] takes a list and a predicate and returns a pair of lists. The first list in the result contains all the elements that satisfy the predicate, the second contains all the ones that don't.
+Enquanto [code] span [/code] e [code] break [/code] terminam ao encontrar o primeiro elemento que não satisfaz o predicado, [code] partition [/code] passa por toda a lista e separa ao encontrar o predicado.
 
+[function] find [/function] recebe uma lista e um predicado e retorna o primeiro elemento que satisfaz o predicado (dentro de um valor [code] Maybe [/code]). Nós iremos ver tipos de dados algébricos melhor no próximo capítulo, mas por enquanto: um valor [code] Maybe [/code] (possivelmente) pode ser [code] Just something [/code] (apenas alguma coisa) ou [code] Nothing [/code] (nada). Do mesmo jeito que uma lista pode ter nenhum ou vários elementos, um valor [code] Maybe [/code] pode ter nada ou um valor. Do mesmo jeito que uma lista de números inteiro é [code] [Int] [/code], o tipo que possivelmente tem um inteiro é [code] Maybe Int [/code]. Bom, testemos o [code] find [/code].
 
 
 
-It's important to understand how this is different from [code]span[/code] and [code]break[/code]:
 
 
+Veja o tipo de [code] find [/code]. É [code] Maybe a [/code]. Isso é muito parecido com ser [code] [a] [/code], mas o [code]Maybe[/code] pode conter um ou zero elementos, enquanto uma lista pode conter um, zero ou vários elementos.
 
-While [code]span[/code] and [code]break[/code] are done once they encounter the first element that doesn't and does satisfy the predicate, [code]partition[/code] goes through the whole list and splits it up according to the predicate.
+Lembra-se de quando procuramos a primeira vez que o estoque ultrapassou $1000. Fizemos [code] head (dropWhile (\(val,y,m,d) -&gt; val &lt; 1000) stock) [/code]. Lembre-se que [code] head [/code] não é muito seguro. O que acontece se nosso estoque nunca chegou a $1000? Nosso uso da [code] dropWhile [/code] retornaria uma lista vazia e ao pegarmos o primeiro elemento de nada seria gerado um erro. No entanto, se reescrevessemos para [code] find (\(val,y,m,d) -&gt; val &gt; 1000) stock [/code], seria muito mais seguro. Se o estoque nunca chegou a $1000 (que nenhum elemento satisfez o predicado), seria retornado [code] Nothing [/code]. Mas uma resposta válida dessa lista seria, digamos, [code] Just (1001.4,2008,9,4) [/code].
 
-[function]find[/function] takes a list and a predicate and returns the first element that satisfies the predicate. But it returns that element wrapped in a [code]Maybe[/code] value. We'll be covering algebraic data types more in depth in the next chapter but for now, this is what you need to know: a [code]Maybe[/code] value can either be [code]Just something[/code] or [code]Nothing[/code]. Much like a list can be either an empty list or a list with some elements, a [code]Maybe[/code] value can be either no elements or a single element. And like the type of a list of, say, integers is [code][Int][/code], the type of maybe having an integer is [code]Maybe Int[/code]. Anyway, let's take our [code]find[/code] function for a spin.
+[function] elemIndex [/function] é semelhante ao [code] elem [/code], mas que não retorna um valor booleano. Provavelmente retornará a posição do elemento. Caso o elemento não exista na lista, [code] Nothing [/code].
 
 
+[function] elemIndices [/function] é semelhante ao [code] elemIndex [/code], mas retorna uma lista de posições, no caso do nosso elemento aparecer várias vezes. Como estamos usando uma lista para representar os índices, não precisamos de um tipo [code] Maybe [/code], já que o erro pode ser representado por uma lista vazia, muito semelhante ao [code] Nothing [/code].
 
 
 
-Notice the type of [code]find[/code]. Its result is [code]Maybe a[/code]. That's kind of like having the type of [code][a][/code], only a value of the type [code]Maybe[/code] can contain either no elements or one element, whereas a list can contain no elements, one element or several elements.
 
-Remember when we were searching for the first time our stock went over $1000. We did [code]head (dropWhile (\(val,y,m,d) -&gt; val &lt; 1000) stock)[/code]. Remember that [code]head[/code] is not really safe. What would happen if our stock never went over $1000? Our application of [code]dropWhile[/code] would return an empty list and getting the head of an empty list would result in an error. However, if we rewrote that as [code]find (\(val,y,m,d) -&gt; val &gt; 1000) stock[/code], we'd be much safer. If our stock never went over $1000 (so if no element satisfied the predicate), we'd get back a [code]Nothing[/code]. But there was a valid answer in that list, we'd get, say, [code]Just (1001.4,2008,9,4)
+[function] findIndex [/function] é parecido com o find, mas retorna apenas a posição do primeiro elemento que satisfaz o predicado. [function] findIndices [/function] retorna os índices de todos os elementos que satisfaz o predicado na forma de uma lista.
 
-[function]elemIndex[/function] is kind of like [code]elem[/code], only it doesn't return a boolean value. It maybe returns the index of the element we're looking for. If that element isn't in our list, it returns a [code]Nothing[/code]. 
 
 
-[function]elemIndices[/function] is like [code]elemIndex[/code], only it returns a list of indices, in case the element we're looking for crops up in our list several times. Because we're using a list to represent the indices, we don't need a [code]Maybe[/code] type, because failure can be represented as the empty list, which is very much synonymous to [code]Nothing[/code].
 
+Já vimos [code] zip [/code] e [code] zipWith [/code]. Elas combinam ("transpõem") duas listas em tuplas ou por uma função binária (o que significa precisar de dois parâmetros). Mas e se quisermos combinar três listas? Ou combinar três listas com uma função de três parâmetros? Para isso temos as [function] zip3 [/function], [function] zip4 [/function], etc. e [function] zipWith3 [/function], [function] zipWith4 [/function], etc. Variações que vão até 7. Pode parecer uma gambiarra, mas funciona muito bem, além de não ser sempre que é preciso transpor 8 listas. Ainda existe um modo muito prático de combinar listas infinitas, mas não avançamos o suficiente para ver essa parte.
 
 
 
-[function]findIndex[/function] is like find, but it maybe returns the index of the first element that satisfies the predicate. [function]findIndices[/function] returns the indices of all elements that satisfy the predicate in the form of a list.
 
+Igualmente à transposição comum, listas maiores que a menor são cortadas nessa quantidade de elementos.
 
+[function] lines [/function] é uma função muito útil ao lidar com arquivos ou qualquer outro tipo de entrada. Recebe uma string e retorna cada linha da string como uma lista.
 
 
-We already covered [code]zip[/code] and [code]zipWith[/code]. We noted that they zip together two lists, either in a tuple or with a binary function (meaning such a function that takes two parameters). But what if we want to zip together three lists? Or zip three lists with a function that takes three parameters? Well, for that, we have [function]zip3[/function], [function]zip4[/function], etc. and [function]zipWith3[/function], [function]zipWith4[/function], etc. These variants go up to 7. While this may look like a hack, it works out pretty fine, because there aren't many times when you want to zip 8 lists together. There's also a very clever way for zipping infinite numbers of lists, but we're not advanced enough to cover that just yet.
 
 
+[code] '\n' [/code] é o caracter para uma nova linha Unix. Barras invertidas sempre têm um significado especial em strings e caracteres em Haskell.
 
+[function] unlines [/function] é o inverso da função [code] lines [/code]. Recebe uma lista de strings e as une pelo caracter [code] '\n' [/code].
 
-Just like with normal zipping, lists that are longer than the shortest list that's being zipped are cut down to size.
 
-[function]lines[/function] is a useful function when dealing with files or input from somewhere. It takes a string and returns every line of that string in a separate list.
 
+[function] words [/function] e [function] unwords [/function] são para separar uma linha de texto em palavras ou unir na ordem contrária. Muito útil.
 
 
 
-[code]'\n'[/code] is the character for a unix newline. Backslashes have special meaning in Haskell strings and characters.
 
-[function]unlines[/function] is the inverse function of [code]lines[/code]. It takes a list of strings and joins them together using a [code]'\n'[/code].
+Já mencionamos a função [function] nub [/function]. Recebe uma lista e retira os elementos duplicados, retornando uma lista que temos a certeza dos elementos não possuírem nenhum gêmeo perdido. Mas essa função tem um nome bem curioso. A expressão "nub" significa a parte essencial ou prioritária de algo. Na minha opinião, nomes de funções deveriam ter nomes mais parecidos com o seu real significado ao invés de se prender a antigas definições.
 
 
 
-[function]words[/function] and [function]unwords[/function] are for splitting a line of text into words or joining a list of words into a text. Very useful.
 
+[function] delete [/function] recebe um elemento e uma lista e remove sua primeira ocorrência.
 
 
 
-We've already mentioned [function]nub[/function]. It takes a list and weeds out the duplicate elements, returning a list whose every element is a unique snowflake! The function does have a kind of strange name. It turns out that "nub" means a small lump or essential part of something. In my opinion, they should use real words for function names instead of old-people words.
 
+[function] \\ [/function] é uma função de diferença de listas. Resumindo, traz a diferença. Para cada elemento da lista 2, remove-se o correspondente (se existente) na 1.
 
 
 
-[function]delete[/function] takes an element and a list and deletes the first occurence of that element in the list.
 
+Fazer [code] [1..10] \\ [2,5,9] [/code] é o mesmo que [code] delete 2 . delete 5 . delete 9 $ [1..10] [/code].
 
+[function] union [/function] também faz uma operação de conjuntos. Retorna a união de duas listas. Funciona colocando cada elemento da lista 2 na 1, se não existente.
 
 
-[function]\\[/function] is the list difference function. It acts like a set difference, basically. For every element in the right-hand list, it removes a matching element in the left one.
 
 
+[function] intersect [/function] significa intersecção. Retorna apenas os elementos encontrados em ambas listas.
 
 
-Doing [code][1..10] \\ [2,5,9][/code] is like doing [code]delete 2 . delete 5 . delete 9 $ [1..10][/code].
 
-[function]union[/function] also acts like a function on sets. It returns the union of two lists. It pretty much goes over every element in the second list and appends it to the first one if it isn't already in yet. Watch out though, duplicates are removed from the second list!
 
+[function] insert [/function] recebe um elemento e uma lista de elementos que podem ser ordenados. Então, o insere logo depois que o menor ou igual mais próximo. Se usarmos [code] insert [/code] em uma lista ordenada, o resultado permanecerá ordenado.
 
 
 
-[function]intersect[/function] works like set intersection. It returns only the elements that are found in both lists.
 
 
+[code] length [/code], [code] take [/code], [code] drop [/code], [code] splitAt [/code], [code] !! [/code] e [code] replicate [/code] têm em comum receberem um [code] Int [/code] como parâmetro, mesmo sabendo que o código ficaria mais genérico aceitando todos tipos de [code] Integral [/code] ou [code] Num [/code] (dependendo de cada função). Isso é feito por razões de compatibilidade. Mudar isso com certeza quebraria muito código antigo. Por isso que [code] Data.List [/code] implementou versões suas mais genéricas: [function] genericLength [/function], [function] genericTake [/function], [function]genericDrop[/function], [function] genericSplitAt [/function], [function] genericIndex [/function] e [function] genericReplicate [/function]. [code] length [/code] tem tipo [code] length :: [a] -&gt; Int [/code]. Se você tentar descobrir a média de números com [code] let xs = [1..6] in sum xs / length xs [/code] terá um erro, já que você não pode usar [code] / [/code] com [code] Int [/code]. [code] genericLength [/code] por outro lado, tem tipo [code] genericLength :: (Num a) =&gt; [b] -&gt; a [/code]. Como [code] Num [/code] pode agir como ponto flutuante, você pode conseguir o resultado esperado com [code] let xs = [1..6] in sum xs / genericLength xs [/code].
 
+[code] nub [/code], [code] delete [/code], [code] union [/code], [code] intersect [/code] e [code] group [/code] têm também versões genéricas com nomes [function] nubBy [/function], [function] deleteBy [/function], [function] unionBy [/function], [function] intersectBy [/function] e [function] groupBy [/function]. A diferença é que as primeiras versões usam [code] == [/code] para testar por igualdade, enquanto suas versões <i>By</i> requerem também uma função para comparação. [code] group [/code] é o mesmo que [code] groupBy (==) [/code].
 
-[function]insert[/function] takes an element and a list of elements that can be sorted and inserts it into the list. It will insert it so that all the elements to its right are greater than or equal to it. If we use [code]insert[/code] to insert into a sorted list, the resulting list will be kept sorted.
+Por hora, digamos que temos uma lista que descreve os valores de uma segunda e nós queremos dividir em sublistas baseado se o elemento está abaixo ou acima de zero. Se usássemos o [code] group [/code] comum, apenas agruparia valores adjacentes. Mas queremos classificar quanto à posição de zero. É aí que [code] groupBy [/code] mostra sua utilidade! A função de igualdade das funções <i>By</i> precisa receber dois elementos de mesmo tipo e retornar [code] True [/code], independente dos seus critérios para isso.
 
 
 
 
+Logo identificamos como fazer nosso teste. A função de igualdade retornará [code] True [/code] somente se ambos forem negativos ou positivos. Essa função de igualdade pode ser escrita por [code] \x y -&gt; (x &gt; 0) &amp;&amp; (y &gt; 0) || (x &lt;= 0) &amp;&amp; (y &lt;= 0) [/code], apesar de achar que do primeiro jeito ficou muito mais legível. Um modo muito melhor de escrever funções <i>By</i> é importando a função [function] on [/function] de [code] Data.Function [/code]. [code] on [/code] é definida assim:
 
-What [code]length[/code], [code]take[/code], [code]drop[/code], [code]splitAt[/code], [code]!![/code] and [code]replicate[/code] have in common is that they take an [code]Int[/code] as one of their parameters, even though they could be more generic and usable if they just took any type that's part of the [code]Integral[/code] or [code]Num[/code] typeclasses (depending on the functions). They do that for historical reasons. However, fixing that would probably break a lot of existing code. That's why [code]Data.List[/code] has their more generic equivalents, named [function]genericLength[/function], [function]genericTake[/function], [function]genericDrop[/function], [function]genericSplitAt[/function], [function]genericIndex[/function] and [function]genericReplicate[/function]. For instance, [code]length[/code] has a type signature of [code]length :: [a] -&gt; Int[/code]. If we try to get the average of a list of numbers by doing [code]let xs = [1..6] in sum xs / length xs[/code], we get a type error, because you can't use [code]/[/code] with an [code]Int[/code]. [code]genericLength[/code], on the other hand, has a type signature of [code]genericLength :: (Num a) =&gt; [b] -&gt; a[/code]. Because a [code]Num[/code] can act like a floating point number, getting the average by doing [code]let xs = [1..6] in sum xs / genericLength xs[/code] works out just fine.
 
-The [code]nub[/code], [code]delete[/code], [code]union[/code], [code]intersect[/code] and [code]group[/code] functions all have their more general counterparts called [function]nubBy[/function], [function]deleteBy[/function], [function]unionBy[/function], [function]intersectBy[/function] and [function]groupBy[/function]. The difference between them is that the first set of functions use [code]==[/code] to test for equality, whereas the <i>By</i> ones also take an equality function and then compare them by using that equality function. [code]group[/code] is the same as [code]groupBy (==)[/code].
 
-For instance, say we have a list that describes the value of a function for every second. We want to segment it into sublists based on when the value was below zero and when it went above. If we just did a normal [code]group[/code], it would just group the equal adjacent values together. But what we want is to group them by whether they are negative or not. That's where [code]groupBy[/code] comes in! The equality function supplied to the <i>By</i> functions should take two elements of the same type and return [code]True[/code] if it considers them equal by its standards.
+Fazendo [code] (==) `on` (&gt; 0) [/code] retorna uma função de igualdade semelhante a [code] \x y -&gt; (x &gt; 0) == (y &gt; 0) [/code]. [code] on [/code] é muito usada por funções <i>By</i>, já que é possível fazer isso:
 
 
 
 
-From this, we clearly see which sections are positive and which are negative. The equality function supplied takes two elements and then returns [code]True[/code] only if they're both negative or if they're both positive. This equality function can also be written as [code]\x y -&gt; (x &gt; 0) &amp;&amp; (y &gt; 0) || (x &lt;= 0) &amp;&amp; (y &lt;= 0)[/code], although I think the first way is more readable. An even clearer way to write equality functions for the <i>By</i> functions is if you import the [function]on[/function] function from [code]Data.Function[/code]. [code]on[/code] is defined like this:
+Muito mais legível! Agora você pode ler em voz alta: Agrupe por igualdade sempre que elementos forem maior que zero.
 
+Semelhantemente, [code] sort [/code], [code] insert [/code], [code] maximum [/code] e [code] minimum [/code] também têm versões genéricas. Funções como [code] groupBy [/code] recebem uma função para determinar quando dois elementos são iguais. [function] sortBy [/function], [function] insertBy [/function], [function] maximumBy [/function] e [function] minimumBy [/function] recebem uma função que diz se um elemento é maior, menor ou igual a outro. O tipo de [code] sortBy [/code] e [code] sortBy :: (a -&gt; a -&gt; Ordering) -&gt; [a] -&gt; [a] [/code]. Se você ainda se lembra, o tipo [code] Ordering [/code] pode assumir valor [code] LT [/code], [code] EQ [/code] ou [code] GT [/code]. [code] sort [/code] é o equivalente a [code] sortBy compare [/code], porque compare pega dois tipos de [code] Ord [/code] e retorna sua relação quanto ordenação.
 
+Listas podem ser comparadas, mas quando o são, são comparados lexicograficamente. E se quisermos ordenar uma lista de listas não baseado nas listas internas, mas em seus tamanhos? Como deve ter imaginado, [code] sortBy [/code] é a nossa solução.
 
 
-So doing [code](==) `on` (&gt; 0)[/code] returns an equality function that looks like [code]\x y -&gt; (x &gt; 0) == (y &gt; 0)[/code]. [code]on[/code] is used a lot with the <i>By</i> functions because with it, we can do:
 
 
-
-
-
-Very readable indeed! You can read it out loud: Group this by equality on whether the elements are greater than zero.
-
-Similarly, the [code]sort[/code], [code]insert[/code], [code]maximum[/code] and [code]minimum[/code] also have their more general equivalents. Functions like [code]groupBy[/code] take a function that determines when two elements are equal. [function]sortBy[/function], [function]insertBy[/function], [function]maximumBy[/function] and [function]minimumBy[/function] take a function that determine if one element is greater, smaller or equal to the other. The type signature of [code]sortBy[/code] is [code]sortBy :: (a -&gt; a -&gt; Ordering) -&gt; [a] -&gt; [a][/code]. If you remember from before, the [code]Ordering[/code] type can have a value of [code]LT[/code], [code]EQ[/code] or [code]GT[/code]. [code]sort[/code] is the equivalent of [code]sortBy compare[/code], because compare just takes two elements whose type is in the [code]Ord[/code] typeclass and returns their ordering relationship.
-
-Lists can be compared, but when they are, they are compared lexicographically. What if we have a list of lists and we want to sort it not based on the inner lists' contents but on their lengths? Well, as you've probably guessed, we'll use the [code]sortBy[/code] function.
-
-
-
-
-Awesome! [code]compare `on` length[/code] ... man, that reads almost like real English! If you're not sure how exactly the [code]on[/code] works here, [code]compare `on` length[/code] is the equivalent of [code]\x y -&gt; length x `compare` length y[/code]. When you're dealing with <i>By</i> functions that take an equality function, you usually do [code](==) `on` something[/code] and when you're dealing with <i>By</i> functions that take an ordering function, you usually do [code]compare `on` something[/code].
+Incrível! [code] compare `on` length [/code] ... cara, isso mais parece inglês puro! Se você não percebeu bem como [code] on [/code] funciona aqui, [code] compare `on` length [/code] é o equivalente a [code] \x y -&gt; length x `compare` length y [/code]. Quando você está trabalhando com funções <i>By</i> que precisam de uma função de igualdade, você geralmente vai usar [code] (==) `on` something [/code] e com funções <i>By</i> que precisem de outra de ordação, você usa [code] compare `on` something [/code].
