@@ -1,104 +1,104 @@
 title: Data.Char
 
-text: The [code]Data.Char[/code] module does what its name suggests. It exports functions that deal with characters. It's also helpful when filtering and mapping over strings because they're just lists of characters.
+text: O módulo [code] Data.Char [/code] é o que o seu nome sugere. Exporta funções que lidam com caracteres. É extremamente útil para filtrar ou mapear strings, que nada mais são do que listas de caracteres.
 
-[code]Data.Char[/code] exports a bunch of predicates over characters. That is, functions that take a character and tell us whether some assumption about it is true or false. Here's what they are:
+[code] Data.Char [/code] também exporta vários predicados de caracteres. Isto é, funções que recebem um caracter e nos diz se uma proposição é verdadeira ou falsa. Alguns exemplos:
 
-[function]isControl[/function] checks whether a character is a control character.
+[function] isControl [/function] testa se um caracter é um caracter de controle.
 
-[function]isSpace[/function] checks whether a character is a white-space characters. That includes spaces, tab characters, newlines, etc.
+[function] isSpace [/function] testa se um caracter é um espaço em branco, o que inclui espaços, tabs, novas linhas, etc.
 
-[function]isLower[/function] checks whether a character is lower-cased.
+[function] isLower [/function] testa se um caracter é minúsculo.
 
-[function]isUpper[/function] checks whether a character is upper-cased.
+[function] isUpper [/function] testa se um caracter é maiúsculo.
 
-[function]isAlpha[/function] checks whether a character is a letter.
+[function] isAlpha [/function] testa se um caracter é uma letra.
 
-[function]isAlphaNum[/function] checks whether a character is a letter or a number.
+[function] isAlphaNum [/function] testa se um caracter é uma letra ou um número.
 
-[function]isPrint[/function] checks whether a character is printable. Control characters, for instance, are not printable.
+[function] isPrint [/function] testa se um caracter é imprimível. Caracteres de controle, por exemplo, não são.
 
-[function]isDigit[/function] checks whether a character is a digit.
+[function] isDigit [/function] testa se um caracter é um dígito.
 
-[function]isOctDigit[/function] checks whether a character is an octal digit.
+[function] isOctDigit [/function] testa se um caracter é um dígito octal.
 
-[function]isHexDigit[/function] checks whether a character is a hex dibit.
+[function] isHexDigit [/function] testa se um caracter é um dígito hexadecimal.
 
-[function]isLetter[/function] checks whether a character is a letter.
+[function] isLetter [/function] testa se um caracter é uma letra.
 
-[function]isMark[/function] checks for Unicode mark characters. Those are characters that combine with preceding letters to form latters with accents. Use this if you are French.
+[function] isMark [/function] testa se um caracter é um caracter de marcação Unicode, que quando combinados com letras que o precedem, formam letras com acentos. Use se for francês.
 
-[function]isNumber[/function] checks whether a character is numeric.
+[function] isNumber [/function] testa se um caracter é numérico.
 
-[function]isPunctuation[/function] checks whether a character is punctuation.
+[function] isPunctuation [/function] testa se um caracter é uma pontuação.
 
-[function]isSymbol[/function] checks whether a character is a fancy mathematical or currency symbol.
+[function] isSymbol [/function] testa se um caracter é de matemática*** ou um símbolo de moedas.
 
-[function]isSeparator[/function] checks for Unicode spaces and separators.
+[function] isSeparator [/function] testa se um caracter é espaço ou separador Unicode.
 
-[function]isAscii[/function] checks whether a character falls into the first 128 characters of the Unicode character set.
+[function] isAscii [/function] testa se um caracter é um dos primeiros 128 Unicode.
 
-[function]isLatin1[/function] checks whether a character falls into the first 256 characters of Unicode.
+[function] isLatin1 [/function] testa se um caracter é um dos primeiros 256 Unicode.
 
-[function]isAsciiUpper[/function] checks whether a character is ASCII and upper-case.
+[function] isAsciiUpper [/function] testa se um caracter é ASCII e maiúsculo.
 
-[function]isAsciiLower[/function] checks whether a character is ASCII and lower-case.
+[function] isAsciiLower [/function] testa se um caracter é ASCII e minúsculo.
 
-All these predicates have a type signature of [code]Char -&gt; Bool[/code]. Most of the time you'll use this to filter out strings or something like that. For instance, let's say we're making an program that takes a username and the username can only be comprised of alphanumeric characters. We can use the [code]Data.List[/code] function [code]all[/code] in combination with the [code]Data.Char[/code] predicates to determine if the username is alright.
-
-
-
-
-Kewl. In case you don't remember, [code]all[/code] takes a predicate and a list and returns [code]True[/code] only if that predicate holds for every element in the list.
-
-We can also use [code]isSpace[/code] to simulate the [code]Data.List[/code] function [code]words[/code].
+Todos esses predicados têm tipos [code] Char -&gt; Bool [/code]. Na maior parte das vezes eles serão usados para filtrar algo de strings. Por exemplo, digamos que estamos fazendo um programa com login que necessita que o usuário seja composto apenas por caracteres alfanuméricos. Poderíamos usar a função [code] all [/code] do [code] Data.List [/code] em combinção com predicados do [code] Data.Char [/code] para testar sua validade.
 
 
 
 
-Hmmm, well, it kind of does what [code]words[/code] does but we're left with elements of only spaces. Hmm, whatever shall we do? I know, let's filter that sucker.
+Que bacana! Caso não se lembre, [code] all [/code] recebe um predicado e uma lista e retorna [code] True [/code] apenas se o predicado aprova todos os elementos.
+
+Podemos ainda usar a [code] isSpace [/code] para simular o funcionamento da função [code] words [/code] do [code] Data.List [/code].
+
+
+
+
+Hmmm, muito parecido mesmo, mas manteve os espaços em branco. O que poderíamos fazer? Eu sei, pelo menos. Vamo filtrar esses indivíduos.
 
 
 
 Ah.
-The [code]Data.Char[/code] also exports a datatype that's kind of like [code]Ordering[/code]. The [code]Ordering[/code] type can have a value of [code]LT[/code], [code]EQ[/code] or [code]GT[/code]. It's a sort of enumeration. It describes a few possible results that can arise from comparing two elements. The [code]GeneralCategory[/code] type is also an enumeration. It presents us with a few possible categories that a character can fall into. The main function for getting the general category of a character is [code]generalCategory[/code]. It has a type of [code]generalCategory :: Char -&gt; GeneralCategory[/code]. There are about 31 categories so we won't list them all here, but let's play around with the function.
+A [code] Data.Char [/code] ainda exporta o tipo de dados [code] Ordering [/code]. O [code] Ordering [/code] pode ter valor [code] LT [/code], [code] EQ [/code] ou [code] GT [/code]. É como uma enumeração. Descreve os possíveis resultados ao comparar dois elementos. O tipo [code] GeneralCategory [/code] também é uma enumeração. Tem algumas possíveis categorias que um caracter pode se encaixar. A principal função de conseguir a categoria geral de caracteres é [code] generalCategory [/code]. Tem tipo [code] generalCategory :: Char -&gt; GeneralCategory [/code]. Existem ainda outras 31 categorias que não listaremos aqui, mas vamos dar uma olhada na função.
 
 
 
 
-Since the [code]GeneralCategory[/code] type is part of the [code]Eq[/code] typeclass, we can also test for stuff like [code]generalCategory c == Space[/code].
+Já que o tipo [code] GeneralCategory [/code] é parte da typeclass [code] Eq [/code], poderíamos testar algo como [code] generalCategory c == Space [/code].
 
-[function]toUpper[/function] converts a character to upper-case. Spaces, numbers, and the like remain unchanged.
+[function] toUpper [/function] converte um caracter para maiúsculo. Espaços, números e outros permanecem iguais.
 
-[function]toLower[/function] converts a character to lower-case.
+[function] toLower [/function] converte um caracter para minúsculo.
 
-[function]toTitle[/function] converts a character to title-case. For most characters, title-case is the same as upper-case.
+[function] toTitle [/function] converte um caracter para title-case. Para a maioria dos caracteres, titlecase é o mesmo que maiúsculas.
 
-[function]digitToInt[/function] converts a character to an [code]Int[/code]. To succeed, the character must be in the ranges [code]'0'..'9'[/code], [code]'a'..'f'[/code] or [code]'A'..'F'[/code].
-
-
-
-
-[function]intToDigit[/function] is the inverse function of [code]digitToInt[/code]. It takes an [code]Int[/code] in the range of [code]0..15[/code] and converts it to a lower-case character.
+[function] digitToInt [/function] converte um caracter para [code] Int [/code]. Para que funcione, o caracter deve estar nas ranges [code] '0'..'9' [/code], [code] 'a'..'f' [/code] ou [code] 'A'..'F' [/code].
 
 
 
 
-The [function]ord[/function] and [code]chr[/code] functions convert characters to their corresponding numbers and vice versa:
+[function] intToDigit [/function] é o inverso da função [code] digitToInt [/code]. Recebe um [code] Int [/code] na range [code] 0..15 [/code] e converte para um caracter minúsculo.
+
+
+
+
+As funções [function] ord [/function] e [code] chr [/code] convertem caracteres para seus correspondentes em números e vice-versa:
 
 
 
 
 
-The difference between the [code]ord[/code] values of two characters is equal to how far apart they are in the Unicode table.
-The Caesar cipher is a primitive method of encoding messages by shifting each character in them by a fixed number of positions in the alphabet. We can easily create a sort of Caesar cipher of our own, only we won't constrict ourselves to the alphabet.
+Os valores [code] ord [/code] de dois caracteres é referente à tabela Unicode.
+O <a href="http://pt.wikipedia.org/wiki/Cifra_de_C%C3%A9sar">Código de César</a> é um método primitivo de codificar mensagens ao associar caracteres por um correspondente (seguindo a mesma sequência). Nós mesmos poderíamos construir nosso código criptografado sem precisar debruçar sobre um alfabeto.
 
 
 
 
-Here, we first convert the string to a list of numbers. Then we add the shift amount to each number before converting the list of numbers back to characters. If you're a composition cowboy, you could write the body of this function as [code]map (chr . (+ shift) . ord) msg[/code]. Let's try encoding a few messages.
+Aqui, primeiro convertemos nossa string para uma lista de números. Então aumentamos ou diminuimos uma certa quantidade de inteiros em toda a lista e convertemos de volta para caracteres. Se você já está craque na criação de funções, já escreveu [code] map (chr . (+ shift) . ord) msg [/code]. Vamos tentar criptografar algumas mensagens.
 
 
 
 
-That's encoded alright. Decoding a message is basically just shifting it back by the number of places it was shifted by in the first place.
+Parece que está certo. Para decodificar a mensagem só é necessário voltar o número de posições em todos caracteres, trazendo-os à posição inicial.
