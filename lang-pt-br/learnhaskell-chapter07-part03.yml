@@ -1,6 +1,6 @@
 title: Data.Char
 
-text: O módulo [code] Data.Char [/code] é o que o seu nome sugere. Exporta funções que lidam com caracteres. É extremamente útil para filtrar ou mapear strings, que nada mais são do que listas de caracteres.
+text: O módulo [code] Data.Char [/code] é exatamente o que o seu nome sugere. Exporta funções que lidam com caracteres. É extremamente útil para filtrar ou mapear strings, que nada mais são do que listas de caracteres.
 
 [code] Data.Char [/code] também exporta vários predicados de caracteres. Isto é, funções que recebem um caracter e nos diz se uma proposição é verdadeira ou falsa. Alguns exemplos:
 
@@ -26,13 +26,13 @@ text: O módulo [code] Data.Char [/code] é o que o seu nome sugere. Exporta fun
 
 [function] isLetter [/function] testa se um caracter é uma letra.
 
-[function] isMark [/function] testa se um caracter é um caracter de marcação Unicode, que quando combinados com letras que o precedem, formam letras com acentos. Use se for francês.
+[function] isMark [/function] testa se um caracter é um caracter de marcação Unicode, que quando combinados com letras precedentes, formam letras com acentos. Use se for francês.
 
 [function] isNumber [/function] testa se um caracter é numérico.
 
 [function] isPunctuation [/function] testa se um caracter é uma pontuação.
 
-[function] isSymbol [/function] testa se um caracter é de matemática*** ou um símbolo de moedas.
+[function] isSymbol [/function] testa se um caracter é matemático ou um símbolo de moedas.
 
 [function] isSeparator [/function] testa se um caracter é espaço ou separador Unicode.
 
@@ -56,7 +56,7 @@ Podemos ainda usar a [code] isSpace [/code] para simular o funcionamento da fun�
 
 
 
-Hmmm, muito parecido mesmo, mas manteve os espaços em branco. O que poderíamos fazer? Eu sei, pelo menos. Vamo filtrar esses indivíduos.
+Hmmm, muito parecido mesmo, mas manteve os espaços em branco. O que poderíamos fazer? Eu sei, pelo menos. Vamos filtrar esse pessoal.
 
 
 
@@ -96,9 +96,9 @@ O <a href="http://pt.wikipedia.org/wiki/Cifra_de_C%C3%A9sar">Código de César</
 
 
 
-Aqui, primeiro convertemos nossa string para uma lista de números. Então aumentamos ou diminuimos uma certa quantidade de inteiros em toda a lista e convertemos de volta para caracteres. Se você já está craque na criação de funções, já escreveu [code] map (chr . (+ shift) . ord) msg [/code]. Vamos tentar criptografar algumas mensagens.
+Aqui, primeiro convertemos nossa string para uma lista de números. Então aumentamos ou diminuimos uma certa quantidade de inteiros de toda a lista e convertemos de volta para caracteres. Se você já está craque na criação de funções, já escreveu [code] map (chr . (+ shift) . ord) msg [/code]. Vamos tentar criptografar algumas mensagens.
 
 
 
 
-Parece que está certo. Para decodificar a mensagem só é necessário voltar o número de posições em todos caracteres, trazendo-os à posição inicial.
+Parece que está certo. Para decodificar a mensagem é só necessário voltar o número de posições em todos caracteres, trazendo-os à posição inicial.
