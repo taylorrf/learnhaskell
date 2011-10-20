@@ -1,140 +1,135 @@
 title: Data.Map
 
-text: Association lists (also called dictionaries) are lists that are used to store key-value pairs where ordering doesn't matter. For instance, we might use an association list to store phone numbers, where phone numbers would be the values and people's names would be the keys. We don't care in which order they're stored, we just want to get the right phone number for the right person.
+text: Listas de associação (também chamadas de dicionários) são lista usadas para armazenar pares de chave e valor, onde sua ordem não é considerada. Por exemplo, podemos usar uma lista de assciação para guardar números de telefone - que seriam os valores - junto do nome dos donos - chaves. A ordem que esses dados estão armazenados não importa para nós, desde que consigamos o número certo ao pesquisar por uma pessoa.
 
-The most obvious way to represent association lists in Haskell would be by having a list of pairs. The first component in the pair would be the key, the second component the value. Here's an example of an association list with phone numbers:
+O modo mais óbvio de armazenar listas de associação em Haskell seria uma lista de pares. O primeiro componente do par seria a chave, enquanto o outro o valor. Aqui vai um exemplo de uma lista de associação com números de telefone:
 
 
 
+Tirando a identação estranha, essa é uma lista de pares de strings. O objetivo mais comum ao lidar com listas de associação é a busca por chave. Vamos criar uma função que procura por um dado valor de chave.
 
-Despite this seemingly odd indentation, this is just a list of pairs of strings. The most common task when dealing with association lists is looking up some value by key. Let's make a function that looks up some value given a key.
 
 
 
+Extremamente simples. A função recebe uma chave e uma lista, filtra a lista para que permaneçam apenas os que têm chave correspondente e retorna o primeiro par chave-valor. Mas o que acontece ao procurarmos por uma chave inexistente? Hmm, no caso tentaríamos pegar o primeiro elemento de uma lista vazia, gerando um runtime error. Mas temos que fazer nossos programas para que sejam um pouco mais difíceis de travar, então usaremos o tipo [code] Maybe [/code]. Se não encontrar uma chave, retornará [code] Nothing [/code]. Se encontrar, retornará [code] Just something [/code], onde "something" é o valor correspondente à chave.
 
-Pretty simple. The function that takes a key and a list, filters the list so that only matching keys remain, gets the first key-value that matches and returns the value. But what happens if the key we're looking for isn't in the association list? Hmm. Here, if a key isn't in the association list, we'll end up trying to get the head of an empty list, which throws a runtime error. However, we should avoid making our programs so easy to crash, so let's use the [code]Maybe[/code] data type. If we don't find the key, we'll return a [code]Nothing[/code]. If we find it, we'll return [code]Just something[/code], where something is the value corresponding to that key.
 
 
 
+Preste atenção à declaração de tipo. Recebe uma chave que pode ser igualada, uma lista de associação e talvez devolva um valor. Parece correto.
 
-Look at the type declaration. It takes a key that can be equated, an association list and then it maybe produces a value. Sounds about right.
+Essa é uma função de agenda de contatos que trabalha com uma lista. A edge condition, separar a lista no primeiro elemento, chamadas recursivas, tudo aí. Isso é o pattern folding clássico. Vamos tentar implementar com folds.
 
-This is a textbook recursive function that operates on a list. Edge case, splitting a list into a head and a tail, recursive calls, they're all there. This is the classic fold pattern, so let's see how this would be implemented as a fold.
 
 
+<em>Note:</em> Geralmente é melhor usar folds para listas de padrões recursivos ao invés de escrever explicitamente a recursão porque é mais fácil de se ler. Todos sabem que é um fold ao ver a chamada à função [code] foldr [/code], mas toma mais tempo para entender todo o processo.
 
 
-<em>Note:</em> It's usually better to use folds for this standard list recursion pattern instead of explicitly writing the recursion because they're easier to read and identify. Everyone knows it's a fold when they see the [code]foldr[/code] call, but it takes some more thinking to read explicit recursion.
 
 
 
+Que beleza! Agora falta você usar sua nova agenda para ver se não fica só na pesquisa.
 
+Nós acabamos de implementar a função [code] lookup [/code] do [code] Data.List [/code]. Se queremos achar um valor correspondente a uma chave, temos que percorrer todos os elementos até encontrá-lo. O módulo [code] Data.Map [/code] oferece listas de associação muito mais rápidas (porque elas são implementadas internamente com árvores) e ainda provê algumas funções úteis. De agora em diante usaremos mapas ao invés de listas de associação.
 
-Works like a charm! If we have the girl's phone number, we [code]Just[/code] get the number, otherwise we get [code]Nothing[/code].
+Já que [code] Data.Map [/code] exporta funções que conflitam com outras de [code] Prelude [/code] e [code] Data.List [/code], faremos uma importação qualificada.
 
-We just implemented the [code]lookup[/code] function from [code]Data.List[/code]. If we want to find the corresponding value to a key, we have to traverse all the elements of the list until we find it. The [code]Data.Map[/code] module offers association lists that are much faster (because they're internally implemented with trees) and also it provides a lot of utility functions. From now on, we'll say we're working with maps instead of association lists.
 
-Because [code]Data.Map[/code] exports functions that clash with the [code]Prelude[/code] and [code]Data.List[/code] ones, we'll do a qualified import.
 
 
+Coloque esse comando para importação no script e carregue-o via GHCI.
 
+Chega de enrolar e vamos ver o que o [code] Data.Map [/code] nos guarda! Aí vai um resumo rápido de suas funções.
 
-Put this import statement into a script and then load the script via GHCI.
+A função [function] fromList [/function] recebe uma lista de associações (na forma de uma lista mesmo) e retorna um mapa com a mesma estrutura.
 
-Let's go ahead and see what [code]Data.Map[/code] has in store for us! Here's the basic rundown of its functions.
 
-The [function]fromList[/function] function takes an association list (in the form of a list) and returns a map with the same associations.
 
+Se existirem chaves duplicadas na lista de associação original, as sobressalentes são descartadas. Esse é o tipo de [code] fromList [/code]
 
 
 
-If there are duplicate keys in the original association list, the duplicates are just discarded. This is the type signature of [code]fromList[/code]
 
+Digamos que recebe uma lista de pares de tipos [code] k [/code] e [code] v [/code] e retorna um mapa com chaves de tipo [code] k [/code] e tipo [code] v [/code]. Perceba que quando você está criando listas de associação com listas, as chaves só precisam ser possíveis de serem igualadas (terem tipos pertencentes à typeclass [code] Eq [/code]) mas não necessariamente ordenáveis. Essa é a essência do módulo [code] Data.Map [/code]. Ele precisa que as chaves sejam ordenáveis para organizá-las na forma de uma árvore.
 
+É sempre aconselhável usar o [code] Data.Map [/code] para associações chave-valor, a menos que o tipo não esteja na typeclass [code] Ord [/code].
 
+[function] empty [/function] representa um mapa vazio. Não precisa de nenhum argumento, só retorna um mapa vazio.
 
-It says that it takes a list of pairs of type [code]k[/code] and [code]v[/code] and returns a map that maps from keys of type [code]k[/code] to type [code]v[/code]. Notice that when we were doing association lists with normal lists, the keys only had to be equatable (their type belonging to the [code]Eq[/code] typeclass) but now they have to be orderable. That's an essential constraint in the [code]Data.Map[/code] module. It needs the keys to be orderable so it can arrange them in a tree.
 
-You should always use [code]Data.Map[/code] for key-value associations unless you have keys that aren't part of the [code]Ord[/code] typeclass.
 
-[function]empty[/function] represents an empty map. It takes no arguments, it just returns an empty map.
+[function] insert [/function] recebe uma chave, um valor e um mapa e retorna um novo mapa igual ao antigo, mas com chaves e valor adicionados.
 
 
 
 
-[function]insert[/function] takes a key, a value and a map and returns a new map that's just like the old one, only with the key and value inserted.
+Nós podemos implementar nosso próprio [code] fromList [/code] usando um mapa vazio, [code] insert [/code] e um fold. Veja só:
 
 
 
 
-We can implement our own [code]fromList[/code] by using the empty map, [code]insert[/code] and a fold. Watch:
+É um fold bastante simples. Começamos com um mapa vazio e dobramos à direita, inserindo os pares de chave-valor no acumulado em cada passo.
 
+[function] null [/function] testa se um mapa está vazio.
 
 
 
-It's a pretty straightforward fold. We start of with an empty map and we fold it up from the right, inserting the key value pairs into the accumulator as we go along.
 
-[function]null[/function] checks if a map is empty.
+[function] size [/function] reporta o tamanho de um mapa.
 
 
 
 
-[function]size[/function] reports the size of a map.
+[function] singleton [/function] recebe uma chave e um valor e cria um mapa com apenas esses dados.
 
 
 
 
-[function]singleton[/function] takes a key and a value and creates a map that has exactly one mapping.
 
+[function] lookup [/function] funciona como o [code] Data.List [/code] [code] lookup [/code], mas opera apenas em mapas. Retorna [code] Just something [/code] se encontrar algo à procura da key, [code] Nothing [/code] se não
 
+[function] member [/function] é um predicado que recebe uma chave e um mapa e diz se a chave existe ou não no mapa.
 
 
 
-[function]lookup[/function] works like the [code]Data.List[/code] [code]lookup[/code], only it operates on maps. It returns [code]Just something[/code] if it finds something for the key and [code]Nothing[/code] if it doesn't.
 
-[function]member[/function] is a predicate takes a key and a map and reports whether the key is in the map or not.
+[function] map [/function] e [function] filter [/function] funcionam semelhantemente aos irmãos das listas.
 
 
 
 
-[function]map[/function] and [function]filter[/function] work much like their list equivalents.
+[function] toList [/function] é o inverso da [code] fromList [/code].
 
 
 
 
-[function]toList[/function] is the inverse of [code]fromList[/code].
+[function] keys [/function] e [function] elems [/function] retorna listas de chaves e valores, respectivamente. [code] keys [/code] é o equivalente a [code] map fst . Map.toList [/code] e [code] elems [/code] é o de [code] map snd . Map.toList [/code].
 
+[function] fromListWith [/function] é uma função muito legal. Age como [code] fromList [/code], mas ao invés de discartar as chaves duplicadas, recebe também uma função que decide o que fazer com elas. Imaginando que uma garota pode ter vários números e temos uma lista de associação como essa.
 
 
 
-[function]keys[/function] and [function]elems[/function] return lists of keys and values respectively. [code]keys[/code] is the equivalent of [code]map fst . Map.toList[/code] and [code]elems[/code] is the equivalent of [code]map snd . Map.toList[/code].
 
-[function]fromListWith[/function] is a cool little function. It acts like [code]fromList[/code], only it doesn't discard duplicate keys but it uses a function supplied to it to decide what to do with them. Let's say that a girl can have several numbers and we have an association list set up like this.
+Agora se quisermos usar [code] fromList [/code] para criar um mapa, perderemos número! Então é assim que resolveremos:
 
 
 
 
-Now if we just use [code]fromList[/code] to put that into a map, we'll lose a few numbers! So here's what we'll do:
+Se uma chave duplicada for encontrada, a função que passamos será usada para combinar os valores das chaves em outro valor. Poderíamos primeiro ter listas únicas para os valores e usarmos [code] ++ [/code] para fazer a combinação.
 
 
 
 
-If a duplicate key is found, the function we pass is used to combine the values of those keys into some other value. We could also first make all the values in the association list singleton lists and then we can use [code]++[/code] to combine the numbers.
+Muito elegante! Outro  caso é estarmos criando um mapa com base em uma lista de associação e quando uma chave estiver duplicada, for mantido o maior valor.
 
 
+Ou somá-los na mesma chave.
 
 
-Pretty neat! Another use case is if we're making a map from an association list of numbers and when a duplicate key is found, we want the biggest value for the key to be kept.
 
+[function] insertWith [/function] é para [code] insert [/code] o que [code] fromListWith [/code] é para [code] fromList [/code]. Insere um par chave-valor em um mapa e em caso da chave já existir, usa a função passada para determinar o que fará com o par.
 
 
-Or we could choose to add together values on the same keys.
 
 
-
-[function]insertWith[/function] is to [code]insert[/code] what [code]fromListWith[/code] is to [code]fromList[/code]. It inserts a key-value pair into a map, but if that map already contains the key, it uses the function passed to it to determine what to do.
-
-
-
-
-These were just a few functions from [code]Data.Map[/code]. You can see a complete list of functions in the <a href="http://www.haskell.org/ghc/docs/latest/html/libraries/containers/Data-Map.html#v%3Aassocs">documentation</a>.
+Estas são apenas algumas funções do [code] Data.Map [/code]. Você pode ainda ver uma lista completa na <a href="http://www.haskell.org/ghc/docs/latest/html/libraries/containers/Data-Map.html#v%3Aassocs">documentação</a>.
