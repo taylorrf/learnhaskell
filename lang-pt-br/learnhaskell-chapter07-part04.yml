@@ -1,28 +1,28 @@
 title: Data.Map
 
-text: Listas de associação (também chamadas de dicionários) são lista usadas para armazenar pares de chave e valor, onde sua ordem não é considerada. Por exemplo, podemos usar uma lista de assciação para guardar números de telefone - que seriam os valores - junto do nome dos donos - chaves. A ordem que esses dados estão armazenados não importa para nós, desde que consigamos o número certo ao pesquisar por uma pessoa.
+text: Listas de associação (também chamadas de dicionários) são listas usadas para armazenar pares de chave e valor, onde sua ordem não é considerada. Por exemplo, podemos usar uma lista de assciação para guardar números de telefone - que seriam os valores - junto do nome dos donos - chaves. A ordem que esses dados estão armazenados não importa para nós, desde que consigamos o número certo ao pesquisar por uma pessoa.
 
 O modo mais óbvio de armazenar listas de associação em Haskell seria uma lista de pares. O primeiro componente do par seria a chave, enquanto o outro o valor. Aqui vai um exemplo de uma lista de associação com números de telefone:
 
 
 
-Tirando a identação estranha, essa é uma lista de pares de strings. O objetivo mais comum ao lidar com listas de associação é a busca por chave. Vamos criar uma função que procura por um dado valor de chave.
+Tirando a identação bizarra, essa é uma lista de pares de strings. O objetivo mais comum ao lidar com listas de associação é a busca por chave. Vamos criar uma função que procura por uma dada chave.
 
 
 
 
-Extremamente simples. A função recebe uma chave e uma lista, filtra a lista para que permaneçam apenas os que têm chave correspondente e retorna o primeiro par chave-valor. Mas o que acontece ao procurarmos por uma chave inexistente? Hmm, no caso tentaríamos pegar o primeiro elemento de uma lista vazia, gerando um runtime error. Mas temos que fazer nossos programas para que sejam um pouco mais difíceis de travar, então usaremos o tipo [code] Maybe [/code]. Se não encontrar uma chave, retornará [code] Nothing [/code]. Se encontrar, retornará [code] Just something [/code], onde "something" é o valor correspondente à chave.
+Extremamente simples. A função recebe uma chave e uma lista, filtra a lista para que permaneçam apenas os que têm chave correspondente e retorna o primeiro par chave-valor. Mas o que acontece ao procurarmos por uma chave inexistente? Hmm, no caso tentaríamos pegar o primeiro elemento de uma lista vazia, gerando um runtime error. Mas temos que fazer nossos programas para que sejam um pouco mais difíceis de quebrar, então usaremos o tipo [code] Maybe [/code]. Se não encontrar uma chave, retornará [code] Nothing [/code]. Se encontrar, retornará [code] Just something [/code], onde "something" é o valor correspondente à chave.
 
 
 
 
 Preste atenção à declaração de tipo. Recebe uma chave que pode ser igualada, uma lista de associação e talvez devolva um valor. Parece correto.
 
-Essa é uma função de agenda de contatos que trabalha com uma lista. A edge condition, separar a lista no primeiro elemento, chamadas recursivas, tudo aí. Isso é o pattern folding clássico. Vamos tentar implementar com folds.
+Essa é uma função de agenda de contatos que trabalha com uma lista. Edge condition, separar a lista no primeiro elemento, chamadas recursivas, tudo aí. Isso é o pattern folding clássico. Vamos tentar implementar com folds.
 
 
 
-<em>Note:</em> Geralmente é melhor usar folds para listas de padrões recursivos ao invés de escrever explicitamente a recursão porque é mais fácil de se ler. Todos sabem que é um fold ao ver a chamada à função [code] foldr [/code], mas toma mais tempo para entender todo o processo.
+<em>Note:</em> Geralmente é melhor usar folds para listas de padrões recursivos ao invés de escrever explicitamente a recursão porque é mais fácil de se ler. Todos sabem que é um fold ao ver a chamada à função [code] foldr [/code], mas toma mais tempo para entender todo seu processo.
 
 
 
@@ -45,16 +45,16 @@ A função [function] fromList [/function] recebe uma lista de associações (na
 
 
 
-Se existirem chaves duplicadas na lista de associação original, as sobressalentes são descartadas. Esse é o tipo de [code] fromList [/code]
+Se existirem chaves duplicadas na lista de associação original, as sobressalentes são descartadas. Esse é o tipo de [code] fromList [/code].
 
 
 
 
-Digamos que recebe uma lista de pares de tipos [code] k [/code] e [code] v [/code] e retorna um mapa com chaves de tipo [code] k [/code] e tipo [code] v [/code]. Perceba que quando você está criando listas de associação com listas, as chaves só precisam ser possíveis de serem igualadas (terem tipos pertencentes à typeclass [code] Eq [/code]) mas não necessariamente ordenáveis. Essa é a essência do módulo [code] Data.Map [/code]. Ele precisa que as chaves sejam ordenáveis para organizá-las na forma de uma árvore.
+Diz que recebe uma lista de pares de tipos [code] k [/code] e [code] v [/code] e retorna um mapa com chaves de tipo [code] k [/code] e tipo [code] v [/code]. Perceba que quando você está criando listas de associação com listas, as chaves só precisam ser possíveis de serem igualadas (terem tipos pertencentes à typeclass [code] Eq [/code]) mas não necessariamente ordenáveis. Essa é a essência do módulo [code] Data.Map [/code]. Ele precisa que as chaves sejam ordenáveis para organizá-las na forma de uma árvore.
 
 É sempre aconselhável usar o [code] Data.Map [/code] para associações chave-valor, a menos que o tipo não esteja na typeclass [code] Ord [/code].
 
-[function] empty [/function] representa um mapa vazio. Não precisa de nenhum argumento, só retorna um mapa vazio.
+[function] empty [/function] representa um mapa vazio. Não necessita de nenhum argumento, só retorna um mapa vazio.
 
 
 
@@ -68,7 +68,7 @@ Nós podemos implementar nosso próprio [code] fromList [/code] usando um mapa v
 
 
 
-É um fold bastante simples. Começamos com um mapa vazio e dobramos à direita, inserindo os pares de chave-valor no acumulado em cada passo.
+Um fold bastante simples. Começamos com um mapa vazio e dobramos à direita, inserindo os pares de chave-valor no acumulado em cada passo.
 
 [function] null [/function] testa se um mapa está vazio.
 
@@ -86,14 +86,14 @@ Nós podemos implementar nosso próprio [code] fromList [/code] usando um mapa v
 
 
 
-[function] lookup [/function] funciona como o [code] Data.List [/code] [code] lookup [/code], mas opera apenas em mapas. Retorna [code] Just something [/code] se encontrar algo à procura da key, [code] Nothing [/code] se não
+[function] lookup [/function] funciona como o [code] Data.List [/code] [code] lookup [/code], mas opera apenas em mapas. Retorna [code] Just something [/code] se encontrar algo pela chave procurada, [code] Nothing [/code] se não.
 
 [function] member [/function] é um predicado que recebe uma chave e um mapa e diz se a chave existe ou não no mapa.
 
 
 
 
-[function] map [/function] e [function] filter [/function] funcionam semelhantemente aos irmãos das listas.
+[function] map [/function] e [function] filter [/function] funcionam semelhantemente aos homônimos das listas.
 
 
 
@@ -103,9 +103,9 @@ Nós podemos implementar nosso próprio [code] fromList [/code] usando um mapa v
 
 
 
-[function] keys [/function] e [function] elems [/function] retorna listas de chaves e valores, respectivamente. [code] keys [/code] é o equivalente a [code] map fst . Map.toList [/code] e [code] elems [/code] é o de [code] map snd . Map.toList [/code].
+[function] keys [/function] e [function] elems [/function] retornam listas de chaves e valores, respectivamente. [code] keys [/code] é o equivalente a [code] map fst . Map.toList [/code] e [code] elems [/code] é o de [code] map snd . Map.toList [/code].
 
-[function] fromListWith [/function] é uma função muito legal. Age como [code] fromList [/code], mas ao invés de discartar as chaves duplicadas, recebe também uma função que decide o que fazer com elas. Imaginando que uma garota pode ter vários números e temos uma lista de associação como essa.
+[function] fromListWith [/function] é uma função muito legal. Age como [code] fromList [/code], mas ao invés de discartar as chaves duplicadas, recebe também uma função que decide o que fazer com elas. Imagine que uma garota pode ter vários números e temos uma lista de associação como essa:
 
 
 
@@ -120,7 +120,7 @@ Se uma chave duplicada for encontrada, a função que passamos será usada para 
 
 
 
-Muito elegante! Outro  caso é estarmos criando um mapa com base em uma lista de associação e quando uma chave estiver duplicada, for mantido o maior valor.
+Muito elegante! Outro caso é estarmos criando um mapa com base em uma lista de associação e quando encontrar uma chave duplicada, manter o maior valor.
 
 
 Ou somá-los na mesma chave.
