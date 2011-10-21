@@ -1,6 +1,6 @@
 title: Data.Set
 
-text: O módulo [code] Data.Set [/code] nos oferece conjuntos. Conjuntos de matemática, isso mesmo. Conjuntos são algo entre listas e mapas. Todos os elementos em um conjunto são únicos. E por serem internamente implementados por árvores (semelhantemente a mapas do [code] Data.Map [/code]), são ordenados. Checar existência, inserção, deleção, etc. é muito mais rápido do que com listas. As operações mais comuns falando de conjuntos é inserir, checar existência e converter para uma lista.
+text: O módulo [code] Data.Set [/code] nos oferece conjuntos. Conjuntos matemáticos, isso mesmo. Conjuntos são algo entre listas e mapas. Todos os elementos em um conjunto são únicos. E por serem internamente implementados por árvores (semelhantemente a mapas do [code] Data.Map [/code]), são ordenados. Checar existência, inserção, deleção, etc. é muito mais rápido do que com listas. As operações mais comuns falando -se de conjuntos é inserir, checar existência e converter para lista.
 
 Pelos nomes do [code] Data.Set [/code] frequentemente conflitarem com membros de [code] Prelude [/code] e [code] Data.List [/code], fazemos uma importação qualificada.
 
@@ -14,7 +14,7 @@ E então carregue-o via GHCI.
 Temos dois pedaços de um texto. Queremos descobrir quais caracteres são usados em ambos.
 
 
-A função [function] fromList [/function] faz exatamente o que você imagina. Recebe uma lista e a converte em um conjunto.
+A função [function] fromList [/function] faz exatamente o que você imagina. Recebe uma lista e converte-a em um conjunto.
 
 
 
@@ -33,13 +33,12 @@ Ou também podemos gerar um terceiro conjunto com as letras que aparecem em qual
 
 
 
-As funções [function] null [/function], [function] size [/function], [function] member [/function], [function] empty [/function], [function] singleton [/function], [function] insert [/function] e [function] delete [/function] vocês já devem imaginar o que fazem.
+As funções [function] null [/function], [function] size [/function], [function] member [/function], [function] empty [/function], [function] singleton [/function], [function] insert [/function] e [function] delete [/function] você já deve imaginar para que servem.
 
 
 
 
-Nós ainda podemos procurar por subconjuntos ou subconjuntos condicionados. O conjunto A é um subconjunto de B se B contém todos os elementos que A também tem. O conjunto A é um subconjunto de B se B contém todos os elementos de A (e mais nenhum).
-//We can also check for subsets or proper subset. Set A is a subset of set B if B contains all the elements //that A does. Set A is a proper subset of set B if B contains all the elements that A does but has more //elements.
+Nós ainda podemos procurar por subconjuntos ou superconjuntos. O conjunto A é um subconjunto de B se B contém todos os elementos que A também tem. O conjunto A é um superconjunto de B se B contém todos os elementos de A e mais alguns.
 
 
 
@@ -49,7 +48,7 @@ Podemos ainda usar a [function] map [/function] e [function] filter [/function] 
 
 
 
-Conjuntos geralmente são usados para eliminar uma lista de valores duplicados, transformando em [code] fromList [/code] e convertendo de volta para uma lista com [function] toList [/function]. A [code] Data.List [/code] [code] nub [/code] já faz isso, mas remover duplicados com listas grandes é muito mais rápido convertendo primeiro para um conjunto e depois convertendo de volta. Mas usar [code] nub [/code] requer que os tipos dos elementos da lista estejam na typeclass [code] Eq [/code], enquanto para converter a lista em um elemento, deve estar em [code] Ord [/code].
+Conjuntos geralmente são usados para eliminar de uma lista valores duplicados transformando em [code] fromList [/code] e convertendo de volta para uma lista com [function] toList [/function]. A [code] Data.List [/code] [code] nub [/code] já faz isso, mas remover duplicados com listas grandes é muito mais rápido convertendo primeiro para um conjunto e depois convertendo de volta. Mas usar [code] nub [/code] requer que os tipos dos elementos da lista estejam na typeclass [code] Eq [/code], enquanto para converter a lista em um elemento, deve estar em [code] Ord [/code].
 
 
 
