@@ -1,6 +1,6 @@
 title: Data.Map
 
-text: Listas de associação (também chamadas de dicionários) são listas usadas para armazenar pares de chave e valor, onde sua ordem não é considerada. Por exemplo, podemos usar uma lista de assciação para guardar números de telefone - que seriam os valores - junto do nome dos donos - chaves. A ordem que esses dados estão armazenados não importa para nós, desde que consigamos o número certo ao pesquisar por uma pessoa.
+text: Listas de associação (também chamadas de dicionários) são listas usadas para armazenar pares de chave e valor, onde sua ordem não é considerada. Por exemplo, podemos usar uma lista de associação para guardar números de telefone - que seriam os valores - junto do nome dos donos - chaves. A ordem que esses dados estão armazenados não importa para nós, desde que consigamos o número certo ao pesquisar por uma pessoa.
 
 O modo mais óbvio de armazenar listas de associação em Haskell seria uma lista de pares. O primeiro componente do par seria a chave, enquanto o outro o valor. Aqui vai um exemplo de uma lista de associação com números de telefone:
 
@@ -30,7 +30,7 @@ Essa é uma função de agenda de contatos que trabalha com uma lista. Edge cond
 
 Que beleza! Agora falta você usar sua nova agenda para ver se não fica só na pesquisa.
 
-Nós acabamos de implementar a função [code] lookup [/code] do [code] Data.List [/code]. Se queremos achar um valor correspondente a uma chave, temos que percorrer todos os elementos até encontrá-lo. O módulo [code] Data.Map [/code] oferece listas de associação muito mais rápidas (porque elas são implementadas internamente com árvores) e ainda provê algumas funções úteis. De agora em diante usaremos mapas ao invés de listas de associação.
+Nós acabamos de implementar a função [code] lookup [/code] do [code] Data.List [/code]. Se quisermos achar um valor correspondente a uma chave, temos que percorrer todos os elementos até encontrá-lo. O módulo [code] Data.Map [/code] oferece listas de associação muito mais rápidas (porque elas são implementadas internamente com árvores) e ainda provê algumas funções úteis. De agora em diante usaremos mapas ao invés de listas de associação.
 
 Já que [code] Data.Map [/code] exporta funções que conflitam com outras de [code] Prelude [/code] e [code] Data.List [/code], faremos uma importação qualificada.
 

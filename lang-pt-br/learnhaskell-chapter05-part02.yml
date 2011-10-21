@@ -1,6 +1,6 @@
 title: Maior do melhor
 
-text: A função [code] maximum [/code] recebe uma lista de coisas que podem ser ordenadas (por exemplo, instâncias da typeclass [code] Ord [/code]) e retorna a maior delas. Pense em como você implementaria isso na forma imperativa. Você provavelmente criaria uma variável para guardar o valor máximo encontrado até então e aí percorreria cada um dos elementos da lista. Caso um elemento fosse maior que o máximo, você o substituiria pelo anterior. O máximo que permanecesse ao fim seria o resultado. Ei! Foi bastante palavras para definir um algorítmo tão simples!
+text: A função [code] maximum [/code] recebe uma lista de coisas que podem ser ordenadas (por exemplo, instâncias da typeclass [code] Ord [/code]) e retorna a maior delas. Pense em como você implementaria isso na forma imperativa. Você provavelmente criaria uma variável para guardar o valor máximo encontrado até então e aí percorreria cada um dos elementos da lista. Caso um elemento fosse maior que o máximo, você o substituiria pelo anterior. O máximo que permanecesse ao fim seria o resultado. Ei! Foi bastante palavras para definir um algoritmo tão simples!
 
 Agora vejamos como o definiríamos recursivamente. Poderíamos já dizer que o maior número de uma lista com um elemento é ele próprio. Então que o maior de uma lista com mais de um elemento é o primeiro elemento, caso este seja maior que o maior do resto. Se for o maior do resto, bem, então será ele. Isso! Agora vamos implementar em Haskell.
 

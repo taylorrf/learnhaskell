@@ -24,4 +24,4 @@ Os primeiros dois patterns dizem que se a primeira ou segunda lista é vazia, n�
 
 Vamos implementar mais uma função da biblioteca padrão &mdash; [code] elem [/code]. Ela pega um elemento e uma lista e vê se aquele elemento está na lista. A condição limite, como na maioria das vezes com listas, é a lista vazia. Nós sabemos que uma lista vazia não contém elemento algum, então ela certamente não tem os nodes que estamos procurando.
 
-Bastante simples e previsível. Se a cabeça não é o elemento, então nós checamos a calda. Se alcançamos uma lista vazia, então o resultado é [code] False [/code].
+Bastante simples e previsível. Se a cabeça não é o elemento, então nós checamos a calda. Se alcançarmos uma lista vazia, então o resultado é [code] False [/code].

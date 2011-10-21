@@ -37,7 +37,7 @@ Somente removerá um nível de camadas. Então se você quer simplificar [code] 
 
 
 
-[function] any [/function] e [function] all [/function] verificam se um predicado é verdadeiro para no mínimo um ou todos elementos da lista (respectivamente). Geralmente usamos uma delas ao invés de mapear e depois usar [code] and [/code] ou [code] or [/code].
+[function] any [/function] e [function] all [/function] verificam se um predicado é verdadeiro para no mínimo um ou todos os elementos da lista (respectivamente). Geralmente usamos uma delas ao invés de mapear e depois usar [code] and [/code] ou [code] or [/code].
 
 
 [function] iterate [/function] toma uma função e um valor inicial. Aplica a função ao valor, depois aplica a função ao seu resultado, então ao seu resultado novamente... Retorna os resultados na forma de uma lista infinita.
