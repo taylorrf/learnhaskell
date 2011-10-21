@@ -1,43 +1,39 @@
-chapter: Fazendo nossos próprios módulos
+chapter: Fazendo seus próprios módulos
 
-text: We've looked at some cool modules so far, but how do we make our own module? Almost every programming language enables you to split your code up into several files and Haskell is no different. When making programs, it's good practice to take functions and types that work towards a similar purpose and put them in a module. That way, you can easily reuse those functions in other programs by just importing your module.
-Let's see how we can make our own modules by making a little module that provides some functions for calculating the volume and area of a few geometrical objects. We'll start by creating a file called [code]Geometry.hs[/code].
-We say that a module <i>exports</i> functions. What that means is that when I import a module, I can use the functions that it exports. It can define functions that its functions call internally, but we can only see and use the ones that it exports.
-At the beginning of a module, we specify the module name. If we have a file called [code]Geometry.hs[/code], then we should name our module [code]Geometry[/code]. Then, we specify the functions that it exports and after that, we can start writing the functions. So we'll start with this.
+text: Temos visto vários módulos interessantes, mas como fazemos o nosso próprio? Quase toda linguagem de programação permite dividir o código em vários arquivos e Haskell não é diferente. Ao escrever programas, uma boa prática é juntar funções e tipos que tem o mesmo propósito num módulo. Desse modo, você pode facilmente reutilizar funções de outros programas simplesmente importando módulos.
+Vamos aprender criar um módulo tendo como exemplo algumas funções de cálculo de volume e área de objetos geométricos. Podemos criar um arquivo chamado [code] Geometry.hs [/code].
+Dizemos que um módulo <i>exporta</i> funções. Ao importar um módulo, eu passo a poder usar as funções que foram exportadas. Um módulo também pode definir funções que possuem chamadas a funçoes internas, mas só podemos ver e usar as explicitamente exportadas.
+No início de um módulo, especificamos seu nome. Se nosso arquivo se chama [code] Geometry.hs [/code], nosso módulo deve se chamar [code] Geometry [/code]. Especificamos as funções que serão exportadas e então podemos começar a escrever nossas próprias funções.
 
-As you can see, we'll be doing areas and volumes for spheres, cubes and cuboids. Let's go ahead and define our functions then:
-
-
-Pretty standard geometry right here. There are a few things to take note of though. Because a cube is only a special case of a cuboid, we defined its area and volume by treating it as a cuboid whose sides are all of the same length. We also defined a helper function called [code]rectangleArea[/code], which calculates a rectangle's area based on the lenghts of its sides. It's rather trivial because it's just multiplication. Notice that we used it in our functions in the module (namely [code]cuboidArea[/code] and [code]cuboidVolume[/code]) but we didn't export it! Because we want our module to just present functions for dealing with three dimensional objects, we used [code]rectangleArea[/code] but we didn't export it.
-When making a module, we usually export only those functions that act as a sort of interface to our module so that the implementation is hidden. If someone is using our [code]Geometry[/code] module, they don't have to concern themselves with functions that we don't export. We can decide to change those functions completely or delete them in a newer version (we could delete [code]rectangleArea[/code] and just use [code]*[/code] instead) and no one will mind because we weren't exporting them in the first place.
-
-To use our module, we just do:Pretty standard geometry right here. There are a few things to take note of though. Because a cube is only a special case of a cuboid, we defined its area and volume by treating it as a cuboid whose sides are all of the same length. We also defined a helper function called [code]rectangleArea[/code], which calculates a rectangle's area based on the lenghts of its sides. It's rather trivial because it's just multiplication. Notice that we used it in our functions in the module (namely [code]cuboidArea[/code] and [code]cuboidVolume[/code]) but we didn't export it! Because we want our module to just present functions for dealing with three dimensional objects, we used [code]rectangleArea[/code] but we didn't export it.
-When making a module, we usually export only those functions that act as a sort of interface to our module so that the implementation is hidden. If someone is using our [code]Geometry[/code] module, they don't have to concern themselves with functions that we don't export. We can decide to change those functions completely or delete them in a newer version (we could delete [code]rectangleArea[/code] and just use [code]*[/code] instead) and no one will mind because we weren't exporting them in the first place.
-
-To use our module, we just do:
+Como pode ver, calcularemos área e volume de esferas, cubos e prismas. Enfim, as próprias definições:
 
 
-[code]Geometry.hs[/code] has to be in the same folder that the program that's importing it is in, though.
-Modules can also be given a hierarchical structures. Each module can have a number of sub-modules and they can have sub-modules of their own. Let's section these functions off so that [code]Geometry[/code] is a module that has three sub-modules, one for each type of object.
+A boa e velha geometria. Mas temos algumas coisas a atentar. Como um cubo nada mais é do que um caso especial de prisma, definimos sua área e volume como um prisma com todas medidas iguais. Ainda definimos uma função auxiliar chamada [code] rectangleArea [/code], que calcula a área de um retângulo baseado nas medidas dos seus lados. Extremamente simples já que é pura multiplicação. Perceba que apesar de a usarmos (como também [code] cuboidArea [/code] e [code] cuboidVolume [/code]) no módulo, não a exportamos! Isso é devido ao módulo tratar-se apenas de funções de objetos tridimensionais (mas que não deixam de precisar da [code] rectangleArea [/code]).
+Ao criar um módulo, geralmente exportamos apenas as funções adequadas e essenciais ao seu propósito, deixando as outras internas. Se alguém estiver usando o módulo [code] Geometry [/code], não precisa se preocupar com outras funções alheias a seu interesse. Podemos decidir modificar ou mesmo deletar uma dessas funções em uma próxima versão (como deletar [code] rectangleArea [/code] e substituir por [code] * [/code]) e ninguém perceberia a mudança.
 
-First, we'll make a folder called [code]Geometry[/code]. Mind the capital G. In it, we'll place three files: [code]Sphere.hs[/code], [code]Cuboid.hs[/code], and [code]Cube.hs[/code]. Here's what the files will contain:
+Para usar o módulo, é só fazer isso:
 
-[code]Sphere.hs[/code]
+[code] Geometry.hs [/code] deve estar na mesma pasta que o programa que o importa.
+Módulos também podem assumir estruturas hierárquicas. Cada módulo pode ter submódulos que também podem ter seus submódulos. Vamos testar o conceito para que o [code] Geometry [/code] tenha três submódulos, um para cada tipo de objeto.
 
+Primeiro, criamos uma pasta chamada [code] Geometry [/code]. Atenção ao G maiúsculo. Nela, teremos três arquivos: [code] Sphere.hs [/code], [code] Cuboid.hs [/code], e [code] Cube.hs [/code]. O que cada arquivo conterá:
 
-[code]Cuboid.hs[/code]
-
-
-[code]Cube.hs[/code]
-
-
-Alright! So first is [code]Geometry.Sphere[/code]. Notice how we placed it in a folder called [code]Geometry[/code] and then defined the module name as [code]Geometry.Sphere[/code]. We did the same for the cuboid. Also notice how in all three sub-modules, we defined functions with the same names. We can do this because they're separate modules. We want to use functions from [code]Geometry.Cuboid[/code] in [code]Geometry.Cube[/code] but we can't just straight up do [code]import Geometry.Cuboid[/code] because it exports functions with the same names as [code]Geometry.Cube[/code]. That's why we do a qualified import and all is well.
-
-So now if we're in a file that's on the same level as the [code]Geometry[/code] folder, we can do, say:
+[code] Sphere.hs [/code]
 
 
-And then we can call [code]area[/code] and [code]volume[/code] and they'll give us the area and volume for a sphere. And if we want to juggle two or more of these modules, we have to do qualified imports because they export functions with the same names. So we just do something like:
+[code] Cuboid.hs [/code]
 
-And then we can call [code]Sphere.area[/code], [code]Sphere.volume[/code], [code]Cuboid.area[/code], etc. and each will calculate the area or volume for their corresponding object.
 
-The next time you find yourself writing a file that's really big and has a lot of functions, try to see which functions serve some common purpose and then see if you can put them in their own module. You'll be able to just import your module the next time you're writing a program that requires some of the same functionality.
+[code] Cube.hs [/code]
+
+
+Perfeito! O primeiro é [code] Geometry.Sphere [/code]. Veja que colocamos tudo na pasta [code] Geometry [/code] e definimos o módulo como [code] Geometry.Sphere [/code]. Fazemos o mesmo que o prisma. Perceba também que em todos submódulo, temos funções de mesmo nome. Só podemos fazer isso por se tratarem de módulos separados. Queremos usar as funções de [code] Geometry.Cuboid [/code] em [code] Geometry.Cube [/code] mas não podemos apenas dar um [code] import Geometry.Cuboid [/code] por exportar funções de mesmo nome que [code] Geometry.Cube [/code]. Por isso que fazemos uma importação qualificada e tudo funciona.
+
+Se estivesse num arquivo no mesmo nível da pasta [code] Geometry [/code], podemos, digamos:
+
+
+E então chamamos [code] area [/code] e [code] volume [/code] que devolverá área e volume de uma esfera. Mas se quisermos usar dois ou mais módulos, teríamos que fazer malabarismos. Ou... fazer importações qualificadas. Então só fazemos isso:
+
+Só chamar [code] Sphere.area [/code], [code] Sphere.volume [/code], [code] Cuboid.area [/code], etc. e que cada um vai calcular área ou volume do objeto correspondente.
+
+Logo que você se ver em um arquivo muito grande e com várias funções, tente perceber quais funções tem um propósito em comum e estudar se pode colocá-las num módulo separado. Você pode simplesmente importá-lo na próxima vez que um programa necessitar da mesma funcionalidade.
