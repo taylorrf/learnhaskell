@@ -10,7 +10,13 @@ Um dos usos para composição de funções é fazer funções em tempo de execu�
 
 Observe a lambda e como ela se parece com o resultado da composição da função. Usando composição de função, podemos reescrever isto como:
 
-Fabulous! Function composition is right-associative, so we can compose many functions at a time. The expression [code]f (g (z x))[/code] is equivalent to [code](f . g . z) x[/code]. With that in mind, we can turn into
+Fabuloso! Composição de funções é assiciativo à direita, então nós podemos compor muitas funções ao mesmo tempo. A expressão [code]f (g (z x))[/code] é o equivalente a [code](f . g . z) x[/code]. Com isso em mente, podemos transformar isto
+
+
+nisso
+
+
+Mas e quando funções têm muitos parâmetros? Bem, se você quiser usar isso na composição de funções, 
 
 But what about functions that take several parameters? Well, if we want to use them in function composition, we usually have to partially apply them just so much that each function takes just one parameter. [code] sum (replicate 5 (max 6.7 8.9))[/code] can be rewritten as [code](sum . replicate 5 . max 6.7) 8.9[/code] or as [code]sum . replicate 5 . max 6.7 $ 8.9[/code]. What goes on in here is this: a function that takes what [code]max 6.7[/code] takes and applies [code]replicate 5[/code] to it is created. Then, a function that takes the result of that and does a sum of it is created. Finally, that function is called with [code]8.9[/code]. But normally, you just read that as: apply [code]8.9[/code] to [code]max 6.7[/code], then apply [code]replicate 5[/code] to that and then apply [code]sum[/code] to that. If you want to rewrite an expression with a lot of parentheses by using function composition, you can start by putting the last parameter of the innermost function after a [code]$[/code] and then just composing all the other function calls, writing them without their last parameter and putting dots between them. If you have [code]replicate 100 (product (map (*3) (zipWith max [1,2,3,4,5] [4,5,6,7,8])))[/code], you can write it as [code]replicate 100 . product . map (*3) . zipWith max [1,2,3,4,5] $ [4,5,6,7,8][/code]. If the expression ends with three parentheses, chances are that if you translate it into function composition, it'll have three composition operators.
 

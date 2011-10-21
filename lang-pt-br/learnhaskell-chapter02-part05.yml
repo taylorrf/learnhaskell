@@ -8,15 +8,15 @@ Como você vê, obtemos os resultados desejados. Agora vamos adicionar uma condi
 
 Legal, isto funciona. E se nós quisermos todos os números entre 50 e 100 onde o resto da divisão pelo número 7 fosse 3? Fácil.
 
-Sucesso! Note que reduzir as listas por predicados é chamado de <em>filtragem</em>. Nós temos uma lista de números e nós filtramos eles pelo predicado. Vamos a outro exemplo. Digamos que você queira uma <i>compreensão</i> que substitua cada número ímpar maior do que 10 com [code]"BANG!"[/code] e cada número ímpar menor do que 10 com [code]"BOOM!"[/code]. Se o número não for ímpar, queremos ele fora da lista. Convenientemente nós colocamos esta <i>compreensão</i> dentro de uma função para reutilizar-mos isto facilmente.
+Sucesso! Note que reduzir as listas por predicados é chamado de <em>filtragem</em>. Nós temos uma lista de números e nós os filtraremos pelo predicado. Vamos a outro exemplo. Digamos que você queira uma <i>compreensão</i> que substitua cada número ímpar maior do que 10 com [code]"BANG!"[/code] e cada número ímpar menor do que 10 com [code]"BOOM!"[/code]. Se o número não for ímpar, queremos ele fora da lista. Convenientemente nós colocamos esta <i>compreensão</i> dentro de uma função para reutilizá-la mais facilmente.
 
-A última parte da <i>compreensão</i> é o predicado. A função [code]odd[/code] retorna [code]True[/code] quando o número for ímpar e [code]False[/code] quando for par. O elemento é incluido na lista somente se todos os predicados examinados sejam [code]True[/code].
+A última parte da <i>compreensão</i> é o predicado. A função [code]odd[/code] retorna [code]True[/code] quando o número for ímpar e [code]False[/code] quando for par. O elemento é incluído na lista somente se todos os predicados examinados sejam [code]True[/code].
 
 Podemos também incluir vários predicados. Se nós quisermos todos os números entre 10 e 20 que não sejam 13, 15 ou 19, podemos fazer:
 
-Não apenas podemos ter vários predicados em uma compreensão de lista (um elemento deve satisfazer todos os predicados para ser incluso no resultado da lista), como também podemos extrair várias listas. Quando extraimos diversas listas, a compreensão produz todas as combinações da lista desejada e junta com a função de output que nós fornecemos. Uma lista produzida pela compreensão da extração a partir de duas listas com length 4 terá um length de 16, desde que não seja filtrado. Se eu tiver duas listas, [code][2,5,10][/code] e [code][8,10,11][/code] e quiser obter o produto de todas as combinações possíveis entre números destas listas, aqui esta o que devemos fazer.
+Não apenas podemos ter vários predicados em uma compreensão de lista (um elemento deve satisfazer todos os predicados para ser incluso no resultado da lista), como também podemos extrair várias listas. Quando extraímos diversas listas, a compreensão produz todas as combinações da lista desejada e junta com a função de output que nós fornecemos. Uma lista produzida pela compreensão da extração a partir de duas listas com length 4 terá um length de 16, desde que não seja filtrado. Se eu tiver duas listas, [code][2,5,10][/code] e [code][8,10,11][/code] e quiser obter o produto de todas as combinações possíveis entre números destas listas, aqui esta o que devemos fazer.
 
-Como esperado, o length da nova lista é 9. E se eu quiser todas os possíveis produtos que sejam maiores do que 50?
+Como esperado, o length da nova lista é 9. E se eu quiser todos os possíveis produtos que sejam maiores do que 50?
 
 Que tal uma compreensão de lista que combina uma lista de adjetivos e uma lista de substantivos... só para dar umas risadas.
 
@@ -24,10 +24,10 @@ Eu sei! Vamos escrever a nossa própria versão do [code]length[/code]! Chamarem
 
 [code]_[/code] significa que não me importo com o que vamos extrair da lista, ao invés de escrever o nome da variável que nunca será usada, basta escrever [code]_[/code]. Esta função substitui todos os elementos da lista com [code]1[/code] e soma todos eles. A idéia é ter o resultado da soma e obter depois o length da nossa lista.
 
-Lembrete de amigo: como strings são listas, nós devemos usar compreensão de listas para processar e produzir strings. Eis uma função que recebe uma string e remove tudo exceto letras maíusculas dela.
+Lembrete de amigo: como strings são listas, nós devemos usar compreensão de listas para processar e produzir strings. Eis uma função que recebe uma string e remove tudo exceto letras maiúsculas dela.
 
 Testando isto:
 
-O predicado aqui faz todo o serviço. Isto dirá para o carácter que ele será incluido em uma nova lista somente se ele for um elemento da lista [code]['A'..'Z'][/code]. Aninhar compreensões de lista também é possível se você estiver operando em uma lista que contém listas. Um lista que contém diversas listas de números. Vamos remover todos os números ímpar sem diminui-lás.
+O predicado aqui faz todo o serviço. Isto dirá para o caractere que ele será incluído em uma nova lista somente se ele for um elemento da lista [code]['A'..'Z'][/code]. Aninhar compreensões de lista também é possível se você estiver operando em uma lista que contém listas. Uma lista que contém diversas listas de números. Vamos remover todos os números ímpares sem diminui-los.
 
-Você pode escrever compreensão de lista em diversas linhas. Se você não estiver no GHCI, é melhor que quebre longas compreensão de lista em diversas linhas, especialmente se forem aninhadas.
+Você pode escrever compreensão de lista em diversas linhas. Se você não estiver no GHCI, é melhor que quebre longas compreensões de lista em diversas linhas, especialmente se forem aninhadas.

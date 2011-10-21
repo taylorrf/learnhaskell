@@ -4,17 +4,11 @@ text: O módulo [code] Data.List [/code] obviamente lida com listas, provendo fu
 
 [function] intersperse [/function] recebe um elemento e uma lista e o repete entre cada um dos elementos da lista. Veja só:
 
-
-
 [function] intercalate [/function] pega uma lista de listas e uma lista simples e a insere entre cada uma, retornando apenas uma lista com o resultado.
-
-
 
 [function] transpose [/function] transpõe uma lista de listas. Vendo uma lista de listas como uma matriz, as colunas viram linhas e vice-versa.
 
-
-
-Supondo que queremos somar os polinômios <i>3x<sup>2</sup> + 5x + 9</i>, <i>10x<sup>3</sup> + 9</i> e <i>8x<sup>3</sup> + 5x<sup>2</sup> + x - 1</i>. Podemos representa-los por meio das listas [code] [0,3,5,9] [/code], [code] [10,0,0,9] [/code] e [code] [8,5,1,-1] [/code]. Agora para somar, precisamos fazer só o seguinte:
+Supondo que queremos somar os polinômios <i>3x<sup>2</sup> + 5x + 9</i>, <i>10x<sup>3</sup> + 9</i> e <i>8x<sup>3</sup> + 5x<sup>2</sup> + x - 1</i>. Podemos representá-los por meio das listas [code] [0,3,5,9] [/code], [code] [10,0,0,9] [/code] e [code] [8,5,1,-1] [/code]. Agora para somar, precisamos fazer só o seguinte:
 
 
 
@@ -54,7 +48,7 @@ Somente removerá um nível de camadas. Então se você quer simplificar [code] 
 
 
 
-[function] takeWhile [/function] é uma função simples. Vai pegando os elementos da lista enquanto a verficação resulta satisfatoriamente. Pode ser bastante útil.
+[function] takeWhile [/function] é uma função simples. Vai pegando os elementos da lista enquanto a verificação resulta satisfatoriamente. Pode ser bastante útil.
 
 
 
@@ -70,7 +64,7 @@ Aplicamos [code] (^3) [/code] em uma lista infinita e, logo que o elemento 10000
 
 
 
-Nos entregaram uma lista que representa os valores de estoque por datas. A lista é feita por tuplas onde o primeiro componente é o estoque, o segundo é o ano, o terceiro é o mês e o quarto é o dia. Queremos saber quando o estoque excederam os 1000 dólares pela primeira vez.
+Nos entregaram uma lista que representa os valores de estoque por datas. A lista é feita por tuplas onde o primeiro componente é o estoque, o segundo é o ano, o terceiro é o mês e o quarto é o dia. Queremos saber quando o estoque excederá os 1000 dólares pela primeira vez.
 
 
 
@@ -84,7 +78,7 @@ Enquanto que [code] span [/code] toma os elementos enquanto não aparecer o prim
 
 Ao usar o [code] break [/code], a segunda lista terá o primeiro elemento como o que satisfaz o teste.
 
-[function] sort [/function] simplesmente ordena uma lista. O tipo dos elementos da lista devem ser parte da typeclass [code] Ord [/code], já que como seus elementos não podem ser colocados em uma ordem, obviamente não podem ser ordenados.
+[function] sort [/function] simplesmente ordena uma lista. O tipo dos elementos da lista deve ser parte da typeclass [code] Ord [/code], já que como seus elementos não podem ser colocados em uma ordem, obviamente não podem ser ordenados.
 
 
 
@@ -133,7 +127,7 @@ Enquanto [code] span [/code] e [code] break [/code] terminam ao encontrar o prim
 
 Veja o tipo de [code] find [/code]. É [code] Maybe a [/code]. Isso é muito parecido com ser [code] [a] [/code], mas o [code]Maybe[/code] pode conter um ou zero elementos, enquanto uma lista pode conter um, zero ou vários elementos.
 
-Lembra-se de quando procuramos a primeira vez que o estoque ultrapassou $1000. Fizemos [code] head (dropWhile (\(val,y,m,d) -&gt; val &lt; 1000) stock) [/code]. Lembre-se que [code] head [/code] não é muito seguro. O que acontece se nosso estoque nunca chegou a $1000? Nosso uso da [code] dropWhile [/code] retornaria uma lista vazia e ao pegarmos o primeiro elemento de nada seria gerado um erro. No entanto, se reescrevessemos para [code] find (\(val,y,m,d) -&gt; val &gt; 1000) stock [/code], seria muito mais seguro. Se o estoque nunca chegou a $1000 (que nenhum elemento satisfez o predicado), seria retornado [code] Nothing [/code]. Mas uma resposta válida dessa lista seria, digamos, [code] Just (1001.4,2008,9,4) [/code].
+Lembra-se de quando procuramos a primeira vez que o estoque ultrapassou $1000. Fizemos [code] head (dropWhile (\(val,y,m,d) -&gt; val &lt; 1000) stock) [/code]. Lembre-se que [code] head [/code] não é muito seguro. O que acontece se nosso estoque nunca chegou a $1000? Nosso uso da [code] dropWhile [/code] retornaria uma lista vazia e ao pegarmos o primeiro elemento de nada seria gerado um erro. No entanto, se reescrevêssemos para [code] find (\(val,y,m,d) -&gt; val &gt; 1000) stock [/code], seria muito mais seguro. Se o estoque nunca chegou a $1000 (que nenhum elemento satisfez o predicado), seria retornado [code] Nothing [/code]. Mas uma resposta válida dessa lista seria, digamos, [code] Just (1001.4,2008,9,4) [/code].
 
 [function] elemIndex [/function] é semelhante ao [code] elem [/code], mas que não retorna um valor booleano. Provavelmente retornará a posição do elemento. Caso o elemento não exista na lista, [code] Nothing [/code].
 
@@ -143,7 +137,7 @@ Lembra-se de quando procuramos a primeira vez que o estoque ultrapassou $1000. F
 
 
 
-[function] findIndex [/function] é parecido com o find, mas retorna apenas a posição do primeiro elemento que satisfaz o predicado. [function] findIndices [/function] retorna os índices de todos os elementos que satisfaz o predicado na forma de uma lista.
+[function] findIndex [/function] é parecido com o find, mas retorna apenas a posição do primeiro elemento que satisfaz o predicado. [function] findIndices [/function] retorna os índices de todos os elementos que satisfaz o predicado na forma de uma lista. 
 
 
 
@@ -160,9 +154,9 @@ Igualmente à transposição comum, listas maiores que a menor são cortadas nes
 
 
 
-[code] '\n' [/code] é o caracter para uma nova linha Unix. Barras invertidas sempre têm um significado especial em strings e caracteres em Haskell.
+[code] '\n' [/code] é o caractere para uma nova linha Unix. Barras invertidas sempre têm um significado especial em strings e caracteres em Haskell.
 
-[function] unlines [/function] é o inverso da função [code] lines [/code]. Recebe uma lista de strings e as une pelo caracter [code] '\n' [/code].
+[function] unlines [/function] é o inverso da função [code] lines [/code]. Recebe uma lista de strings e as une pelo caractere [code] '\n' [/code].
 
 
 
@@ -222,7 +216,7 @@ Fazendo [code] (==) `on` (&gt; 0) [/code] retorna uma função de igualdade seme
 
 
 
-Muito mais legível! Agora você pode ler em voz alta: Agrupe por igualdade sempre que elementos forem maior que zero.
+Muito mais legível! Agora você pode ler em voz alta: Agrupe por igualdade sempre que elementos forem maiores do que zero.
 
 Semelhantemente, [code] sort [/code], [code] insert [/code], [code] maximum [/code] e [code] minimum [/code] também têm versões genéricas. Funções como [code] groupBy [/code] recebem uma função para determinar quando dois elementos são iguais. [function] sortBy [/function], [function] insertBy [/function], [function] maximumBy [/function] e [function] minimumBy [/function] recebem uma função que diz se um elemento é maior, menor ou igual a outro. O tipo de [code] sortBy [/code] e [code] sortBy :: (a -&gt; a -&gt; Ordering) -&gt; [a] -&gt; [a] [/code]. Se você ainda se lembra, o tipo [code] Ordering [/code] pode assumir valor [code] LT [/code], [code] EQ [/code] ou [code] GT [/code]. [code] sort [/code] é o equivalente a [code] sortBy compare [/code], porque compare pega dois tipos de [code] Ord [/code] e retorna sua relação quanto ordenação.
 
@@ -231,4 +225,5 @@ Listas podem ser comparadas, mas quando o são, são comparados lexicograficamen
 
 
 
-Incrível! [code] compare `on` length [/code] ... cara, isso mais parece inglês puro! Se você não percebeu bem como [code] on [/code] funciona aqui, [code] compare `on` length [/code] é o equivalente a [code] \x y -&gt; length x `compare` length y [/code]. Quando você está trabalhando com funções <i>By</i> que precisam de uma função de igualdade, você geralmente vai usar [code] (==) `on` something [/code] e com funções <i>By</i> que precisem de outra de ordação, você usa [code] compare `on` something [/code].
+Incrível! [code] compare `on` length [/code] ... cara, isso mais parece inglês puro! Se você não percebeu bem como [code] on [/code] funciona aqui, [code] compare `on` length [/code] é o equivalente a [code] \x y -&gt; length x `compare` length y [/code]. Quando você está trabalhando com funções <i>By</i> que precisam de uma função de igualdade, você geralmente vai usar [code] (==) `on` something [/code] e com funções <i>By</i> que precisem de outra de ordenação, você usa [code] compare `on` something [/code].
+

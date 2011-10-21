@@ -1,6 +1,6 @@
 title: Basicão de Typeclasses
 
-text: Uma Typeclass (classe de tipos) é como uma interface que define um comportamento. Se um tipo é parte de uma typeclass, quer dizer que ela suporta e implementa o comportamento espeficicado pela classe de tipo. Muita gente vindo de orientação a objetos se confunde e acha estar diante de uma classe de OO. Bom... não. Você pode pensar que são como as interfaces de Java, mas muito melhor.
+text: Uma Typeclass (classe de tipos) é como uma interface que define um comportamento. Se um tipo é parte de uma typeclass, quer dizer que ela suporta e implementa o comportamento especificado pela classe de tipo. Muita gente vinda da orientação a objetos se confunde e acha estar diante de uma classe de OO. Bom... não. Você pode pensar que são como as interfaces de Java, mas muito melhor.
 
 Qual deve ser o tipo da função [code] == [/code]?
 
@@ -23,7 +23,7 @@ Todos os tipos já vistos (exceto funções) são parte de [code] Ord [/code]. [
 
 Para ser membro de [code] Ord [/code], um tipo deve ser membro do prestigioso e restrito clube do [code] Eq [/code].
 
-Membros do [code] Show [/code] podem ser representados como strings. Todos tipos (exceto funções) são suportados pelo [code] Show [/code]. A função que lida com a classe de tipo [code] Show [/code] mais usada é a [code] show [/code]. Recebe um valor de tipo presente em [code] Show [/code] e nos mostra como string.
+Membros do [code] Show [/code] podem ser representados como strings. Todos os tipos (exceto funções) são suportados pelo [code] Show [/code]. A função que lida com a classe de tipo [code] Show [/code] mais usada é a [code] show [/code]. Recebe um valor de tipo presente em [code] Show [/code] e nos mostra como string.
 
 [code] Read [/code] é algo o contrário da classe de tipo [code] Show [/code]. A função [code] read [/code] recebe uma string e retorna um tipo membro de [code] Read [/code].
 
@@ -33,11 +33,11 @@ Até agora tudo simples. Todos os tipos já vistos estão nessas classes de tipo
 O que o GHCI está tentando nos dizer é que não sabe o que espera-se do retorno. Perceba que nos usos anteriores de [code] read [/code] nós sempre fazíamos algo com o resultado. Assim, o GHCI podia inferir o tipo esperado de [code] read [/code]. Se usassemos-o como um booleano, ele sabe que é um [code] Bool [/code]. Mas agora ele só sabe que deve ser algum typeclass [code] Read [/code]. Vamos dar uma olhada na declaração de tipo de [code] read [/code].
 
 
-Viu? Ele retorna um tipo parte de [code] Read [/code] mas como não usamos o resultado depois, ele não sabe qual. É por isso que podemos especificar explicitamente <em>type annotations</em>. Type annotations servem para dizer qual tipo que vocẽ quer que uma expressão assuma. Fazemos isso adicionando [code] :: [/code] no fim da expressão o tipo desejado. Observe:
+Viu? Ele retorna um tipo parte de [code] Read [/code] mas como não usamos o resultado depois, ele não sabe qual. É por isso que podemos especificar explicitamente <em>type annotations</em>. Type annotations servem para dizer qual tipo que você quer que uma expressão assuma. Fazemos isso adicionando [code] :: [/code] no fim da expressão o tipo desejado. Observe:
 
 Na maioria das expressões, o compilador já pode assumir qual deve ser o tipo das expressões. Mas acontece dele não saber se deve ser [code] Int [/code] ou [code] Float [/code] para uma expressão como [code] read "5" [/code]. Para ter certeza, Haskell deveria primeiro avaliar [code] read "5" [/code]. Mas como Haskell é uma linguagem estaticamente tipada, precisa saber o tipo de todas as expressões na hora da compilação (ou no caso do GHCI, interpretação). Então dizemos ao Haskell: "Ei, essa expressão é desse tipo, caso não saiba!".
 
-Os membros de [code] Enum [/code] são tipos que possuem uma sequência. A maior vantagem da typeclass [code] Enum [/code] é poder ser usada em list ranges. Seus tipos têm sucessores e predecessores definidos, que podem ser conseguidos pelas funções [code] succ [/code] e [code] pred [/code]. Tipos nessa classe: [code] () [/code], [code] Bool [/code], [code] Char [/code], [code] Ordering [/code], [code] Int [/code], [code] Integer [/code], [code] Float [/code] e [code] Double [/code].
+Os membros de [code] Enum [/code] são tipos que possuem uma seqüência. A maior vantagem da typeclass [code] Enum [/code] é poder ser usada em list ranges. Seus tipos têm sucessores e predecessores definidos, que podem ser conseguidos pelas funções [code] succ [/code] e [code] pred [/code]. Tipos nessa classe: [code] () [/code], [code] Bool [/code], [code] Char [/code], [code] Ordering [/code], [code] Int [/code], [code] Integer [/code], [code] Float [/code] e [code] Double [/code].
 
 [code] Bounded [/code] são os tipos que possuem limites - máximo e mínimo.
 

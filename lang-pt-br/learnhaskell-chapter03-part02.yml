@@ -6,7 +6,7 @@ text: Qual você acha que é o tipo da função [code] head [/code]? Já que [co
 Hmmm! O que é esse [code] a [/code]? É o tipo? Lembre-se que já vimos que o tipo é escrito com a primeira letra maiúscula, então não pode ser exatamente o tipo. E é exatamente essa diferença que nos diz ser um <em>tipo variável</em>. Isso significa que o [code] a [/code] Pode ser qualquer tipo. Isso é algo como os genéricos de outras linguagens, mas em Haskell é muito mais poderoso porque nos permite facilmente escrever funções mais genéricas caso o processamento seja o mesmo para diferentes tipos. Funções que possuem tipos variáveis são denominadas <em>funções polimórficas</em>. A declaração de tipo em [code] head [/code] diz que recebe uma lista de elementos de qualquer tipo e retorna um elemento dela.
 
 
-Embora tipos variáveis possam ter nomes maiores de um caracter, geralmente damos a, b, c, d...
+Embora tipos variáveis possam ter nomes maiores de um caractere, geralmente damos a, b, c, d...
 
 Lembra-se do [code] fst [/code]? Retorna o primeiro componente de um par. Vamos examinar o seu tipo.
 

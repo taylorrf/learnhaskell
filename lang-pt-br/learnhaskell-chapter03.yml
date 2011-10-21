@@ -13,7 +13,7 @@ Agora usaremos o GHCI para descobrir os tipos de algumas expressões. Faremos iss
 Fazendo isso, vemos que [code] :t [/code] mostra a expressão seguida de [code] :: [/code] e seu tipo. [code] :: [/code] pode ser lido como "do tipo". Tipos explícitos sempre são referidos pela sua primeira letra maiúscula. [code] 'a' [/code], como é visto, é do tipo [code] Char [/code]. Não é difícil de identificar que vem da palavra <i>caracter</i>. [code] True [/code] é [code] Boolean [/code]. Faz sentido. Mas... como? Vemos que o tipo de [code] "HELLO!" [/code] é [code] [Char] [/code]. Os colchetes denotam uma lista. Então lemos isso como uma <i>lista de caracteres</i>. Ao contrário de listas, cada valor da tupla tem seu tipo. Então a expressão [code] (True, 'a') [/code] tem o tipo [code] (Bool, Char) [/code], e uma expressão como [code] ('a','b','c') [/code] deverá retornar [code] (Char, Char, Char) [/code]. [code] 4 == 5 [/code] sempre retornará [code] False [/code], que é do tipo [code] Bool [/code].
 
 
-Funções também tem tipos. Ao escrever suas próprias funções, podemos declarar explicitamente seus tipos. Isso geralmente é considerado uma boa prática exceto quando a função é muito curta. A partir daqui, daremos vários exemplos de que fazem uso desse tipo de declaração. Lembra-se da lista que criamos anteriormente e que usava filtros para retornar somente a parte maiúscula da String? Isso é muito parecido com uma declaração de tipo.
+Funções também têm tipos. Ao escrever suas próprias funções, podemos declarar explicitamente seus tipos. Isso geralmente é considerado uma boa prática exceto quando a função é muito curta. A partir daqui, daremos vários exemplos de que fazem uso desse tipo de declaração. Lembra-se da lista que criamos anteriormente e que usava filtros para retornar somente a parte maiúscula da String? Isso é muito parecido com uma declaração de tipo.
 
 
 [code] removeNonUppercase [/code] tinha o tipo [code][Char] -&gt; [Char][/code], o que significa que lidava com duas Strings, isso devido a receber uma String e retornar uma String. O tipo [code] [Char] [/code] é sinônimo de [code] String [/code] então ficaria mais claro se fosse escrito [code] removeNonUppercase :: String -&gt; String [/code]. Não precisamos fazer essa declaração de tipo para o compilador porque ele pode inferir por si só que é uma função que recebe uma String e retorna uma String. Mas como damos o tipo de uma função que tem vários parâmetros? Segue uma função simples que pega três inteiros e os soma:
@@ -21,11 +21,11 @@ Funções também tem tipos. Ao escrever suas próprias funções, podemos declarar ex
 
 Os parâmetros são separados por [code] -&gt; [/code] e não há nenhuma distinção entre tipos de parâmetros e retorno. O tipo do retorno é o último e os parâmetros são os três primeiros. Mais adiante veremos o porquê deles serem apenas separados por um [code] -&gt; [/code] ao invés de ter um destaque maior como em [code] Int, Int, Int -&gt; Int [/code] ou algo do gênero.
 
-Se você deseja especificar o tipo da função mas não tem certeza de qual o é, você pode escreve-la normalmente e depois descobrir com o [code] :t [/code]. Funções também são expressões, então [code] :t [/code] funciona sem problemas.
+Se você deseja especificar o tipo da função, mas não tem certeza de qual o é, você pode escrevê-la normalmente e depois descobrir com o [code] :t [/code]. Funções também são expressões, então [code] :t [/code] funciona sem problemas.
 
 Aqui temos um apanhado geral dos principais tipos.
 
-[code] Int [/code] é inteiro. É usado por números inteiros. [code] 7 [/code] pode ser um [code] Int [/code] mas [code] 7.2 [/code] não. [code] Int [/code] possui limitações de tamanho, o que significa ter um máximo e um mínimo. Geralmente computadore 32bit tem um [code] Int [/code] máximo de 2147483647 e um mínimo de -2147483648.
+[code] Int [/code] é inteiro. É usado por números inteiros. [code] 7 [/code] pode ser um [code] Int [/code] mas [code] 7.2 [/code] não. [code] Int [/code] possui limitações de tamanho, o que significa ter um máximo e um mínimo. Geralmente computadores 32bit têm um [code] Int [/code] máximo de 2147483647 e um mínimo de -2147483648.
 
 [code] Integer [/code] significa... também inteiro. A principal diferença é que não tem limitações e pode ser usado por números realmente grandes. Digo, extremamente grandes. [code] Int [/code], contudo, é mais eficiente.
 
@@ -36,6 +36,6 @@ Aqui temos um apanhado geral dos principais tipos.
 
 [code] Bool [/code] é um tipo booleano. Pode ter apenas dois valores: Ou [code] True [/code] ou [code] False [/code].
 
-[code] Char [/code] representa um caracter. É delimitado por aspas simples. Uma lista de caracteres é denominada String.
+[code] Char [/code] representa um caractere. É delimitado por aspas simples. Uma lista de caracteres é denominada String.
 
 Tuplas são tipos mas possuem uma variação de acordo com a quantidade e valores que contém, então teoricamente temos tuplas com infinitos tipos, o que é bastante para esse tutorial. Note que uma tupla vazia [code] () [/code] é também um tipo e pode assumir apenas um valor: [code] () [/code]
