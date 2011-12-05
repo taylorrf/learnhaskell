@@ -1,78 +1,86 @@
-chapter: Making Our Own Types and Typeclasses
+chapter: Criando seus próprios tipos e typeclasses
 
-text:In the previous chapters, we covered some existing Haskell types and typeclasses. In this chapter, we'll learn how to make our own and how to put them to work!
-
-
-title: Algebraic data types intro
-
-text: So far, we've run into a lot of data types. [code]Bool[/code], [code]Int[/code], [code]Char[/code], [code]Maybe[/code], etc. But how do we make our own? Well, one way is to use the <em>data</em> keyword to define a type. Let's see how the [code]Bool[/code] type is defined in the standard library.
+text: Nos capítulos anteriores, vimos alguns tipos e typeclasses de Haskell. Neste capítulo, aprenderemos como criar nossos próprios e colocá-los para funcionar!
 
 
+title: Introdução a tipos de dados algébricos
 
-[code]data[/code] means that we're defining a new data type. The part before the [code]=[/code] denotes the type, which is [code]Bool[/code]. The parts after the [code]=[/code] are <em>value constructors</em>. They specify the different values that this type can have. The [code]|[/code] is read as <i>or</i>. So we can read this as: the [code]Bool[/code] type can have a value of [code]True[/code] or [code]False[/code]. Both the type name and the value constructors have to be capital cased.
-
-In a similar fashion, we can think of the [code]Int[/code] type as being defined like this:
+text: Até agora, vimos vários tipos de dados. [code]Bool[/code], [code]Int[/code], [code]Char[/code], [code]Maybe[/code], etc. Mas como criar nosso próprio? Bom, um jeito é usar a palavra-chave <em>data</em> para definir um tipo. Vamos ver como o tipo [code]Bool[/code] é definido na biblioteca padrão.
 
 
 
-The first and last value constructors are the minimum and maximum possible values of [code]Int[/code]. It's not actually defined like this, the ellipses are here because we omitted a heapload of numbers, so this is just for illustrative purposes.	
+[code]data[/code] significa que estamos definindo um novo tipo de dados. A parte anterior a [code]=[/code] diz o tipo, que é [code]Bool[/code]. A de depois são <em>value constructors</em> (construtores de valores). Eles especificam os diferentes valores que o tipo pode assumir. O [code]|[/code] pode ser lido como <i>ou</i>. Então você pode ler tudo como: o tipo [code]Bool[/code] pode ter valores [code]True[/code] ou [code]False[/code]. Tipos ou construtores de valor devem começar com letras maiúsculas.
 
-Now, let's think about how we would represent a shape in Haskell. One way would be to use tuples. A circle could be denoted as [code](43.1, 55.0, 10.4)[/code] where the first and second fields are the coordinates of the circle's center and the third field is the radius. Sounds OK, but those could also represent a 3D vector or anything else. A better solution would be to make our own type to represent a shape. Let's say that a shape can be a circle or a rectangle. Here it is:
-
-
-
-
-Now what's this? Think of it like this. The [code]Circle[/code] value constructor has three fields, which take floats. So when we write a value constructor, we can optionally add some types after it and those types define the values it will contain. Here, the first two fields are the coordinates of its center, the third one its radius. The [code]Rectangle[/code] value constructor has four fields which accept floats. The first two are the coordinates to its upper left corner and the second two are coordinates to its lower right one.
-
-Now when I say fields, I actually mean parameters. Value constructors are actually functions that ultimately return a value of a data type. Let's take a look at the type signatures for these two value constructors.
+Da mesma maneira, podemos imaginar o tipo [code]Int[/code] como sendo definido como:
 
 
 
-Cool, so value constructors are functions like everything else. Who would have thought? Let's make a function that takes a shape and returns its surface.
+Os primeiro e último construtores são os valores menores e maiores possíveis de [code]Int[/code]. Não é definido exatamente assim, as reticências estão aí apenas com propósitos ilustrativos já que omitimos uma grande quantidade de números.	
 
-
-
-The first notable thing here is the type declaration. It says that the function takes a shape and returns a float. We couldn't write a type declaration of [code]Circle -&gt; Float[/code] because [code]Circle[/code] is not a type, [code]Shape[/code] is. Just like we can't write a function with a type declaration of [code]True -&gt; Int[/code]. The next thing we notice here is that we can pattern match against constructors. We pattern matched against constructors before (all the time actually) when we pattern matched against values like [code][][/code] or [code]False[/code] or [code]5[/code], only those values didn't have any fields. We just write a constructor and then bind its fields to names. Because we're interested in the radius, we don't actually care about the first two fields, which tell us where the circle is.
+Por agora, vamos pensar como podemos representar uma forma geométrica em Haskell. Um jeito é usar tuplas. Um círculo pode ser como [code](43.1, 55.0, 10.4)[/code] onde o primeiro e o segundo campos são as coordenadas do centro do círculo e o terceiro é o raio. Parace bom, mas também serve para representar qualquer vetor 3D ou algo do gênero. A melhor solução seria dizer qual é a forma, se um círculo ou retângulo. Aí:
 
 
 
 
-Yay, it works! But if we try to just print out [code]Circle 10 20 5[/code] in the prompt, we'll get an error. That's because Haskell doesn't know how to display our data type as a string (yet). Remember, when we try to print a value out in the prompt, Haskell first runs the [code]show[/code] function to get the string representation of our value and then it prints that out to the terminal. To make our [code]Shape[/code] type part of the [code]Show[/code] typeclass, we modify it like this:
+E agora? Gostei, ao menos. O value constructor [code]Circle[/code] tem três campos float. Então quando escrevemos um value constructor, nós podemos adicionar tipos que o nosso novo tipo conterá. Aqui, os dois primeiros campos são as coordenadas do centro, o terceiro o raio. O value constructor [code]Rectangle[/code] tem quatro campos float. Os dois primeiros são as coordenadas do ponto superior esquerdo e os outros dois do inferior direito.
+
+Mas quando falo campos, quero dizer parâmetros. Value constructors basicamente são funções que retornam um valor em um tipo de dados. Vejamos como estão declarados os tipos desses dois construtores.
+
+
+Legal, então value constructors são funções como todo o resto. Quem imaginaria? Vamos fazer uma função que recebe uma forma geométrica e que retorna a sua superfície.
+
+
+
+A primeira coisa digna de nota é a declaração de tipo. Diz que uma função recebe uma forma geométrica e retorna um float. Nós não poderíamos escrever o tipo como [code]Circle -&gt; Float[/code] porque [code]Circle[/code] não é um tipo, [code]Shape[/code] é. Seria como escrever uma função com [code]True -&gt; Int[/code]. A próxima coisa é que podemos usar pattern match em construtores. Nós já fizemos isso (várias vezes por sinal) ao testar patterns por [code][][/code] ou [code]False[/code] ou [code]5[/code], com a diferença que não haviam tantos campos. Nós apenas escrevemos o construtor e associamos seus campos a nomes. Como estamos interessados no raio, não nos é importante os dois primeiros campos, que nos dizem onde o círculo está.
 
 
 
 
-We won't concern ourselves with deriving too much for now. Let's just say that if we add [code]deriving (Show)[/code] at the end of a <i>data</i> declaration, Haskell automagically makes that type part of the [code]Show[/code] typeclass. So now, we can do this:
+Ei, funciona! Mas se tentarmos escrever [code]Circle 10 20 5[/code] no prompt, teremos um erro. Isso é devido ao Haskell não saber mostrar nosso tipo de dado como string (ainda). Lembre-se, quando tentamos mostrar um valor na tela, Haskell primeiro executa a função [code]show[/code] para conseguir a versão em string do nosso valor e mostra no terminal. Para fazer o nosso tipo [code]Shape[/code] parte da typeclass [code]Show[/code] nós o modificamos desse modo:
 
 
 
 
-Value constructors are functions, so we can map them and partially apply them and everything. If we want a list of concentric circles with different radii, we can do this.
-
-
-
-Our data type is good, although it could be better. Let's make an intermediate data type that defines a point in two-dimensional space. Then we can use that to make our shapes more understandable.
+Não vamos ir muito a fundo com o uso do deriving por enquanto. Digamos que adicionemos [code]deriving (Show)[/code] no fim da declaração de <i>data</i>, Haskell automaticamente faz esse tipo parte da typeclass [code]Show[/code]. Logo, podemos fazer assim:
 
 
 
 
-Notice that when defining a point, we used the same name for the data type and the value constructor. This has no special meaning, although it's common to use the same name as the type if there's only one value constructor. So now the [code]Circle[/code] is has two fields, one is of type [code]Point[/code] and the other of type [code]Float[/code]. This makes it easier to understand what's what. Same goes for the rectangle. We have to adjust our [code]surface[/code] function to reflect these changes.
+Value constructors são funções, então podemos mapear e aplicá-los a algo e tudo mais. Se queremos ter uma lista de círculos com diferentes raios, podemos fazer assim.
+
+
+
+Nosso tipo de dados está bom, mas poderia estar melhor. Vamos criar um tipo de dados intermediário que define um ponto em um espaço bidimensional e então deixar nossas formas geométricas mais fáceis de se entender.
+
+
+
+Perceba que quando definimos um ponto, usamos o mesmo nome para o tipo de dados e o value constructor. Isso não tem nenhum funcionamento especial, mas é um padrão informal para quando o value constructor só pode assumir um valor. Agora que o [code]Circle[/code] tem dois campos, um deles do tipo [code]Point[/code] e outro [code]Float[/code]. Isso torna as coisas mais claras. E o mesmo para o retângulo. Só temos que modificar a função [code]surface[/code] para passar a refletir as mudanças.
 
 
 
 
-The only thing we had to change were the patterns. We disregarded the whole point in the circle pattern. In the rectangle pattern, we just used a nested pattern matching to get the fields of the points. If we wanted to reference the points themselves for some reason, we could have used as-patterns.
+A única coisa que tivemos que mudar foram os patterns. A parte que se refere ao círculo permaanece igual. No pattern do retângulo, nós usamos pattern matching aninhadamente para conseguir as medidas las linhas da figura. Se quiséssemos os próprios pontos por alguma razão, poderíamos ter usado as-patterns.
 
 
 
 
-How about a function that nudges a shape? It takes a shape, the amount to move it on the x axis and the amount to move it on the y axis and then returns a new shape that has the same dimensions, only it's located somewhere else.
+Que tal uma função que move uma figura? Recebe uma figura, o tanto a se mover no eixo x e no eixo y para retornas uma nova figura de mesmas dimensões, localizada em outra posição.
 
 
 
 
-Pretty straightforward. We add the nudge amounts to the points that denote the position of the shape.
+Bastante simples. Nós somamos a quantidade de movimento à cada um dos pontos da figura.
 
 
 
-If we don't want to deal directly with points, we can make some auxilliary functions that create shapes of some size at the zero coordinates and then nudge those.
+Se não quisermos mexer diretamente com pontos, podemos criar funções auxiliares para criar figuras do tamanho determinado no ponto zero e a partir daí movê-las.
+
+Você pode, é claro, exportar os tipos de dados em seus módulos. Para isso, apenas escreva o tipo junto das funções que está exportando e, entre parênteses, especifique os tipos dos construtores que devem ser exportados, separados por vírgulas. Se quiser exportar todos os construtores de valores de um tipo, apenas escreva [code]..[/code].
+
+Se queremos exportar as funções e tipos que definimos no módulo, podemos usar algo como isso:
+
+Com o [code]Shape(..)[/code], exportamos todos os construtores de valores de [code]Shape[/code], o que significa que quem importar nosso módulo poderá criar formas usando os construtores de valores [code]Rectangle[/code] e [code]Circle[/code]. É o mesmo que escrever [code]Shape (Rectangle, Circle)[/code].
+
+Poderíamos ainda optar por exportar nenhum dos construtores de valores de [code]Shape[/code], escrevendo [code]Shape[/code] no código de exportação. Desse modo, quem importasse o nosso módulo poderia criar formas usando as funções auxiliares [code]baseCircle[/code] e [code]baseRect[/code]. [code]Data.Map[/code] funciona assim. Você não pode criar um mapa usando [code]Map.Map [(1,2),(3,4)][/code] porque não exporta o construtor de valor. De qualquer maneira, pode usando funções auxiliares como [code]Map.fromList[/code]. Lembre-se, construtores de valores nada mais são do que funções que recebem campos como parâmetros e retornam valores do mesmo tipo (como [code]Shape[/code]) e seu retorno. Então quando decidimos não exportá-los, proibimos que alguém importando nosso módulo os use. Mas se outras funções não retornam um tipo, podemos usá-las para criar valores dos tipos de dados costumizados.
+
+Não exportar os construtores de valores de tipos de dados os fazem mais abstratos, de modo que escondemos a sua implementação. Vale ressaltar que quem importar nosso módulo não pode usar pattern match em construtores de valores.
