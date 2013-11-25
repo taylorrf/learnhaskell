@@ -1,0 +1,249 @@
+chapter: Input e Output
+
+text:We've mentioned that Haskell is a purely functional language. Whereas in imperative languages you usually get things done by giving the computer a series of steps to execute, functional programming is more of defining what stuff is. In Haskell, a function can't change some state, like changing the contents of a variable (when a function changes state, we say that the function has <i>side-effects</i>). The only thing a function can do in Haskell is give us back some result based on the parameters we gave it. If a function is called two times with the same parameters, it has to return the same result. While this may seem a bit limiting when you're coming from an imperative world, we've seen that it's actually really cool. In an imperative language, you have no guarantee that a simple function that should just crunch some numbers won't burn down your house, kidnap your dog and scratch your car with a potato while crunching those numbers. For instance, when we were making a binary search tree, we didn't insert an element into a tree by modifying some tree in place. Our function for inserting into a binary search tree actually returned a new tree, because it can't change the old one.
+
+While functions being unable to change state is good because it helps us reason about our programs, there's one problem with that. If a function can't change anything in the world, how is it supposed to tell us what it calculated? In order to tell us what it calculated, it has to change the state of an output device (usually the state of the screen), which then emits photons that travel to our brain and change the state of our mind, man.
+
+Do not despair, all is not lost. It turns out that Haskell actually has a really clever system for dealing with functions that have side-effects that neatly separates the part of our program that is pure and the part of our program that is impure, which does all the dirty work like talking to the keyboard and the screen. With those two parts separated, we can still reason about our pure program and take advantage of all the things that purity offers, like laziness, robustness and modularity while efficiently communicating with the outside world.
+
+
+title: Olá, mundo!
+
+text: Up until now, we've always loaded our functions into GHCI to test them out and play with them. We've also explored the standard library functions that way. But now, after eight or so chapters, we're finally going to write our first <i>real</i> Haskell program! Yay! And sure enough, we're going to do the good old [code]"hello, world"[/code] schtick.
+
+<em>Hey!</em> For the purposes of this chapter, I'm going to assume you're using a unix-y environment for learning Haskell. If you're in Windows, I'd suggest you download <a href="http://www.cygwin.com/">Cygwin</a>, which is a Linux-like environment for Windows, A.K.A. just what you need.
+
+So, for starters, punch in the following in your favorite text editor:
+
+
+
+
+We just defined a name called [code]main[/code] and in it we call a function called [code]putStrLn[/code] with the parameter [code]"hello, world"[/code]. Looks pretty much run of the mill, but it isn't, as we'll see in just a few moments. Save that file as [code]helloworld.hs[/code].
+
+And now, we're going to do something we've never done before. We're actually going to compile our program! I'm so excited! Open up your terminal and navigate to the directory where [code]helloworld.hs[/code] is located and do the following:
+
+
+
+
+Okay! With any luck, you got something like this and now you can run your program by doing [code]./helloworld[/code].
+
+
+
+And there we go, our first compiled program that printed out something to the terminal. How extraordinarily boring!
+
+Let's examine what we wrote. First, let's look at the type of the function [code]putStrLn[/code].
+
+
+
+
+We can read the type of [code]putStrLn[/code] like this: [code]putStrLn[/code] takes a string and returns an <em>I/O action</em> that has a result type of [code]()[/code] (i.e. the empty tuple, also know as unit). An I/O action is something that, when performed, will carry out an action with a side-effect (that's usually either reading from the input or printing stuff to the screen) and will also contain some kind of return value inside it. Printing a string to the terminal doesn't really have any kind of meaningful return value, so a dummy value of [code]()[/code] is used.
+
+
+The empty tuple is a value of [code]()[/code] and it also has a type of [code]()[/code].</div>
+<p>So, when will an I/O action be performed? Well, this is where [code]main[/code] comes in. An I/O action will be performed when we give it a name of [code]main[/code] and then run our program.
+
+Having your whole program be just one I/O action seems kind of limiting. That's why we can use <i>do</i> syntax to glue together several I/O actions into one. Take a look at the following example:
+
+
+
+
+Ah, interesting, new syntax! And this reads pretty much like an imperative program. If you compile it and try it out, it will probably behave just like you expect it to. Notice that we said <i>do</i> and then we laid out a series of steps, like we would in an imperative program. Each of these steps is an I/O action. By putting them together with <i>do</i> syntax, we glued them into one I/O action. The action that we got has a type of [code]IO ()[/code], because that's the type of the last I/O action inside.
+
+Because of that, [code]main[/code] always has a type signature of [code]main :: IO <i>something</i>[/code], where [code]<i>something</i>[/code] is some concrete type. By convention, we don't usually specify a type declaration for [code]main[/code].
+
+An interesting thing that we haven't met before is the third line, which states [code]name &lt;- getLine[/code]. It looks like it reads a line from the input and stores it into a variable called [code]name[/code]. Does it really? Well, let's examine the type of [code]getLine[/code].
+
+
+
+
+Aha, o-kay. [code]getLine[/code] is an I/O action that contains a result type of [code]String[/code]. That makes sense, because it will wait for the user to input something at the terminal and then that something will be represented as a string. So what's up with [code]name &lt;- getLine[/code] then? You can read that piece of code like this: <em>perform the I/O action [code]getLine[/code] and then bind its result value to [code]name[/code]</em>. [code]getLine[/code] has a type of [code]IO String[/code], so [code]name[/code] will have a type of [code]String[/code]. You can think of an I/O action as a box with little feet that will go out into the real world and do something there (like write some graffiti on a wall) and maybe bring back some data. Once it's fetched that data for you, the only way to open the box and get the data inside it is to use the [code]&lt;-[/code] construct. And if we're taking data out of an I/O action, we can only take it out when we're inside another I/O action. This is how Haskell manages to neatly separate the pure and impure parts of our code. [code]getLine[/code] is in a sense impure because its result value is not guaranteed to be the same when performed twice. That's why it's sort of <i>tainted</i> with the [code]IO[/code] type constructor and we can only get that data out in I/O code. And because I/O code is tainted too, any computation that depends on tainted I/O data will have a tainted result.
+
+Take a look at this piece of code. Is it valid?
+
+
+
+
+
+If you said no, go eat a cookie. If you said yes, drink a bowl of molten lava. Just kidding, don't! The reason that this doesn't work is that [code]++[/code] requires both its parameters to be lists over the same type. The left parameter has a type of [code]String[/code] (or [code][Char][/code] if you will), whilst [code]getLine[/code] has a type of [code]IO String[/code]. You can't concatenate a string and an I/O action. We first have to get the result out of the I/O action to get a value of type [code]String[/code] and the only way to do that is to say something like [code]name &lt;- getLine[/code] inside some other I/O action. If we want to deal with impure data, we have to do it in an impure environment. So the taint of impurity spreads around much like the undead scourge and it's in our best interest to keep the I/O parts of our code as small as possible.
+
+Every I/O action that gets performed has a result encapsulated within it. That's why our previous example program could also have been written like this:
+
+
+
+
+However, [code]foo[/code] would just have a value of [code]()[/code], so doing that would be kind of moot. Notice that we didn't bind the last [code]putStrLn[/code] to anything. That's because in a <i>do</i> block, <em>the last action cannot be bound to a name</em> like the first two were. We'll see exactly why that is so a bit later when we venture off into the world of monads. For now, you can think of it in the way that the <i>do</i> block automatically extracts the value from the last action and binds it to its own result.
+
+Except for the last line, every line in a <i>do</i> block that doesn't bind can also be written with a bind. So [code]putStrLn "BLAH"[/code] can be written as [code]_ &lt;- putStrLn "BLAH"[/code]. But that's useless, so we leave out the [code]&lt;-[/code] for I/O actions that don't contain an important result, like [code]putStrLn <i>something</i>[/code].
+
+Beginners sometimes think that doing
+
+
+
+
+will read from the input and then bind the value of that to [code]name[/code]. Well, it won't, all this does is give the [code]getLine[/code] I/O action a different name called, well, [code]name[/code]. Remember, to get the value out of an I/O action, you have to perform it inside another I/O action by binding it to a name with [code]&lt;-[/code].
+
+I/O actions will only be performed when they are given a name of [code]main[/code] or when they're inside a bigger I/O action that we composed with a <i>do</i> block. We can also use a <i>do</i> block to glue together a few I/O actions and then we can use that I/O action in another <i>do</i> block and so on. Either way, they'll be performed only if they eventually fall into [code]main[/code].
+
+Oh, right, there's also one more case when I/O actions will be performed. When we type out an I/O action in GHCI and press return, it will be performed.
+
+
+
+Even when we just punch out a number or call a function in GHCI and press return, it will evaluate it (as much as it needs) and then call [code]show[/code] on it and then it will print that string to the terminal using [code]putStrLn[/code] implicitly.
+
+Remember <i>let</i> bindings? If you don't, refresh your memory on them by reading <a href="syntax-in-functions#let-it-be">this section</a>. They have to be in the form of [code]let <i>bindings</i> in <i>expression</i>[/code], where [code]<i>bindings</i>[/code] are names to be given to expressions and [code]<i>expression</i>[/code] is the expression that is to be evaluated that sees them. We also said that in list comprehensions, the <i>in</i> part isn't needed. Well, you can use them in <i>do</i> blocks pretty much like you use them in list comprehensions. Check this out:
+
+
+
+
+See how the I/O actions in the <i>do</i> block are lined up? Also notice how the <i>let</i> is lined up with the I/O actions and the names of the <i>let</i> are lined up with each other? That's good practice, because indentation is important in Haskell. Now, we did [code]map toUpper firstName[/code], which turns something like [code]"John"[/code] into a much cooler string like [code]"JOHN"[/code]. We bound that uppercased string to a name and then used it in a string later on that we printed to the terminal.
+
+You may be wondering when to use [code]&lt;-[/code] and when to use <i>let</i> bindings? Well, remember, [code]&lt;-[/code] is (for now) for performing I/O actions and binding their results to names. [code]map toUpper firstName[/code], however, isn't an I/O action. It's a pure expression in Haskell. So use [code]&lt;-[/code] when you want to bind results of I/O actions to names and you can use <i>let</i> bindings to bind pure expressions to names. Had we done something like [code]let firstName = getLine[/code], we would have just called the [code]getLine[/code] I/O action a different name and we'd still have to run it through a [code]&lt;-[/code] to perform it.
+
+Now we're going to make a program that continuously reads a line and prints out the same line with the words reversed. The program's execution will stop when we input a blank line. This is the program:
+
+
+
+
+To get a feel of what it does, you can run it before we go over the code.
+
+<em>Protip</em>: To run a program you can either compile it and then run the produced executable file by doing [code]ghc --make helloworld[/code] and then [code]./helloworld[/code] or you can use the [code]runhaskell[/code] command like so: [code]runhaskell helloworld.hs[/code] and your program will be executed on the fly.
+
+First, let's take a look at the [code]reverseWords[/code] function. It's just a normal function that takes a string like [code]"hey there man"[/code] and then calls [code]words[/code] with it to produce a list of words like [code]["hey","there","man"][/code]. Then we map [code]reverse[/code] on the list, getting [code]["yeh","ereht","nam"][/code] and then we put that back into one string by using [code]unwords[/code] and the final result is [code]"yeh ereht nam"[/code]. See how we used function composition here. Without function composition, we'd have to write something like [code]reverseWords st = unwords (map reverse (words st))[/code].
+
+What about [code]main[/code]? First, we get a line from the terminal by performing [code]getLine[/code] call that line [code]line[/code]. And now, we have a conditional expression. Remember that in Haskell, every <i>if</i> must have a corresponding <i>else</i> because every expression has to have some sort of value. We make the <i>if</i> so that when a condition is true (in our case, the line that we entered is blank), we run perform one I/O action and when it isn't, the I/O action under the <i>else</i> is performed. That's why in an I/O <i>do</i> block, <i>if</i>s have to have a form of [code]if <i>condition</i> then <i>I/O action</i> else <i>I/O action</i>.
+
+Let's first take a look at what happens under the <i>else</i> clause. Because, we have to have exactly one I/O action after the <i>else</i>, we use a <i>do</i> block to glue together two I/O actions into one. You could also write that part out as:
+
+
+
+
+This makes it more explicit that the <i>do</i> block can be viewed as one I/O action, but it's uglier. Anyway, inside the <i>do</i> block, we call [code]reverseWords[/code] on the line that we got from [code]getLine[/code] and then print that out to the terminal. After that, we just perform [code]main[/code]. It's called recursively and that's okay, because [code]main[/code] is itself an I/O action. So in a sense, we go back to the start of the program.
+
+Now what happens when [code]null line[/code] holds true? What's after the <i>then</i> is performed in that case. If we look up, we'll see that it says [code]then return ()[/code]. If you've done imperative languages like C, Java or Python, you're probably thinking that you know what this [code]return[/code] does and chances are you've already skipped this really long paragraph. Well, here's the thing: <em>the [code]return[/code] in Haskell is really nothing like the [code]return[/code] in most other languages!</em>. It has the same name, which confuses a lot of people, but in reality it's quite different. In imperative languages, [code]return[/code] usually ends the execution of a method or subroutine and makes it report some sort of value to whoever called it. In Haskell (in I/O actions specifically), it makes an I/O action out of a pure value. If you think about the box analogy from before, it takes a value and wraps it up in a box. The resulting I/O action doesn't actually do anything, it just has that value encapsulated as its result. So in an I/O context, [code]return "haha"[/code] will have a type of [code]IO String[/code]. What's the point of just transforming a pure value into an I/O action that doesn't do anything? Why taint our program with [code]IO[/code] more than it has to be? Well, we needed some I/O action to carry out in the case of an empty input line. That's why we just made a bogus I/O action that doesn't do anything by writing [code]return ()[/code].
+
+Using [code]return[/code] doesn't cause the I/O <i>do</i> block to end in execution or anything like that. For instance, this program will quite happily carry out all the way to the last line:
+
+
+
+
+All these [code]return[/code]s do is that they make I/O actions that don't really do anything except have an encapsulated result and that result is thrown away because it isn't bound to a name. We can use [code]return[/code] in combination with [code]&lt;-[/code] to bind stuff to names.
+
+
+
+
+So you see, [code]return[/code] is sort of the opposite to [code]&lt;-[/code]. While [code]return[/code] takes a value and wraps it up in a box, [code]&lt;-[/code] takes a box (and performs it) and takes the value out of it, binding it to a name. But doing this is kind of redundant, especially since you can use <i>let</i> bindings in <i>do</i> blocks to bind to names, like so:
+
+
+
+
+
+
+
+When dealing with I/O <i>do</i> blocks, we mostly use [code]return[/code] either because we need to create an I/O action that doesn't do anything or because we don't want the I/O action that's made up from a <i>do</i> block to have the result value of its last action, but we want it to have a different result value, so we use [code]return[/code] to make an I/O action that always has our desired result contained and we put it at the end.
+
+A <i>do</i> block can also have just one I/O action. In that case, it's the same as just writing the I/O action. Some people would prefer writing [code]then do return ()[/code] in this case because the <i>else</i> also has a <i>do</i>.
+
+Before we move on to files, let's take a look at some functions that are useful when dealing with I/O.
+
+[function]putStr[/function] is much like [code]putStrLn[/code] in that it takes a string as a parameter and returns an I/O action that will print that string to the terminal, only [code]putStr[/code] doesn't jump into a new line after printing out the string while [code]putStrLn[/code] does.
+
+
+
+
+Its type signature is [code]putStr :: String -&gt; IO ()[/code], so the result encapsulated within the resulting I/O action is the unit. A dud value, so it doesn't make sense to bind it.
+
+[function]putChar[/function] takes a character and returns an I/O action that will print it out to the terminal.
+
+
+
+
+[code]putStr[/code] is actually defined recursively with the help of [code]putChar[/code]. The edge condition of [code]putStr[/code] is the empty string, so if we're printing an empty string, just return an I/O action that does nothing by using [code]return ()[/code]. If it's not empty, then print the first character of the string by doing [code]putChar[/code] and then print of them using [code]putStr[/code].
+
+
+
+
+See how we can use recursion in I/O, just like we can use it in pure code. Just like in pure code, we define the edge case and then think what the result actually is. It's an action that first outputs the first character and then outputs the rest of the string.
+
+[function]print[/function] takes a value of any type that's an instance of [code]Show[/code] (meaning that we know how to represent it as a string), calls [code]show[/code] with that value to stringify it and then outputs that string to the terminal. Basically, it's just [code]putStrLn . show[/code]. It first runs [code]show[/code] on a value and then feeds that to [code]putStrLn[/code], which returns an I/O action that will print out our value.
+
+
+
+
+As you can see, it's a very handy function. Remember how we talked about how I/O actions are performed only when they fall into [code]main[/code] or when we try to evaluate them in the GHCI prompt? When we type out a value (like [code]3[/code] or [code][1,2,3][/code]) and press the return key, GHCI actually uses [code]print[/code] on that value to display it on our terminal!
+
+
+
+
+When we want to print out strings, we usually use [code]putStrLn[/code] because we don't want the quotes around them, but for printing out values of other types to the terminal, [code]print[/code] is used the most.
+
+[function]getChar[/function] is an I/O action that reads a character from the input. Thus, its type signature is [code]getChar :: IO Char[/code], because the result contained within the I/O action is a [code]Char[/code]. Note that due to buffering, reading of the characters won't actually happen until the user mashes the return key.
+
+
+
+
+
+This program looks like it should read a character and then check if it's a space. If it is, halt execution and if it isn't, print it to the terminal and then do the same thing all over again. Well, it kind of does, only not in the way you might expect. Check this out:
+
+
+
+
+
+The second line is the input. We input [code]hello sir[/code] and then press return. Due to buffering, the execution of the program will begin only when after we've hit return and not after every inputted character. But once we press return, it acts on what we've been putting in so far. Try playing with this program to get a feel for it!
+
+The [function]when[/function] function is found in [code]Control.Monad[/code] (so to get access to it, do [code]import Control.Monad[/code]. It's interesting because in a <i>do</i> block it looks like a control flow statement, but it's actually a normal function. It takes a boolean value and an I/O action if that boolean value is [code]True[/code], it returns the same I/O action that we supplied to it. However, if it's [code]False[/code], it returns the [code]return ()[/code], action, so an I/O action that doesn't do anything. Here's how we could rewrite the previous piece of code with which we demonstrated [code]getChar[/code] by using [code]when[/code]:
+
+
+
+
+So as you can see, it's useful for encapsulating the [code]if <i>something</i> then do <i>some I/O action</i> else return ()[/code] pattern.
+
+[function]sequence[/function] takes a list of I/O actions and returns an I/O actions that will perform those actions one after the other. The result contained in that I/O action will be a list of the results of all the I/O actions that were performed. Its type signature is [code]sequence :: [IO a] -&gt; IO [a][/code]. Doing this:
+
+
+
+
+Is exactly the same as doing this:.
+
+
+
+
+So [code]sequence [getLine, getLine, getLine][/code] makes an I/O action that will perform [code]getLine[/code] three times. If we bind that action to a name, the result is a list of all the results, so in our case, a list of three things that the user entered at the prompt.
+
+A common pattern with [code]sequence[/code] is when we map functions like [code]print[/code] or [code]putStrLn[/code] over lists. Doing [code]map print [1,2,3,4][/code] won't create an I/O action. It will create a list of I/O actions, because that's like writing [code][print 1, print 2, print 3, print 4][/code]. If we want to transform that list of I/O actions into an I/O action, we have to sequence it.
+
+
+
+
+What's with the [code][(),(),(),(),()][/code] at the end? Well, when we evaluate an I/O action in GHCI, it's performed and then its result is printed out, unless that result is [code]()[/code], in which case it's not printed out. That's why evaluating [code]putStrLn "hehe"[/code] in GHCI just prints out [code]hehe[/code] (because the contained result in [code]putStrLn "hehe"[/code] is [code]()[/code]). But when we do [code]getLine[/code] in GHCI, the result of that I/O action is printed out, because [code]getLine[/code] has a type of [code]IO String[/code].
+
+Because the mapping a function that returns an I/O action over a list and then sequencing it so common, the utility functions [function]mapM[/function] and [function]mapM_[/function] were introduced. [code]mapM[/code] takes a function and a list, maps the function over the list and then sequences it. [code]mapM_[/code] does the same, only it throws away the result later. We usually use [code]mapM_[/code] when we don't care what result our sequenced I/O actions have.
+
+
+
+
+[function]forever[/function] takes an I/O action and returns an I/O action that just repeats the I/O action it got forever. It's located in [code]Control.Monad[/code]. This little program will indefinitely ask the user for some input and spit it back to him, CAPSLOCKED:
+
+
+
+
+[function]forM[/function] (located in [code]Control.Monad[/code]) is like [code]mapM[/code], only that it has its parameters switched around. The first parameter is the list and the second one is the function to map over that list, which is then sequenced. Why is that useful? Well, with some creative use of lambdas and <i>do</i> notation, we can do stuff like this:
+
+
+
+
+
+The [code](\a -&gt; do ... )[/code] is a function that takes a number and returns an I/O action. We have to sorround it with parentheses, otherwise the lambda thinks the last two I/O actions belong to it. See that we do [code]return color[/code] in the inside <i>do</i> block. We do that so that the I/O action which the <i>do</i> block defines has the result of our color contained within it. We actually didn't have to do that, because [code]getLine[/code] already has that contained within it. Doing [code]color &lt;- getLine[/code] and then [code]return color[/code] is just unpacking the result from [code]getLine[/code] and then repackaging it again, so it's the same as just doing [code]getLine[/code]. The [code]forM[/code] (called with its two parameters) produces an I/O action, whose result we bind to [code]colors[/code]. [code]colors[/code] is just a normal list that holds strings. At the end, we print out all those colors by doing [code]mapM putStrLn colors[/code].
+
+You can think of [code]forM[/code] as meaning: make an I/O action for every element in this list. What each I/O action will do can depend on the element that was used to make the action. Finally, perform those actions and bind their results to something. We don't have to bind it, we can also just throw it away.
+
+
+
+
+
+
+We could have actually done that without [code]forM[/code], only with [code]forM[/code] it's more readable. Normally we write [code]forM[/code] when we want to map and sequence some actions that we define there on the spot using <i>do</i> notation. In the same vein, we could have replaced the last line with [code]forM colors putStrLn[/code].
+
+In this section, we learned the basics of input and output. We also found out what I/O actions are, how they enable us to do input and output and when they are actually performed. To reiterate, I/O actions are values much like any other value in Haskell. We can pass them as parameters to functions and functions can return I/O actions as results. What's special about them is that if they fall into the [code]main[/code] function (or are the result in a GHCI line), they are performed. And that's when they get to write stuff on your screen or play Yakety Sax through your speakers. Each I/O action can also encapsulate a result with which it tells you what it got from the real world.
+
+Don't think of a function like [code]putStrLn[/code] as a function that takes a string and prints it to the screen. Think of it as a function that takes a string and returns an I/O action. That I/O action will, when performed, print beautiful poetry to your terminal.
+
