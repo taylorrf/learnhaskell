@@ -1,57 +1,34 @@
-title: Files and streams
+title: Arquivos e streams
 
-text: [code]getChar[/code] is an I/O action that reads a single character from the terminal. [code]getLine[/code] is an I/O action that reads a line from the terminal. These two are pretty straightforward and most programming languages have some functions or statements that are parallel to them. But now, let's meet [function]getContents[/function]. [code]getContents[/code] is an I/O action that reads everything from the standard input until it encounters an end-of-file character. Its type is [code]getContents :: IO String[/code]. What's cool about [code]getContents[/code] is that it does lazy I/O. When we do [code]foo &lt;- getContents[/code], it doesn't read all of the input at once, store it in memory and then bind it to [code]foo[/code]. No, it's lazy! It'll say: <i>"Yeah yeah, I'll read the input from the terminal later as we go along, when you really need it!"</i>.
+text: [code]getChar[/code] é uma ação de E/S que lê um único caractere do terminal. [code]getLine[/code] é uma ação de E/S que lê uma linha do terminal. As duas são bem diretas e maioria das linguagens de programação tem algumas funções ou declarações que são similares a elas. Mas agora, vamos conhecer [function]getContents[/function]. [code]getContents[/code] é uma ação de E/S que lê qualquer coisa do dispositivo de entrada padrão até encontrar um caractere de fim de arquivo. Seu tipo é [code]getContents :: IO String[/code]. O que é legal em [code]getContents[/code] é que ela faz E/S preguiçosa. Quando escrevemos [code]foo &lt;- getContents[/code], ela não lê toda a entrada de uma vez, armazena na memória e associa a [code]foo[/code]. Não, ela é preguiçosa! Ela dirá: <i>"Sim sim, eu vou ler a entrada do terminal mais tarde a medida em que avançamos, quando você realmente precisar dela!"</i>.
 
-[code]getContents[/code] is really useful when we're piping the output from one program into the input of our program. In case you don't know how piping works in unix-y systems, here's a quick primer. Let's make a text file that contains the following little haiku:
+[code]getContents[/code] é realmente útil quando estamos fazendo piping da saída de um programa para a entrada do nosso programa. Caso você não saiba como piping funciona em sistemas baseados em unix, aqui vai uma explicação rápida. Vamos criar um arquivo de texto que contém o seguinte pequeno haicai:
 
-I'm a lil' teapot
-What's with that airplane food, huh?
-It's so small, tasteless 
+Sou um pequeno bule
+O que há com essa comida de avião, hein?
+Ela é tão pequena, sem gosto
 
-Yeah, the haiku sucks, what of it? If anyone knows of any good haiku tutorials, let me know.
+Sim, o haicai é uma porcaria, e daí? Se alguém souber de algum bom tutorial de haicai, compartilhe comigo.
 
-Now, recall the little program we wrote when we were introducing the [code]forever[/code] function. It prompted the user for a line, returned it to him in CAPSLOCK and then did that all over again, indefinitely. Just so you don't have to scroll all the way back, here it is again:
+Agora, relembre o pequeno programa que escrevemos quando estávamos apresentando a função [code]forever[/code]. Ele aguardava que o usuário digitasse uma linha, retornava essa linha para ele em MAIÚSCULAS e depois fazia tudo de novo, indefinidamente. Só para você não ter que voltar tudo de novo, aqui está ele novamente:
 
+Iremos salvar esse programa como [code]capslocker.hs[/code] ou algum outro nome e compilá-lo. Depois, vamos usar um pipe unix para passar nosso arquivo de texto diretamente para o nosso pequeno programa. Vamos ter o auxílio do programa GNU <i>cat</i>, que imprime um arquivo que lhe é dado como argumento. Dê uma olhada, é excelente!
 
+Como você pode observar, o piping da saída de um programa (no nosso caso do <i>cat</i>) para a entrada de outro (<i>capslocker</i>) é feito com o caractere [code]|[/code]. O que fizemos é equivalente a simplesmete executar <i>capslocker</i>, digitando nosso haicai no terminal e depois fornecendo um caractere de fim de arquivo (isso normalmente é feito pressionando Ctrl-D). Isso é como executar <i>cat haiku.txt</i> e dizer: &ldquo;Espera, não imprima isso no terminal, passe para <i>capslocker</i> ao invés disso!&rdquo;.
 
+Então o que essencialmente estamos fazendo com esse [code]forever[/code] é pegar a entrada e transformá-la em alguma saída. Por isso nos podemo usar [code]getContents[/code] para tornar nosso programa ainda melhor e mais curto:
 
+Nós executamos a ação de E/S [code]getContents[/code] e chamamos a string que ela produz de [code]contents[/code]. Então, usamos [code]toUpper[/code] para mapear essa string e imprimí-la no terminal. Tenha em mente que devido às strings serem basicamente listas, que são preguiçosas, e [code]getContents[/code] ser E/S preguiçosa, o programa não tentará ler todo o conteúdo de uma vez e guardá-lo na memória antes de imprimir a versão em maiúsculas. Ao invés disso, ele imprimirá a versão em maiúsculas à medida que faz a leitura, porque ele somente lerá uma linha da entrada quando realmente precisar.
 
-We'll save that program as [code]capslocker.hs[/code] or something and compile it. And then, we're going to use a unix pipe to feed our text file directly to our little program. We're going to use the help of the GNU <i>cat</i> program, which prints out a file that's given to it as an argument. Check it out, booyaka!
+Legal, isso funciona. O que acontece se simplesmente executarmos <i>capslocker</i> e tentarmos digitar as linhas no terminal?
 
+Nós encerramos pressionando Ctrl-D. Muito bom! Como você pode perceber, ele imprime nossa saída em maiúsculas linha por linha. Quando o resultado de [code]getContents[/code] é associado a [code]contents[/code], ele não é representado na memória como uma string real, mas como uma promessa de que irá produzir aquela string eventualmente. Quando usamos [code]toUpper[/code] para mapear [code]contents[/code], isso também é uma promessa de usar essa função para mapear um possível conteúdo dessa string. E finalmente quando [code]putStr[/code] acontece, ela diz para a promessa anterior: <i>"Ei, eu preciso de uma linha em maiúsculas!"</i>. Ela não tem linhas ainda, então diz para [code]contents[/code]: <i>"Ei, que tal agora pegar uma linha do terminal?"</i>. É aí que  [code]getContents[/code] realmente lê do terminal e fornece uma linha para o código que pediu a ela para produzir algo real. Esse código então usa [code]toUpper[/code] para mapear a linha e passa ela para [code]putStr[/code], que a imprime. Depois, [code]putStr[/code] says: <i>"Ei, eu preciso da próxima linha, vamos!"</i> e isto se repete até que não haja mais entradas, o que é verificado pela presença de um caractere de final de arquivo.
 
+Vamos criar um programa que recebe alguma entrada e imprime somente as linhas que têm menos de 15 caracteres. Observe:
 
+Fizemos a parte de E/S do nosso programa o menor possível. Devido ao fato de que o nosso programa deve ler uma entrada e imprimir alguma saída baseada nessa entrada, podemos implementá-lo lendo o conteúdo da entrada, aplicando uma função sobre eles e depois imprimindo o que a função retornou.
 
-As you can see, piping the output of one program (in our case that was <i>cat</i>) to the input of another (<i>capslocker</i>) is done with the [code]|[/code] character. What we've done is pretty much equivalent to just running <i>capslocker</i>, typing our haiku at the terminal and then issuing an end-of-file character (that's usually done by pressing Ctrl-D). It's like running <i>cat haiku.txt</i> and saying: &ldquo;Wait, don't print this out to the terminal, tell it to <i>capslocker</i> instead!&rdquo;.
-
-So what we're essentially doing with that use of [code]forever[/code] is taking the input and transforming it into some output. That's why we can use [code]getContents[/code] to make our program even shorter and better:
-
-
-
-
-
-
-We run the [code]getContents[/code] I/O action and name the string it produces [code]contents[/code]. Then, we map [code]toUpper[/code] over that string and print that to the terminal. Keep in mind that because strings are basically lists, which are lazy, and [code]getContents[/code] is I/O lazy, it won't try to read the whole content at once and store it into memory before printing out the capslocked version. Rather, it will print out the capslocked version as it reads it, because it will only read a line from the input when it really needs to.
-
-
-
-
-Cool, it works. What if we just run <i>capslocker</i> and try to type in the lines ourselves?
-
-
-
-
-We got out of that by pressing Ctrl-D. Pretty nice! As you can see, it prints out our capslocked input back to us line by line. When the result of [code]getContents[/code] is bound to [code]contents[/code], it's not represented in memory as a real string, but more like a promise that it will produce the string eventually. When we map [code]toUpper[/code] over [code]contents[/code], that's also a promise to map that function over the eventual contents. And finally when [code]putStr[/code] happens, it says to the previous promise: <i>"Hey, I need a capslocked line!"</i>. It doesn't have any lines yet, so it says to [code]contents[/code]: <i>"Hey, how about actually getting a line from the terminal?"</i>. So that's when [code]getContents[/code] actually reads from the terminal and gives a line to the code that asked it to produce something tangible. That code then maps [code]toUpper[/code] over that line and gives it to [code]putStr[/code], which prints it. And then, [code]putStr[/code] says: <i>"Hey, I need the next line, come on!"</i> and this repeats until there's no more input, which is signified by an end-of-file character.
-
-
-Let's make program that takes some input and prints out only those lines that are shorter than 15 characters. Observe:
-
-
-
-
-We've made our I/O part of the program as short as possible. Because our program is supposed to take some input and print out some output based on the input, we can implement it by reading the input contents, running a function on them and then printing out what the function gave back.
-
-The [code]shortLinesOnly[/code] function works like this: it takes a string, like [code]"short\nlooooooooooooooong\nshort again"[/code]. That string has three lines, two of them are short and the middle one is long. It runs the [code]lines[/code] function on that string, which converts it to [code]["short", "looooooooooooooong", "short again"][/code], which we then bind to the name [code]allLines[/code]. That list of string is then filtered so that only those lines that are shorter than 15 characters remain in the list, producing [code]["short", "short again"][/code]. And finally, [code]unlines[/code] joins that list into a single newline delimited string, giving [code]"short\nshort again"[/code]. Let's give it a go.
-
+A função [code]shortLinesOnly[/code] funciona dessa forma: ela recebe uma string, como [code]"short\nlooooooooooooooong\nshort again"[/code]. Essa string tem três linhas, duas delas são curtas e a do meio é longa. Ela aplica a função [code]lines[/code] nessa string, convertendo-a em [code]["short", "looooooooooooooong", "short again"][/code], que depois associamos ao nome [code]allLines[/code]. Essa lista de string é então filtrada de modo que somente aquelas linhas que são têm menos de 15 caracteres permanecem na lista, produzindo [code]["short", "short again"][/code]. E finalmente, [code]unlines[/code] junta essa lista em uma única string com quebras de linha, obtendo [code]"short\nshort again"[/code]. Vamos testá-la.
 
 i'm short
 so am i
@@ -61,151 +38,90 @@ short line
 loooooooooooooooooooooooooooong
 short
 
+Fazemos um pipe do conteúdo de <i>shortlines.txt</i> para a entrada de <i>shortlinesonly</i> e como saída, obtemos somente as linhas curtas.
 
-We pipe the contents of <i>shortlines.txt</i> into the output of <i>shortlinesonly</i> and as the output, we only get the short lines.
+Esse padrão de obter alguma string do dispositivo de entrada, transformá-la com uma função e depois imprimí-la é tão comum que existe uma função, chamada [function]interact[/function], que torna sua implementação ainda mais fácil. [code]interact[/code] recebe uma função do tipo [code]String -&gt; String[/code] como parâmetro e retorna uma ação de E/S que irá receber alguma entrada, aplicar a função nela e depois imprimir o resultado da função. Vamos modificar o nosso programa para usá-la.
 
-This pattern of getting some string from the input, transforming it with a function and then outputting that is so common that there exists a function which makes that even easier, called [function]interact[/function]. [code]interact[/code] takes a function of type [code]String -&gt; String[/code] as a parameter and returns an I/O action that will take some input, run that function on it and then print out the function's result. Let's modify our program to use that.
+Só para mostar como esse resultado pode ser alcançado com muito menos código (mesmo achando que será menos legível) e para demonstrar nossa habilidade com composição de funções, vamos retrabalhá-lo mais um pouco.
 
-Just to show that this can be achieved in much less code (even though it will be less readable) and to demonstrate our function composition skill, we're going to rework that a bit further.
+Wow, nós realmente o reduzimos a uma única linha, o que é muito legal!
 
+Até agora, nós trabalhamos com E/S imprimindo coisas no terminal e lendo dele. Mas e quando a ler e escrever em arquivos? Bem, de certo modo, nós já estamos fazendo isso. Um modo de visualizar a leitura do terminal é imaginar que é como ler de um arquivo (um tanto especial). O mesmo vale para escrever no terminal, que é como escrever em um arquivo. Chamamos esses dois arquivos de [code]stdout[/code] e [code]stdin[/code], que significam <i>saída padrão</i> e <i>entrada padrão</i>, respectivamente. Mantendo isso em mente, veremos que escrever e ler arquivos é muito parecido com escrever na saída padrão e ler da entrada padrão.
 
+Iremos iniciar com um programa realmente simples que abre um arquivo chamado <i>girlfriend.txt</i>, que contém um verso do hit nº 1 de Avril Lavigne, <i>Girlfriend</i>, e somente o imprime no terminal. Aque está <i>girlfriend.txt</i>:
 
-Wow, we actually reduced that to just one line, which is pretty cool!
+E aqui está o nosso programa:
 
-So far, we've worked with I/O by printing out stuff to the terminal and reading from it. But what about reading and writing files? Well, in a way, we've already been doing that. One way to think about reading from the terminal is to imagine that it's like reading from a (somewhat special) file. Same goes for writing to the terminal, it's kind of like writing to a file. We can call these two files [code]stdout[/code] and [code]stdin[/code], meaning <i>standard output</i> and <i>standard input</i>, respectively. Keeping that in mind, we'll see that writing to and reading from files is very much like writing to the standard output and reading from the standard output.
+Executando-o, obtemos o resultado esperado:
 
-We'll start off with a really simple program that opens a file called <i>girlfriend.txt</i>, which contains a verse from Avril Lavigne's #1&nbsp;hit <i>Girlfriend</i>, and just prints out out to the terminal. Here's <i>girlfriend.txt</i>:
+Vamos estudá-lo linha a linha. A primeira linha são só quatro exclamações, para atrair sua atenção. Na segunda linha, Avril nos diz que ela não gosta do nosso parceiro romântico atual. A terceira linha serve para enfatizar essa desaprovação, enquando a quarta linha sugere que deveríamos procurar uma nova namorada.
 
+Vamos estudar também o programa linha por linha! Nosso programa são várias ações de E/S unidas por um bloco <i>do</i>. Na primeira linha do bloco <i>do</i>, nós observamos uma nova função chamada [function]openFile[/function]. Esta é sua assinatura de tipo: [code]openFile :: FilePath -&gt; IOMode -&gt; IO Handle[/code]. Se você lê-la em voz alta, ela diz: [code]openFile[/code] recebe um caminho de arquivo e um [code]IOMode[/code] e retorna uma ação de E/S que abrirá um arquivo e terá o handle associado a esse arquivo encapsulado como seu resultado.
 
-And here's our program:
+[code]FilePath[/code] é só um <a href="making-our-own-types-and-typeclasses#type-synonyms">tipo sinônimo</a> para [code]String[/code], simplesmente definido como:
 
+Exatamente como nosso tipo que representa os sete possíveis valores para os dias da semana, esse tipo é uma enumeração que representa o que nós queremos fazer com nossos arquivos abertos. Muito simples. Só repare que esse tipo é [code]IOMode[/code] e não [code]IO Mode[/code]. [code]IO Mode[/code] seria o tipo de uma ação de E/S que tem um valor de algum tipo [code]Mode[/code] como seu resultado, mas [code]IOMode[/code] é somente uma simples enumeração.
 
+Por fim, é retornada uma ação de E/S que abrirá o arquivo especificado no modo especificado. Se associarmos essa ação a algo obtemos um [code]Handle[/code]. Um valor do tipo [code]Handle[/code] representa onde o nosso arquivo está. Usaremos esse handle para saber de qual arquivo ler. Seria estúpido ler um arquivo e não associá-lo a um handle porque não seríamos capazes de fazer qualquer coisa com o arquivo. Então, no nosso caso, associamos o handle a [code]handle[/code].
 
+Na próxima linha, vemos uma função chamada [function]hGetContents[/function]. Ela recebe um [code]Handle[/code], de forma que ela sabe de qual arquivo obter o conteúdo e retorna uma [code]IO String[/code] &mdash; uma ação de E/S que guarda como seu resultado o conteúdo do arquivo. Essa função é bem parecida com [code]getContents[/code]. A única diferença é que [code]getContents[/code] lerá autometicamente da entrada padrão (que é o terminal), enquanto [code]hGetContents[/code] tem um handle de arquivo que lhe diz de qual arquivo ler. Em todos os outros aspectos, elas funcionam igualmente. E exatamente como [code]getContents[/code], [code]hGetContents[/code] não tentará ler um arquivo de uma vez e guardá-lo na memória, mas ele lerá quando necessário. Isso é bem interessante porque podemos tratar [code]contents[/code] como o conteúdo inteiro do arquivo, mas na verdade ele não está carregado na memória. Então se for um arquivo bem enorme, escrever [code]hGetContents[/code] não iria esgotar sua memória, mas iria ler somente o que precisasse, quando necessário.
 
-Running it, we get the expected result:
+Veja a diferença entre o handle usado para identificar um arquivo e o conteúdo de um arquivo, associados no nosso programa a [code]handle[/code] e [code]contents[/code], respectivamente. O handle é somente algo pelo qual nós sabemos o que é o nosso arquivo. Se você pensar em todo seu sistema de arquivos como sendo um livro bem grande e cada arquivo é um capítuo no livro, o handle é um marcador de livros que mostra onde você está lendo atualmente (ou escrevendo) um capítulo, enquanto que o conteúdo é o capítulo real.
 
+Com [code]putStr contents[/code] nós só imprimimos o conteúdo na saída padrão e depois escrevemos [function]hClose[/function], que recebe um handle e retorna uma ação de E/S que fecha o arquivo. Você mesmo tem que fechar o arquivo após abrí-lo com [code]openFile[/code]!
 
+Outra maneira de o que acabamos de fazer é usar a função [function]withFile[/function], que tem a assinatura de tipo [code]withFile :: FilePath -&gt; IOMode -&gt; (Handle -&gt; IO a) -&gt; IO a[/code]. Ela recebe um caminho para um arquivo, um [code]IOMode[/code] e depois recebe uma função que pega um handle e retorna alguma ação de E/S. O que ela retorna é uma ação de E/S que abre aquele arquivo, faz algo que queremos com ele e depois o fecha. O resultado encapsulado na ação de E/S final que é retornada é o mesmo resultado que a ação de E/S que nós passamos retornaria. Isso pode soar um pouco complicado, mas é muito simples, especialmente com lambdas. Aqui está o nosso exemplo anterior reescrito usando [code]withFile[/code]:
 
-Let's go over this line by line. The first line is just four exclamations, to get our attention. In the second line, Avril tells us that she doesn't like our current romantic partner. The third line serves to emphasize that disapproval, whereas the fourth line suggests we should seek out a new girlfriend.
+Como você vê, é muito semelhante com o trecho de código anterior. [code](\handle -&gt; ... )[/code] é a função que recebe um handle e retorna uma ação de E/S e ela geralmente é escrita assim, com um lambda. A razão para ela ter que receber uma função que retorna uma ação de E/S ao invés de simplesmente receber uma ação de E/S para executar e depois fechar o arquivo é que a ação de E/S que nós passamos a ela não saberia sobre qual arquivo operar. Desse modo, [code]withFile[/code] abre o arquivo e então passa o handle para a função que demos a ela. Depois pega de volta uma ação de E/S daquela função e cria uma ação de E/S igual, só que fecha o arquivo depois. Eis um modo como podemos fazer a nossa própria função [code]withFile[/code]:
 
+Sabemos que o resultado será uma ação de E/S, então podemos começar com um <i>do</i>. Primeiro abrimos o arquivo e obtemos o handle dele. Depois, passamos [code]handle[/code] para a nossa função para obter uma ação de E/S que faz todo o trabalho. Associamos essa ação a [code]result[/code], fechamos o handle e então escrevemos [code]return result[/code]. Ao usar [code]return[/code] para retornar o valor encapsulado na ação de E/S que obtivemos de [code]f[/code], fizemos com que nossa ação de E/S encapsule o mesmo resultado que a que nós obtivemos de [code]f handle[/code]. Então se [code]f handle[/code] retorna uma ação que leria algumas linhas da entrada padrão, as imprimiria em um arquivo e teria encapsulado como seu resultado o número de linhas que foram lidas, se usássemos ela com [code]withFile'[/code], a ação de E/S resultante também teria como seu resultado o número de linhas lidas.
 
-Let's also go over the program line by line! Our program is several I/O actions glued together with a <i>do</i> block. In the first line of the <i>do</i> block, we notice a new function called [function]openFile[/function]. This is its type signature: [code]openFile :: FilePath -&gt; IOMode -&gt; IO Handle[/code]. If you read that out loud, it states: [code]openFile[/code] takes a file path and an [code]IOMode[/code] and returns an I/O action that will open a file and have the file's associated handle encapsulated as its result.
+Exatamente como temos [code]hGetContents[/code] que funciona como [code]getContents[/code] mas para um arquivo específico, também temos [function]hGetLine[/function], [function]hPutStr[/function], [function]hPutStrLn[/function], [function]hGetChar[/function], etc. Elas funcionam exatamente como suas equivalentes sem o <i>h</i>, porém recevem um handle como parâmetro e operam naquele arquivo específico ao invés de operar sobre a entrada padrão ou saída padrão. Exemplo: [code]putStrLn[/code] é uma função que recebe uma string e retorna uma ação de E/S que imprimirá essa string no terminal e criará uma nova linha depois. [code]hPutStrLn[/code] recebe um handle e uma string e retorna uma ação de E/S que escreverá essa string no arquivo associado ao handle e criará uma nova linha depois dessa string. Do mesmo modo, [code]hGetLine[/code] recebe um handle e retorna uma ação de E/S que lê uma linha do seu arquivo.
 
+Abrir arquivos e depois tratar seu conteúdo como strings é tão comum que nós temos essas três pequenas e agradáveis funções que tornam o nosso trabalho ainda mais fácil:
 
-[code]FilePath[/code] is just a <a href="making-our-own-types-and-typeclasses#type-synonyms">type synonym</a> for [code]String[/code], simply defined as:
+[function]readFile[/function] tem a assinatura de tipo [code]readFile :: FilePath -&gt; IO String[/code]. 
+Lembre-se, [code]FilePath[/code] é só um nome fantasia para [code]String[/code]. 
+[code]readFile[/code] recebe um caminho para um arquivo e retorna uma ação de E/S que irá ler aquele arquivo (preguiçosamente, é claro) e associar seu conteúdo a algum nome como uma string. Isso é geralmente mais conveniente do que executar [code]openFile[/code], associá-lo a um handle e então executar [code]hGetContents[/code]. Eis um modo como poderíamos ter escrito nosso exemplo anterior com [code]readFile[/code]:
 
+Devido a não obtermos um handle com o qual identificaríamos nosso arquivo, não temos como fechá-lo manualmente, então Haskell faz isso por nós quando usamos [code]readFile[/code].
 
+[function]writeFile[/function] tem o tipo [code]writeFile :: FilePath -&gt; String -&gt; IO ()[/code]. Ela recebe um caminho para um arquivo e uma string para escrever nesse arquivo e retorna uma ação de E/S que fará a escrita. Se o arquivo já existir, ele terá seu conteúdo apagado antes de ser escrita a string nele. Aqui está como transformar <i>girlfriend.txt</i> em uma versão em MAIÚSCULAS e escrevê-la em <i>girlfriendcaps.txt</i>:
 
+[function]appendFile[/function] tem uma assinatura de tipo que é exatamente igual à de [code]writeFile[/code], mas [code]appendFile[/code] não apaga o conteúdo do arquivo se ele já existir, mas acrescenta coisas a ele.
 
-Just like our type that represents the seven possible values for the days of the week, this type is an enumeration that represents what we want to do with our opened file. Very simple. Just note that this type is [code]IOMode[/code] and not [code]IO Mode[/code]. [code]IO Mode[/code] would be the type of an I/O action that has a value of some type [code]Mode[/code] as its result, but [code]IOMode[/code] is just a simple enumeration.
+Digamos que nós temos um arquivo <i>todo.txt</i> que em cada linha tem uma tarefa que nós temos que fazer. Agora vamos criar um programa que pega uma linha da entrada padrão e adiciona ela à nossa lista de tarefas.
 
+Precisamos adicionar o [code]"\n"[/code] no final de cada linha porque [code]getLine[/code] não nos dá um caractere de nova linha no final.
 
-Finally, it returns an I/O action that will open the specified file in the specified mode. If we bind that action to something we get a [code]Handle[/code]. A value of type [code]Handle[/code] represents where our file is. We'll use that handle so we know which file to read from. It would be stupid to read a file but not bind that read to a handle because we wouldn't be able to do anything with the file. So in our case, we bound the handle to [code]handle[/code].
+Ooh, mais uma coisa. Falamos sobre como escrever [code]contents &lt;- hGetContents handle[/code] não faz o arquivo inteiro ser lido de uma vez e armazenado na memória. A E/S é preguiçosa, então fazer isso:
 
-In the next line, we see a function called [function]hGetContents[/function]. It takes a [code]Handle[/code], so it knows which file to get the contents from and returns an [code]IO String[/code] &mdash; an I/O action that holds as its result the contents of the file. This function is pretty much like [code]getContents[/code]. The only difference is that [code]getContents[/code] will automatically read from the standard input (that is from the terminal), whereas [code]hGetContents[/code] takes a file handle which tells it which file to read from. In all other respects, they work the same. And just like [code]getContents[/code], [code]hGetContents[/code] won't attempt to read the file at once and store it in memory, but it will read it as needed. That's really cool because we can treat [code]contents[/code] as the whole contents of the file, but it's not really loaded in memory. So if this were a really huge file, doing [code]hGetContents[/code] wouldn't choke up our memory, but it would read only what it needed to from the file, when it needed to.
+é como ligar um cano do arquivo até a saída. Exatamente como você pode pensar em listas como streams, você também pode pensar em arquivos como streams. Isso irá ler uma linha de cada vez e imprimí-la no terminal à medida em que a leitura avança. Então você deve estar perguntando, quão largo é esse cano afinal? Com que frequência o disco será acessado? Bem, para arquivos de texto, a bufferização padrão é usualmente bufferização por linha. O que significa que a menor parte do arquivo a ser lida de uma vez é uma linha. Por isso que nesse caso, na verdade, uma linha é lida e impressa na saída, a próxima linha é lida e impressa, etc. Para arquivos binários, a bufferização padrão é geralmente a bufferização por bloco. O que significa que o arquivo será lido bloco a bloco. O tamanho do bloco é algum tamanho que o seu sistema operacional achar razoável.
 
-Note the difference between the handle used to identify a file and the contents of the file, bound in our program to [code]handle[/code] and [code]contents[/code]. The handle is just something by which we know what our file is. If you imagine your whole file system to be a really big book and each file is a chapter in the book, the handle is a bookmark that shows where you're currently reading (or writing) a chapter, whereas the contents are the actual chapter.
+Você pode controlar exatamente como a bufferização é feita usando a função [code]hSetBuffering[/code]. Ela recebe um handle e um [code]BufferMode[/code] e retorna uma ação de E/S que determina o modo de bufferização. [code]BufferMode[/code] é um tipo de dados simples de enumeração e os possíveis valores que ele pode assumir são: [code]NoBuffering[/code], [code]LineBuffering[/code] ou [code]BlockBuffering (Maybe Int)[/code]. O [code]Maybe Int[/code] serve para especificar o quão grande o bloco deve ser, em bytes. Se for [code]Nothing[/code], então o sistema operacional determina o tamanho do bloco. [code]NoBuffering[/code] significa que será lido um caractere de cada vez. [code]NoBuffering[/code] geralmente é uma porcaria porque tem que acessar o disco com muita frequência.
 
-With [code]putStr contents[/code] we just print the contents out to the standard output and then we do [function]hClose[/function], which takes a handle and returns an I/O action that closes the file. You have to close the file yourself after opening it with [code]openFile[/code]!
+Aqui está o nosso trecho de código aterior, porém sem ler linha por linha, mas o arquivo inteiro em blocos de 2048 bytes.
 
+Ler arquivos em blocos maiores pode ajudar se quisermos minimizar o acesso ao disco ou quando nosso arquivo é na verdade um recurso de rede lento.
 
-Another way of doing what we just did is to use the [function]withFile[/function] function, which has a type signature of [code]withFile :: FilePath -&gt; IOMode -&gt; (Handle -&gt; IO a) -&gt; IO a[/code]. It takes a path to a file, an [code]IOMode[/code] and then it takes a function that takes a handle and returns some I/O action. What it returns is an I/O action that will open that file, do something we want with the file and then close it. The result encapsulated in the final I/O action that's returned is the same as the result of the I/O action that the function we give it returns. This might sound a bit complicated, but it's really simple, especially with lambdas, here's our previous example rewritten to use [code]withFile[/code]:
+Podemos também usar [function]hFlush[/function], que é uma função que recebe um handle e retorna uma ação de E/S que irá descarregar o buffer do arquivo associado ao handle. Quando estamos usando bufferização por linha, o buffer é descarregado depois de cada linha. Quando usamos bufferização por bloco, descarrega-se quando lemos um bloco. O buffer também é descarregado quando fechamos um handle. Isso significa que quando encontramos um caractere de nova linha, o mecanismo de leitura (ou escrita) transfere todos os dados até o momento. Porém, podemos usar [code]hFlush[/code] para forçar a transferência dos dados que foram lidos até agora. Após descarregar, os dados ficam disponíveis para outros programas que estão rodando ao mesmo tempo.
 
+Pense na leitura de um arquivo bufferizada por bloco como: sua privada está configurada para desccarregar-se assim que tenha quatro litros de água dentro dela. Então você começa a jogar água e uma vez que a marca de quatro litros seja atingida, a água é automaticamente descarregada e a informação na água que você jogou até agora é lida. Porém, você também pode descarregar a privada manualmente pressionando o botão nela. Isso faz a privada descarregar e toda a água (informação) dentro dela é lida. Caso você não tenha percebido, descarregar o vaso manualmente é uma metáfora para [code]hFlush[/code]. Essa não é uma analogia muito boa para os padrões de analogia de programação, mas eu queria um objeto do mundo real que pudesse ser descarregado para exemplificar.
 
+Nós já fizemos um programa para adicionar um novo item à nossa lista de tarefas em <i>todo.txt</i>, agora faremos um programa para remover um item. Eu vou somente colar o código e depois vamos analisar o programa juntos para você ver que ele é muito fácil. Usaremos algumas novas funções de [code]System.Directory[/code] e uma nova função de [code]System.IO[/code], mas elas serão explicadas.
 
+De qualquer modo, aque está o programa para remover um item de <i>todo.txt</i>:
 
+Primeiramente, nós apenas abrimos <i>todo.txt</i> no modo leitura e associamos seu handle a [code]handle[/code]. Depois, usamos uma ação de E/S de [code]System.Directory[/code] chamada [function]getTemporaryDirectory[/function]. Ela é uma ação de E/S que pergunta ao seu sistema operacional qual é o diretório adequado para armazenar um arquivo temporário e retorna isso como seu resultado. Seu tipo é [code]getTemporaryDirectory :: IO String[/code], embora fosse mais claro nesse caso pensar nisso como sendo [code]getTemporaryDirectory :: IO FilePath[/code]. Nós associamos o caminho do diretório temporário a [code]tempdir[/code].
 
+Em seguida, usamos uma função que não conhecíamos de pertence a [code]System.IO[/code] &mdash; [function]openTempFile[/function]. Seu nome é bem auto-explicativo. Ela recebe um caminho para um diretório temporário e um modelo de nome para um arquivo e abre um arquivo temporário. Usamos [code]"temp"[/code] como modelo de nome para o arquivo temporário, o que significa que o arquivo temporário será nomeado <i>temp</i> mais alguns caracteres aleatórios. Ela retorna uma ação de E/S que cria o arquivo temporário e o resultado nessa ação de E/S é um par de valores: o nome do arquivo temporário e um handle. Poderíamos simplesmente abrir um arquivo normal chamado <i>todo2.txt</i> ou algo parecido, mas é uma boa prática usar [code]getTemporaryDirectory[/code] e [code]openTempFile[/code] porque você garantirá que não está sobrescrevendo nada.
 
-As you can see, it's very similar to the previous piece of code. [code](\handle -&gt; ... )[/code] is the function that takes a handle and returns an I/O action and it's usually done like this, with a lambda. The reason it has to take a function that returns an I/O action instead of just taking an I/O action to do and then close the file is because the I/O action that we'd pass to it wouldn't know on which file to operate. This way, [code]withFile[/code] opens the file and then passes the handle to the function we gave it. It gets an I/O action back from that function and then makes an I/O action that's just like it, only it closes the file afterwards. Here's how we can make our own [code]withFile[/code] function:
+Em seguida, associamos o conteúdo de <i>todo.txt</i> a [code]contents[/code]. Depois, dividimos essa string em uma lista de strings, cada uma sendo uma linha. Assim, [code]todoTasks[/code] agora é algo como [code]["Iron the dishes", "Dust the dog", "Take salad out of the oven"][/code]. Nós mesclamos os números de 0 em diante e essa lista com uma função que pega um número, como 3, uma string, como [code]"hey"[/code] e retorna [code]"3 - hey"[/code], assim [code]numberedTasks[/code] é [code]["0 - Iron the dishes", "1 - Dust the dog" ...[/code]. Juntamos essa lista de strings em uma única string com quebras de linha usando [code]unlines[/code] e a imprimimos essa string no terminal. Observe que ao invés de fazer isso, também poderíamos ter feito [code]mapM putStrLn numberedTasks[/code]
 
+Perguntamos ao usuário qual atividade ele quer excluir e esperamos ele digitar um número. Digamos que ele queira excluir a atividade 1, que é [code]Dust the dog[/code], então ele digita [code]1[/code]. [code]numberString[/code] agora é [code]"1"[/code] e porque nós queremos um número, não uma string, aplicamos [code]read[/code] a ela para obter [code]1[/code] e associamos isso a [code]number[/code].
 
+Lembre-se das funções [code]delete[/code] e [code]!![/code] de [code]Data.List[/code]. [code]!![/code] retorna um elemento de uma lista com determinado índice e [code]delete[/code] exclui a primeira ocorrência de um elemento em uma lista e retorna uma nova lista sem aquela ocorrência. [code](todoTasks !! number)[/code] (number agora é [code]1[/code]) retorna [code]"Dust the dog"[/code]. Associamos [code]todoTasks[/code] sem a primeira ocorrência de [code]"Dust the dog"[/code] a [code]newTodoItems[/code] e então juntamos isso em uma única string usando [code]unlines[/code] antes de escrever no arquivo temporário que abrimos. O arquivo antigo está intacto e o arquivo temporário contém todas as linhas que o antigo contém, exceto pela linha que excluímos.
 
+Depois disso fechamos tanto o arquivo original quanto o temporário e então removemos o original com [function]removeFile[/function], que, como você pode ver, recebe um caminho para um arquivo e o exclui. Depois de deletar o antigo <i>todo.txt</i>, usamos [function]renameFile[/function] para renomear o arquivo temporário para <i>todo.txt</i>. Tome cuidado, [code]removeFile[/code] e [code]renameFile[/code] (que estão ambos em [code]System.Directory[/code] a propósito) recebem caminhos para arquivos como parâmetros, não handles.
 
-
-
-
-We know the result will be an I/O action so we can just start off with a <i>do</i>. First we open the file and get a handle from it. Then, we apply [code]handle[/code] to our function to get back the I/O action that does all the work. We bind that action to [code]result[/code], close the handle and then do [code]return result[/code]. By [code]return[/code]ing the result encapsulated in the I/O action that we got from [code]f[/code], we make it so that our I/O action encapsulates the same result as the one we got from [code]f handle[/code]. So if [code]f handle[/code] returns an action that will read a number of lines from the standard input and write them to a file and have as its result encapsulated the number of lines it read, if we used that with [code]withFile'[/code], the resulting I/O action would also have as its result the number of lines read.
-
-Just like we have [code]hGetContents[/code] that works like [code]getContents[/code] but for a specific file, there's also [function]hGetLine[/function], [function]hPutStr[/function], [function]hPutStrLn[/function], [function]hGetChar[/function], etc. They work just like their counterparts without the <i>h</i>, only they take a handle as a parameter and operate on that specific file instead of operating on standard input or standard output. Example: [code]putStrLn[/code] is a function that takes a string and returns an I/O action that will print out that string to the terminal and a newline after it. [code]hPutStrLn[/code] takes a handle and a string and returns an I/O action that will write that string to the file associated with the handle and then put a newline after it. In the same vein, [code]hGetLine[/code] takes a handle and returns an I/O action that reads a line from its file.
-
-Loading files and then treating their contents as strings is so common that we have these three nice little functions to make our work even easier:
-
-
-[function]readFile[/function] has a type signature of [code]readFile :: FilePath -&gt; IO String[/code]. 
-Remember, [code]FilePath[/code] is just a fancy name for [code]String[/code]. 
-[code]readFile[/code] takes a path to a file and returns an I/O action that will read that file (lazily, of course) and bind its contents to something as a string. 
-It's usually more handy than doing [code]openFile[/code] and binding it to a handle and then doing [code]hGetContents[/code].
-Here's how we could have written our previous example with [code]readFile[/code]:
-
-
-
-
-
-
-
-Because we don't get a handle with which to identify our file, we can't close it manually, so Haskell does that for us when we use [code]readFile[/code].
-
-
-[function]writeFile[/function] has a type of [code]writeFile :: FilePath -&gt; String -&gt; IO ()[/code].
-It takes a path to a file and a string to write to that file and returns an I/O action that will do the writing. If such a file already exists, it will be stomped down to zero length before being written on. Here's how to turn <i>girlfriend.txt</i> into a CAPSLOCKED version and write it to <i>girlfriendcaps.txt</i>:
-
-
-
-
-[function]appendFile[/function] has a type signature that's just like [code]writeFile[/code], only [code]appendFile[/code] doesn't truncate the file to zero length if it already exists but it appends stuff to it.
-
-Let's say we have a file <i>todo.txt</i> that has one task per line that we have to do. Now let's make a program that takes a line from the standard input and adds that to our to-do list.
-
-
-
-
-
-
-
-We needed to add the [code]"\n"[/code] to the end of each line because [code]getLine[/code] doesn't give us a newline character at the end.
-
-Ooh, one more thing. We talked about how doing [code]contents &lt;- hGetContents handle[/code] doesn't cause the whole file to be read at once and stored in-memory. It's I/O lazy, so doing this:
-
-
-
-
-is actually like connecting a pipe from the file to the output. Just like you can think of lists as streams, you can also think of files as streams. This will read one line at a time and print it out to the terminal as it goes along. So you may be asking, how wide is this pipe then? How often will the disk be accessed? Well, for text files, the default buffering is line-buffering usually. That means that the smallest part of the file to be read at once is one line. That's why in this case it actually reads a line, prints it to the output, reads the next line, prints it, etc. For binary files, the default buffering is usually block-buffering. That means that it will read the file chunk by chunk. The chunk size is some size that your operating system thinks is cool.
-
-You can control how exactly buffering is done by using the [code]hSetBuffering[/code] function. It takes a handle and a [code]BufferMode[/code] and returns an I/O action that sets the buffering. [code]BufferMode[/code] is a simple enumeration data type and the possible values it can hold are: [code]NoBuffering[/code], [code]LineBuffering[/code] or [code]BlockBuffering (Maybe Int)[/code]. The [code]Maybe Int[/code] is for how big the chunk should be, in bytes. If it's [code]Nothing[/code], then the operating system determines the chunk size. [code]NoBuffering[/code] means that it will be read one character at a time. [code]NoBuffering[/code] usually sucks as a buffering mode because it has to access the disk so much.
-
-Here's our previous piece of code, only it doesn't read it line by line but reads the whole file in chunks of 2048 bytes.
-
-
-
-
-Reading files in bigger chunks can help if we want to minimize disk access or when our file is actually a slow network resource.
-
-We can also use [function]hFlush[/function], which is a function that takes a handle and returns an I/O action that will flush the buffer of the file associated with the handle. When we're doing line-buffering, the buffer is flushed after every line. When we're doing block-buffering, it's after we've read a chunk. It's also flushed after closing a handle. That means that when we've reached a newline character, the reading (or writing) mechanism reports all the data so far. But we can use [code]hFlush[/code] to force that reporting of data that has been read so far. After flushing, the data is available to other programs that are running at the same time.
-
-Think of reading a block-buffered file like this: your toilet bowl is set to flush itself after it has one gallon of water inside it. So you start pouring in water and once the gallon mark is reached, that water is automatically flushed and the data in the water that you've poured in so far is read. But you can flush the toilet manually too by pressing the button on the toilet. This makes the toilet flush and all the water (data) inside the toilet is read. In case you haven't noticed, flushing the toilet manually is a metaphor for [code]hFlush[/code]. This is not a very great analogy by programming analogy standards, but I wanted a real world object that can be flushed for the punchline.
-
-We already made a program to add a new item to our to-do list in <i>todo.txt</i>, now let's make a program to remove an item. I'll just paste the code and then we'll go over the program together so you see that it's really easy. We'll be using a few new functions from [code]System.Directory[/code] and one new function from [code]System.IO[/code], but they'll all be explained.
-
-Anyway, here's the program for removing an item from <i>todo.txt</i>:
-
-
-
-
-At first, we just open <i>todo.txt</i> in read mode and get bind its handle to [code]handle[/code].
-Then, we use an I/O action from [code]System.Directory[/code] called [function]getTemporaryDirectory[/function].
-This is an I/O action that asks your operating system what a suitable directory for storing a temporary file is and reports that as its result.
-Its type is [code]getTemporaryDirectory :: IO String[/code], although it would be clearer in this case to look at it as [code]getTemporaryDirectory :: IO FilePath[/code]. We bind the file path of the temporary directory to [code]tempdir[/code].
-
-Next up, we use a function that we haven't met before which is from [code]System.IO[/code] &mdash; [function]openTempFile[/function]. Its name is pretty self-explanatory. It takes a path to a temporary directory and a template name for a file and opens a temporary file. We used [code]"temp"[/code] as the template name for the temporary file, which means that the temporary file will be named <i>temp</i> plus some random characters. It returns an I/O action that makes the temporary file and the result in that I/O action is a pair of values: the name of the temporary file and a handle. We could just open a normal file called <i>todo2.txt</i> or something like that but it's better practice to use [code]getTemporaryDirectory[/code] and [code]openTempFile[/code] so you know you're not overwriting anything.
-
-Next up, we bind the contents of <i>todo.txt</i> to [code]contents[/code]. Then, split that string into a list of strings, each string one line. So [code]todoTasks[/code] is now something like [code]["Iron the dishes", "Dust the dog", "Take salad out of the oven"][/code]. We zip the numbers from 0 onwards and that list with a function that takes a number, like 3, and a string, like [code]"hey"[/code] and returns [code]"3 - hey"[/code], so [code]numberedTasks[/code] is [code]["0 - Iron the dishes", "1 - Dust the dog" ...[/code]. We join that list of strings into a single newline delimited string with [code]unlines[/code] and print that string out to the terminal. Note that instead of doing that, we could have also done [code]mapM putStrLn numberedTasks[/code]
-
-We ask the user which one they want to delete and wait for them to enter a number. Let's say they want to delete number 1, which is [code]Dust the dog[/code], so they punch in [code]1[/code]. [code]numberString[/code] is now [code]"1"[/code] and because we want a number, not a string, we run [code]read[/code] on that to get [code]1[/code] and bind that to [code]number[/code].
-
-Remember the [code]delete[/code] and [code]!![/code] functions from [code]Data.List[/code]. [code]!![/code] returns an element from a list with some index and [code]delete[/code] deletes the first occurence of an element in a list and returns a new list without that occurence. [code](todoTasks !! number)[/code] (number is now [code]1[/code]) returns [code]"Dust the dog"[/code]. We bind [code]todoTasks[/code] without the first occurence of [code]"Dust the dog"[/code] to [code]newTodoItems[/code] and then join that into a single string with [code]unlines[/code] before writing it to the temporary file that we opened. The old file is now unchanged and the temporary file contains all the lines that the old one does, except the one we deleted.
-
-After that we close both the original and the temporary files and then we remove the original one with [function]removeFile[/function], which, as you can see, takes a path to a file and deletes it. After deleting the old <i>todo.txt</i>, we use [function]renameFile[/function] to rename the temporary file to <i>todo.txt</i>. Be careful, [code]removeFile[/code] and [code]renameFile[/code] (which are both in [code]System.Directory[/code] by the way) take file paths as their parameters, not handles.
-
-And that's that! We could have done this in even fewer lines, but we were very careful not to overwrite any existing files and politely asked the operating system to tell us where we can put our temporary file. Let's give this a go!
-
-
+Assunto encerrado! Poderíamos ter feito isso em ainda menos linhas, mas fomos bem cuidadosos para não sobrescrever algum arquivo existente e educadamente perguntamos ao sistema operacional sobre onde poderíamos colocar nosso arquivo temporário. Agora vamos testar o programa!

@@ -29,3 +29,8 @@ evaluate                                                avaliar em
 to zip                                                  mesclar / chamar "zip" em
 type signature                                          assinatura de tipo
 list comprehension                                      compreensão de lista (conforme wikipedia)
+stream                                                  stream
+pipe/piping                                             pipe/fazendo piping
+handle                                                  handle
+type synonym                                            tipo sinônimo
+flush                                                   descarregar
