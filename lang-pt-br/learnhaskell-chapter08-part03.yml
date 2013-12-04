@@ -1,60 +1,73 @@
-title: Type parameters
+title: Tipos paramétricos
 
-text:  A value constructor can take some values parameters and then produce a new value. For instance, the [code]Car[/code] constructor takes three values and produces a car value. In a similar manner, <em>type constructors</em> can take types as parameters to produce new types. This might sound a bit too meta at first, but it's not that complicated. If you're familiar with templates in C++, you'll see some parallels. To get a clear picture of what type parameters work like in action, let's take a look at how a type we've already met is implemented.
-
-
-
-The [code]a[/code] here is the type parameter. And because there's a type parameter involved, we call [code]Maybe[/code] a type constructor. Depending on what we want this data type to hold when it's not [code]Nothing[/code], this type constructor can end up producing a type of [code]Maybe Int[/code], [code]Maybe Car[/code], [code]Maybe String[/code], etc. No value can have a type of just [code]Maybe[/code], because that's not a type per se, it's a type constructor. In order for this to be a real type that a value can be part of, it has to have all its type parameters filled up.
-
-So if we pass [code]Char[/code] as the type parameter to [code]Maybe[/code], we get a type of [code]Maybe Char[/code]. The value [code]Just 'a'[/code] has a type of [code]Maybe Char[/code], for example.
-
-You might not know it, but we used a type that has a type parameter before we used [code]Maybe[/code]. That type is the list type. Although there's some syntactic sugar in play, the list type takes a parameter to produce a concrete type. Values can have an [code][Int][/code] type, a [code][Char][/code] type, a [code][[String]][/code] type, but you can't have a value that just has a type of [code][][/code].
-
-Let's play around with the [code]Maybe[/code] type.
-
-
-
-Type parameters are useful because we can make different types with them depending on what kind of types we want contained in our data type. When we do [code]:t Just "Haha"[/code], the type inference engine figures it out to be of the type [code]Maybe [Char][/code], because if the [code]a[/code] in the [code]Just a[/code] is a string, then the [code]a[/code] in [code]Maybe a[/code] must also be a string.
-
-Notice that the type of [code]Nothing[/code] is [code]Maybe a[/code]. Its type is polymorphic. If some function requires a [code]Maybe Int[/code] as a parameter, we can give it a [code]Nothing[/code], because a [code]Nothing[/code] doesn't contain a value anyway and so it doesn't matter. The [code]Maybe a[/code] type can act like a [code]Maybe Int[/code] if it has to, just like [code]5[/code] can act like an [code]Int[/code] or a [code]Double[/code]. Similarly, the type of the empty list is [code][a][/code]. An empty list can act like a list of anything. That's why we can do [code][1,2,3] ++ [][/code] and [code]["ha","ha","ha"] ++ [][/code].
-
-Using type parameters is very beneficial, but only when using them makes sense. Usually we use them when our data type would work regardless of the type of the value it then holds inside it, like with our [code]Maybe a[/code] type. If our type acts as some kind of box, it's good to use them. We could change our [code]Car[/code] data type from this:
-
-
-
-To this:
-
-
-
-But would we really benefit? The answer is: probably no, because we'd just end up defining functions that only work on the [code]Car String String Int[/code] type. For instance, given our first definition of [code]Car[/code], we could make a function that displays the car's properties in a nice little text.
+text: Um construtor de valor pode pegar alguns parâmetros de valores e então produzir um novo valor. Por exemplo, o construtor [code]Car[/code] pega três valores e produz um valor de carro. De maneira similar, <em> construtores de tipo</em> podem pegar tipos como parâmetros e produzir novos tipos. Isso pode parecer um pouco meta à primeira vista, mas não é muito complicado. Se você tem familiaridade com os templates de C++, você verá alguns pontos paralelos. Para se ter uma imagem clara de como os parâmetros de tipos funcionam na prática, vamos dar uma olhada em como um tipo que você já encontrou é implementado.
 
 
 
 
-A cute little function! The type declaration is cute and it works nicely. Now what if [code]Car[/code] was [code]Car a b c[/code]?
+O [code]a[/code] aqui pé um parâmetro de tipo. E por haver um parâmetro de tipo envolvido, chamamos [code]Maybe[/code] um construtor de tipo. Dependendo do que quisermos que esse tipo de dado guarde quando não for [code]Nothing[/code], esse construtor de tipo pode acabar produzindo um tipo [code]Maybe Int[/code], [code]Maybe Car[/code], [code]Maybe String[/code], etc. Nenhum valor pode ter um tipo de apenas [code]Maybe[/code], isso porque ele não é um tipo por si só, é um construtor de tipo. Para que isso se torne um tipo real do qual um valor pode ser parte, ele tem que ter todos os seus parâmetros preenchidos.
 
 
-
-We'd have to force this function to take a [code]Car[/code] type of [code](Show a) =&gt; Car String String a[/code]. You can see that the type signature is more complicated and the only benefit we'd actually get would be that we can use any type that's an instance of the [code]Show[/code] typeclass as the type for [code]c[/code].
-
+Então se passarmos [code]Char[/code] como o parâmetro de tipo para [code]Maybe[/code], obtemos o tipo de [code]Maybe Char[/code]. O valor [code]Just 'a'[/code] tem um tipo de [code]Maybe Char[/code], por exemplo.
 
 
-In real life though, we'd end up using [code]Car String String Int[/code] most of the time and so it would seem that parameterizing the [code]Car[/code] type isn't really worth it. We usually use type parameters when the type that's contained inside the data type's various value constructors isn't really that important for the type to work. A list of stuff is a list of stuff and it doesn't matter what the type of that stuff is, it can still work. If we want to sum a list of numbers, we can specify later in the summing function that we specifically want a list of numbers. Same goes for [code]Maybe[/code]. [code]Maybe[/code] represents an option of either having nothing or having one of something. It doesn't matter what the type of that something is.
-
-Another example of a parameterized type that we've already met is [code]Map k v[/code] from [code]Data.Map[/code]. The [code]k[/code] is the type of the keys in a map and the [code]v[/code] is the type of the values. This is a good example of where type parameters are very useful. Having maps parameterized enables us to have mappings from any type to any other type, as long as the type of the key is part of the [code]Ord[/code] typeclass. If we were defining a mapping type, we could add a typeclass constraint in the <i>data</i> declaration:
+Você pode não saber disso, mas nos usamos um tipo que tem um parâmetro de tipo antes de usar [code]Maybe[/code]. Estamos falando do tipo lista. Apesar de haver um açúcar sintático na jogada, o tipo lista pega um parâmetro para produzir um tipo concreto. Valores podem ter um tipo [code][Int][/code], um tipo [code][Char][/code], um tipo [code]String[/code], mas você não pode ter um valor que tenha um tipo de apenas [code][][/code].
 
 
-
-
-However, it's a very strong convention in Haskell to <em>never add typeclass constraints in data declarations. </em>Why? Well, because we don't benefit a lot, but we end up writing more class constraints, even when we don't need them. If we put or don't put the [code]Ord k[/code] constraint in the <i>data</i> declaration for [code]Map k v[/code], we're going to have to put the constraint into functions that assume the keys in a map can be ordered. But if we don't put the constraint in the data declaration, we don't have to put [code](Ord k) =&gt;[/code] in the type declarations of functions that don't care whether the keys can be ordered or not. An example of such a function is [code]toList[/code], that just takes a mapping and converts it to an associative list. Its type signature is [code]toList :: Map k a -&gt; [(k, a)][/code]. If [code]Map k v[/code] had a type constraint in its <i>data</i> declaration, the type for [code]toList[/code] would have to be [code]toList :: (Ord k) =&gt; Map k a -&gt; [(k, a)][/code], even though the function doesn't do any comparing of keys by order.
-
-So don't put type constraints into <i>data</i> declarations even if it seems to make sense, because you'll have to put them into the function type declarations either way.
-
-Let's implement a 3D vector type and add some operations for it. We'll be using a parameterized type because even though it will usually contain numeric types, it will still support several of them.
+Vamos brincar um pouco com o tipo [code]Maybe[/code]
 
 
 
 
-[code]vplus[/code] is for adding two vectors together. Two vectors are added just by adding their corresponding components. [code]scalarMult[/code] is for the scalar product of two vectors and [code]vectMult[/code] is for multiplying a vector with a scalar. These functions can operate on types of [code]Vector Int[/code], [code]Vector Integer[/code], [code]Vector Float[/code], whatever, as long as the [code]a[/code] from [code]Vector a[/code] is from the [code]Num[/code] typeclass. Also, if you examine the type declaration for these functions, you'll see that they can operate only on vectors of the same type and the numbers involved must also be of the type that is contained in the vectors. Notice that we didn't put a [code]Num[/code] class constraint in the <i>data</i> declaration, because we'd have to repeat it in the functions anyway.
+Parâmetros de tipo são úteis porque podemos criar diferentes tipos com eles dependendo de que espécie de tipos desejamos ter guardados no nosso tipo de dado. Quando fazemos [code]:t Just "haha"[/code], o engenho de inferência de tipo descobre que isso é do tipo [code]Maybe [Char][/code], porque se o [code]a[/code] no código [code]Just a[/code] for uma String, entãp o [code]a[/code] em [code]Maybe a[/code] também deve ser uma String.
 
-Once again, it's very important to distinguish between the type constructor and the value constructor. When declaring a data type, the part before the [code]=[/code] is the type constructor and the constructors after it (possibly separated by [code]|[/code]'s) are value constructors. Giving a function a type of [code]Vector t t t -&gt; Vector t t t -&gt; t[/code] would be wrong, because we have to put types in type declaration and the vector <em>type</em> constructor takes only one parameter, whereas the value constructor takes three. Let's play around with our vectors.
+
+Perceba que o tipo de [code]Nothing[/code] é [code]Maybe a[/code]. Seu tipo é polimórfico. Se alguma função precisar de um [code]Maybe Int[/code] como parâmetro, podemos passar um Nothing, porque [code]Nothing[/code] não contém um valor, logo não importa. O tipo [code]Maybe a[/code] pode agir como um [code]Maybe Int[/code] se ele tiver de fazê-lo, assim como [code]5[/code] pode agir como um [code]Int[/code] ou um [code]Double[/code]. Similarmente, o tipo da lista vazia é [code][a][/code]. Uma lista vazia pode agir como um lista de qualquer coisa. Por isso que podemos fazer [code][1, 2, 3] ++ [][/code] e [code][!ha", "ha", "ha"] ++ [][/code].
+
+
+Usar parâmetros de tipos é muito benéfico, mas apenas quando usá-los faaz sentido. Geralmente nós os usamos quando nossos tipos de dados pudessem funcionar, independentemente do tipo do valor que está guardado dentro de si, como no nosso tipo [code]Maybe a[/code]. Se nosso tipo agir como uma espécie de caixa, é bom para utilizá-los. Poderíamos mudar nosso tipo de dado [code]Car[/code] disso:
+
+
+
+
+Para isso:
+
+
+
+Mas haveria algum benefício? A resposta é: provavelmente não, uma vez que acabaríamos apenas definindo funções que apenas funcionariam com o tipo [code]Car String String Int[/code]. Por exemplo, dada nossa primeira definição de [code]Car[/code], poderíamos criar uma função que exibe as propriedades do carro em um texto pequeno e legal.
+
+
+
+
+
+Uma função pequenina e fofinha! A declaração de tipo é fofa e funciona bem. E se [code]Car[/code] fosse [code]Car a b c[/code]?
+
+
+
+
+Teríamos de forçar essa função a usar o tipo de [code]Car[/code] de [code](Show a) =&gt; Car String String a[/code]. Você pode ver que a assinatura de tipo é mais complicada e o único benefício que nós obteríamos seria que agora podemos usar qualquer tipo que seja uma instância da typeclass [code]Show[/code] como o tipo para [code]c[/code].
+
+
+
+
+Entretanto na vida real, nós acabaríamos usando [code]Car String String Int[/code] na maioria das vezes e então pareceia que parametrizar o tipo [code]Car[/code] não vale à pena. Nós geralmente utilizamos parâmetros de tipos quando o tipo que está contido dentro dos vários construtores de valor de tipos de dados não é realmente importante para o funcionamento do tipo. Uma lista de coisas é uma lista de coisas e não importa o tipo dessas coisas, a lista ainda funciona. Se quisermos somar uma lista de números, podemos especificar depois como a função de soma funciona especificamente para lista de númeris. O mesmo serve para [code]Maybe[/code]. [code]Maybe[/code] representa uma opção de tanto não se ter nada como ter um de alguma coisa. Não importa o tipo dessa coisa.
+
+
+Outro exemplo de um tipo parametrizado que já encontramos por aí é [code]Map k v[/code] de [code]Data.Map[/code]. O [code]k[/code] é o tipo das chaves em um mapa e [code]v[/code] é o tipo dos valores. Esse é um bom exemplo de onde os parâmetros são muito úteis. Ter mapas parametrizados nos permite ter mapeamentos de qualquer tipo para qualquer outro tipo, contanto que o tipo da chave seja parte da typeclass [code]Ord[/code]. Se estivéssemos definindo um tipo mapeador, poderíamos adicionar uma restrição de typeclass na declaração <i>data</i>:
+
+
+
+
+Entretanto, existe uma convenção muito forte em Haskell para <em>nunca adicionar restrições de typeclass na declaração de dados. </em>. Por quê? Bem, porque não há muitos benefícios, mas acabamos escrevendo mais restrições de classe, até quando não precisamos delas. Se colocarmos ou não a restrição[code]Ord k[/code] na declaração <i>data</i> para [code]Map k v[/code], teríamos de colocar uma restrição nas funções que assumem que as chaves de um mapa podem ser ordenadas. Mas se não colocarmos a restrição naa declaração do dado, não teremos de colocar [code]Ord k[/code] na declaração de tipos de função que não se importam se k pode ser ordenado ou não. Um exemplo de tal função é [code]toList[/code], que apenas pega um mapeeamento e converte-o em uma lista associativa. Sua assinatura de tipo é [code]toList :: Map k a -&gt; [(k, a)][/code]. Se [code]Map k v[/code] tivesse uma restrição de tipo na sua declaração <i>data</i>, o tpo para [code]toList[/code] teria de ser [code]toList :: (Ord k) =&gt; Map k a -&gt; [(k, a)][/code], mesmo que a função não fizesse nenhuma comparação de ordem entre aas chaves.
+
+Então não coloque restrições de tipo em declarações <i>data</i> mesmo se parecer fazer senttido, porque você terá de colocá-las nas declarações de função de toda forma.
+
+Vamos implementar um tipo de vetor 3D e adicionar algumas operações para ele. Usaremos um tipo parametrizado porque mesmo sabendo que, em geral, o vetor conterá números, ainda vale a pena dar suporte a vários deles.
+
+
+
+
+
+[code]vplus[/code] é para adicionar dois vetores. Dois vetores são adicionados por se somar seus componentes respectivos.[code]scalarMult[/code] é para o produto escalar entre dois vetores e [code]vectMult[/code] é para multiplicar um vetor por um escalar. Essas funções podem operar nos tipos de [code]Vector Int[/code], [code]Vector Integer[/code], [code]Vector Float[/code], qualquer coisa, contanto que [code]a[/code] de [code]Vector a[/code] seja da typeclas [code]Num[/code]. Além disso, se você examinar a declaração de tipo dessas funções, você verá que elas apenas podem operar em vetores do mesmo tipo e os números envolvidos devem ser do mesmo tipo que está contido dentro dos vetores. Perceba que não colocamos uma restrição de classe [code]Num[/code] na declaração <i>data</i>, uma vez que teríamos que repeti-la nas funções de qualquer forma.
+
+Mais uma vez, é importante distinguir entre o construtor de tipo e o construtor de valor. Quando estamos declarando um tipo de dado, a parte antes do [code]=[/code] é o construtor de tipo e os construtores depois dele (possivelmente separados por [code]|[/code]'s) são construtores de valor. Dar um tipo [code]Vector t t t -&gt; Vector t t t -&gt; t[/code] à uma função seria errado porque temos que colocar os tipos na declaração de tipo e o construtor de tipo vetor recebe apenas um parâmetro, enquanto que o construtor de valor recebe três. Vamos brincar com nossos vetores.
