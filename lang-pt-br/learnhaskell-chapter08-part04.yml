@@ -1,99 +1,98 @@
-title: Derived instances
+title: Instâncias derivadas
 
-text:  In the <a href="types-and-typeclasses#typeclasses-101">Typeclasses 101</a> section, we explained the basics of typeclasses. We explained that a typeclass is a sort of an interface that defines some behavior. A type can be made an <em>instance</em> of a typeclass if it supports that behavior. Example: the [code]Int[/code] type is an instance of the [code]Eq[/code] typeclass because the [code]Eq[/code] typeclass defines behavior for stuff that can be equated. And because integers can be equated, [code]Int[/code] is a part of the [code]Eq[/code] typeclass. The real usefulness comes with the functions that act as the interface for [code]Eq[/code], namely [code]==[/code] and [code]/=[/code]. If a type is a part of the [code]Eq[/code] typeclass, we can use the [code]==[/code] functions with values of that type. That's why expressions like [code]4 == 4[/code] and [code]"foo" /= "bar"[/code] typecheck.
+text:  Na sessão <a href="types-and-typeclasses#typeclasses-101">Typeclasses 101</a>, nós mostramos as bases das typeclasses. Nós mostramos que a typeclass é uma espécie de interface que define algum comportamento. Um tipo pode ser feito uma <em>instância</em> de uma typeclass se ele suporta esse comportamento. Exemplo: o tipo [code]Int[/code] é uma instância da typeclass [code]Eq[/code] pois a typeclass [code]Eq[/code] define o comportamento para as coisas que podem ser comparadas. E pelo motivo de inteiros poderem ser comparados, [code]Int[/code] é parte da typeclass [code]Eq[/code]. A real utilidade vêm com funções que agem como uma interface para [code]Eq[/code], chamada [code]==[/code] e [code]/=[/code]. Se um tipo é parte da typeclass [code]Eq[/code], nós podemos usar a função [code]==[/code] com valores desse tipo. Isso porque expressões como [code]4 == 4[/code] e [code]"foo" /= "bar"[/code] tem os tipos checados.
 
-We also mentioned that they're often confused with classes in languages like Java, Python, C++ and the like, which then baffles a lot of people. In those languages, classes are a blueprint from which we then create objects that contain state and can do some actions. Typeclasses are more like interfaces. We don't make data from typeclasses. Instead, we first make our data type and then we think about what it can act like. If it can act like something that can be equated, we make it an instance of the [code]Eq[/code] typeclass. If it can act like something that can be ordered, we make it an instance of the [code]Ord[/code] typeclass.
+Nós também mencionamos que eles são geralmente confundidos com classes em linguagens como Java, Python, C++ e similares, o que confunde muitas pessoas. Nessas linguagens, classes são como um modelo pelo qual nós criamos objetos que contém estado e pode realizar algumas ações. Typeclasses são mais como interfaces. Nós não construímos dados a partir de typeclasses. Em vez disso, nos primeiro construímos nosso tipo de dado e então nós pensamos como ele pode agir. Se ele pode agir como algo que pode ser comparado, nós fazemos dele uma instância da typeclass [code]Eq[/code. Se ele pode agir como algo que pode ser ordenado, nós fazemos dele uma instância da typeclass [code]Ord[/code].
 
-In the next section, we'll take a look at how we can manually make our types instances of typeclasses by implementing the functions defined by the typeclasses. But right now, let's see how Haskell can automatically make our type an instance of any of the following typeclasses: [code]Eq[/code], [code]Ord[/code], [code]Enum[/code], [code]Bounded[/code], [code]Show[/code], [code]Read[/code]. Haskell can derive the behavior of our types in these contexts if we use the <i>deriving</i> keyword when making our data type.
+Na próxima sessão, nós vamos dar uma olhada como podemos manualmente fazer nossos tipos instâncias de uma typeclass pela implementação de funções definidas pela typeclass. Mas por enquanto vamos ver como Haskell pode fazer automaticamente nosso tipo uma instância de alguma das seguintes typeclasses: [code]Eq[/code], [code]Ord[/code], [code]Enum[/code], [code]Bounded[/code], [code]Show[/code], [code]Read[/code]. Haskell pode derivar o comportamento dos nossos tipos nesse contexto se nos usarmos a palavra reservada <i>deriving</i> quando construímos o nosso tipo.
 
-Consider this data type:
+Considere este tipo de dados:
 
 
 
 
-It describes a person. Let's assume that no two people have the same combination of first name, last name and age. Now, if we have records for two people, does it make sense to see if they represent the same person? Sure it does. We can try to equate them and see if they're equal or not. That's why it would make sense for this type to be part of the [code]Eq[/code] typeclass. We'll derive the instance.
+Ele descreve uma pessoa. Vamos assumir que não existe duas pessoas com a mesma combinação de primeiro nome, ultimo nome e idade. Agora, se nós temos registros de duas pessoas, faz algum sentido ver se eles representam a mesma pessoa? Sim, faz. Nós podemos tentar comparar ambas e ver que elas são ou não iguais. É por isso que não faz sentido para esse tipo fazer parte da [code]Eq[/code]. Nós vamos derivar a instância.
 
 
 
 
-When we derive the [code]Eq[/code] instance for a type and then try to compare two values of that type with [code]==[/code] or [code]/=[/code], Haskell will see if the value constructors match (there's only one value constructor here though) and then it will check if all the data contained inside matches by testing each pair of fields with [code]==[/code]. There's only one catch though, the types of all the fields also have to be part of the [code]Eq[/code] typeclass. But since both [code]String[/code] and [code]Int[/code] are, we're OK. Let's test our [code]Eq[/code] instance.
+Quando nós derivamos uma instância de [code]Eq[/code] para um tipo e tentamos comparar os dois valores desse tipos com [code]==[/code] ou [code]/=[/code], Haskell vai ver se o valor dos construtores são correspondentes (há apenas um único construtor cujo valor passa) e então ele irá checar se todos os dados internos correspondem testando cada par de campos com [code]==[/code]. Há apenas um problema, os tipos de todos os campos também tem de fazer parte da typeclass [code]Eq[/code]. Mas uma vez que ambos [code]String[/code] e [code]Int[/code] são, nos vemos OK. Vamos testar nossa instância de [code]Eq[/code].
 
 
 
 
-Of course, since [code]Person[/code] is now in [code]Eq[/code], we can use it as the [code]a[/code] for all functions that have a class constraint of [code]Eq a[/code] in their type signature, such as [code]elem[/code].
+Claro, uma vez que [code]Person[/code] agora está em [code]Eq[/code], nós podemos usá-lo como [code]a[/code] para todas as funções que tem a restrição de class para [code]Eq a[/code] em sua assinatura, como [code]elem[/code].
 
 
 
 
 
-The [code]Show[/code] and [code]Read[/code] typeclasses are for things that can be converted to or from strings, respectively. Like with [code]Eq[/code], if a type's constructors have fields, their type has to be a part of [code]Show[/code] or [code]Read[/code] if we want to make our type an instance of them. Let's make our [code]Person[/code] data type a part of [code]Show[/code] and [code]Read[/code] as well.
+As typeclasses [code]Show[/code] e [code]Read[/code] são para coisas que podem ser convertidas de e para strings, respectivamente. Assim como [code]Eq[/code], se o construtor de um tipo tiver campos, seu tipo precise fazer parte de [code]Show[/code] ou [code]Read[/code] se nós queremos fazer nosso tipo uma instância deles. Vamos fazer nosso tipo de dados [code]Person[/code] também fazer parte de [code]Show[/code] e [code]Read[/code].
 
 
 
 
-Now we can print a person out to the terminal.
+Agora nós podemos imprimir uma pessoa no terminal.
 
 
 
 
-Had we tried to print a person on the terminal before making the [code]Person[/code] data type part of [code]Show[/code], Haskell would have complained at us, claiming it doesn't know how to represent a person as a string. But now that we've derived a [code]Show[/code] instance for it, it does know.
+Se nós tentássemos imprimir uma pessoa no terminal antes de tornar o tipo [code]Person[/code] parte de [code]Show[/code], Haskell teria reclamado para nós, afirmando que ele não sabia como representar pessoa como uma string. Mas agora que nos derivamos uma instância de [code]Show[/code] para ela, ele saberá como.
 
-[code]Read[/code] is pretty much the inverse typeclass of [code]Show[/code]. [code]Show[/code] is for converting values of our a type to a string, [code]Read[/code] is for converting strings to values of our type. Remember though, when we use the [code]read[/code] function, we have to use an explicit type annotation to tell Haskell which type we want to get as a result. If we don't make the type we want as a result explicit, Haskell doesn't know which type we want.
+[code]Read[/code] é praticamente a typeclass inversa à [code]Show[/code]. [code]Show[/code] é para conversão de valores de um tipo em uma string, [code]Read[/code] é para conversão de strings para valores de um tipo. Lembre-se, quando nós usamos a função [code]read[/code], nós temos que usar uma notação de tipo explicita para dizer a Haskell qual o tipo que nós queremos pegar como resultado. Se nós não explicitamos o tipo que queremos como resultado, Haskell não vai saber que tipo nós queremos.
 
 
 
 
-If we use use the result of our [code]read[/code] later on in a way that Haskell can infer that it should read it as a person, we don't have to use type annotation.
+Se nos usarmos o resultado de nosso [code]read[/code] depois de uma forma que Haskell possa inferir que isto ele pode ser uma pessoa, nós não temos que usar nenhuma notação de tipo.
 
 
 
 
-We can also read parameterized types, but we have to fill in the type parameters. So we can't do [code]read "Just 't'" :: Maybe a[/code], but we can do [code]read "Just 't'" :: Maybe Char[/code].
+Nós também podemos ler tipos parametrizados, mas nós temos que preencher os tipos dos parâmetros. Então nós não podemos fazer [code]read "Just 't'" :: Maybe a[/code], mas nós podemos fazer [code]read "Just 't'" :: Maybe Char[/code].
 
-Derived instances of [code]Ord[/code] work like expected. First the constructors are compared lexicographically and if the values of two constructors are the same, their fields are compared, provided that the types of the fields are also instances of [code]Ord[/code]. The [code]Bool[/code] type can have a value of either [code]False[/code] or [code]True[/code]. For the purpose of seeing how it behaves when compared, we can think of it as being implemented like this:
+Instâncias derivadas de [code]Ord[/code] trabalham como esperado. Primeiro os construtores são comparados lexicograficamente e se o valor dos dois construtores forem os mesmos, seus campos são comparados, admitindo que os tipos dos seus campos também são instâncias de [code]Ord[/code].  O tipo [code]Bool[/code] pode ter o valor tanto de [code]False[/code] ou [code]True[/code]. Com a finalidade de ver como ele se comporta quando comparado, nós podemos pensar que ele é implementado da seguinte forma:
 
 
 
 
-Because the [code]False[/code] value constructor is specified first and the [code]True[/code] value constructor is specified after it, we can consider [code]True[/code] as greater than [code]False[/code].
+Por causa do construtor de valor [code]False[/code] ser especificado primeiro e o construtor de valor [code]True[/code] ser especificado em seguida, nós podemos considerar [code]True[/code] como maior que [code]False[/code].
 
 
 
 
-In the [code]Maybe a[/code] data type, the [code]Nothing[/code] value constructor is specified before the [code]Just[/code] value constructor, so a value of [code]Nothing[/code] is always smaller than a value of [code]Just something[/code], even if that something is minus one billion trillion. But if we compare two [code]Just[/code] values, then it goes to compare what's inside them.
+No tipo [code]Maybe a[/code], o construtor de valor [code]Nothing[/code] e especificado antes do construtor de valor [code]Just[/code], portanto o valor de [code]Nothing[/code] é sempre menor que o valor de [code]Just algumacoisa[/code], mesmo que algumacoisa seja menos um bilhão de trilhões. Mas se nós compararmos dois valores [code]Just[/code], então será comparado o que há dentro deles.
 
 
 
 
-But we can't do something like [code]Just (*3) > Just (*2)[/code], because [code](*3)[/code] and [code](*2)[/code] are functions, which aren't instances of [code]Ord[/code].
+Mas nós não podemos fazer algo como [code]Just (*3) > Just (*2)[/code], pois [code](*3)[/code] e [code](*2)[/code]  são funções, que não são instâncias de [code]Ord[/code].
 
-We can easily use algebraic data types to make enumerations and the [code]Enum[/code] and [code]Bounded[/code] typeclasses help us with that. Consider the following data type:
+Nós podemos facilmente usar tipos algébricos para fazer enumerações e as typeclasses [code]Enum[/code] e [code]Bounded[/code] nos ajudam com isso. Considere o seguinte tipo: 
 
 
 
 
-Because all the value constructors are nullary (take no parameters, i.e. fields), we can make it part of the [code]Enum[/code] typeclass. The [code]Enum[/code] typeclass is for things that have predecessors and successors. We can also make it part of the [code]Bounded[/code] typeclass, which is for things that have a lowest possible value and highest possible value. And while we're at it, let's also make it an instance of all the other derivable typeclasses and see what we can do with it.
+Por causa de todos os valores de construtores serem nulos (não pegam parâmetros, ou seja, campos), nós podemos fazer com que sejam parte da typeclass [code]Enum[/code]. A typeclass [code]Enum[/code] é pra coisas que tem predecessor e sucessor. Nós podemos faze-los também parte da typeclass [code]Bounded[/code], que é para coisas que tem um menor e um maior valor possível. E enquanto estamos no assunto, vamos torná-lo uma instância de todos as outras typeclasses derivadas e ver o que podemos fazer com ele.
 
 
 
-Because it's part of the [code]Show[/code] and [code]Read[/code] typeclasses, we can convert values of this type to and from strings.
+Porque ele é parte das typeclasses [code]Show[/code] e [code]Read[/code], nós podemos converter os valores desse tipo, de e para strings.
 
 
 
-Because it's part of the [code]Eq[/code] and [code]Ord[/code] typeclasses, we can compare or equate days.
+Porque ele é parte das typeclasses [code]Eq[/code] e [code]Ord[/code], nós podemos comparar ou equiparar dias.
 
 
 
+Ele também é parte de [code]Bounded[/code], portanto nós podemos pegar o menor e o maior dia.
 
-It's also part of [code]Bounded[/code], so we can get the lowest and highest day.
 
 
 
+Ele também é uma instância de [code]Enum[/code]. Nós podemos pegar os predecessores e sucessores dos dias e fazer listas de intervalos com eles.
 
-It's also an instance of [code]Enum[/code]. We can get predecessors and sucessors of days and we can make list ranges from them!
 
 
 
-
-That's pretty awesome.
+Isso é bem impressionante.
