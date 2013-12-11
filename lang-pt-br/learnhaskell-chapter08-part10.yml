@@ -1,87 +1,87 @@
-title: Kinds and some type-foo
+title: tipos e algumas classes-foo
 
-text: Type constructors take other types as parameters to eventually produce concrete types. That kind of reminds me of functions, which take values as parameters to produce values. We've seen that type constructors can be partially applied ([code]Either String[/code] is a type that takes one type and produces a concrete type, like [code]Either String Int[/code]), just like functions can. This is all very interesting indeed. In this section, we'll take a look at formally defining how types are applied to type constructors, just like we took a look at formally defining how values are applied to functions by using type declarations. <em>You don't really have to read this section to continue on your magical Haskell quest</em> and if you don't understand it, don't worry about it. However, getting this will give you a very thorough understanding of the type system.
+text: Construtores de tipo pegam outros tipos como parâmetros para eventualmente produzir tipos concretos. Isso meio que me lembra de funções, que pega valores como parâmetros para produzir valores. Nós vimos que esses construtores de tipo podem ser parcialmente aplicados ([code]Either String[/code] é um tipo que pega um tipo e produz um tipo concreto, como [code]Either String Int[/code]), assim como as funções podem. Isso é, de fato, muito interessante.Nessa seção, nós daremos uma olhada na definição formal de como tipos são aplicados a construtores de tipos, assim como nós demos uma olhada em como definir formalmente como valores são aplicados a funções usando declarações de tipo. <em>Você não precisa realmente ler essa seção para continuar sua jornada mágica em Haskell quest</em> e se você não entender isso, não se preocupe. Porém, entender isso vai te dar um conhecimento muito profundo do sistema de tipos.
 
-So, values like [code]3[/code], [code]"YEAH"[/code] or [code]takeWhile[/code] (functions are also values, because we can pass them around and such) each have their own type. Types are little labels that values carry so that we can reason about the values. But types have their own little labels, called <em>kinds</em>. A kind is more or less the type of a type. This may sound a bit weird and confusing, but it's actually a really cool concept.
+Então, valores como [code]3[/code], [code]"YEAH"[/code] ou [code]takeWhile[/code] (funções também são valores, porque nós podemos passar elas como parâmetro) têm cada um seu próprio tipo. Tipos são pequenos rótulos que os valores carregam para que nós possamos pensar a respeito dos valores. Mas os tipos têm seus próprios rótulos, chamados <em>classes</em>. Uma classe é mais ou menos um tipo de tipo. Isso pode soar um pouco estranho e confuso,mas é de fato um conceito muito legal.
 
-What are kinds and what are they good for? Well, let's examine the kind of a type by using the [code]:k[/code] command in GHCI.
-
-
-
-
-A star? How quaint. What does that mean? A [code]*[/code] means that the type is a concrete type. A concrete type is a type that doesn't take any type parameters and values can only have types that are concrete types. If I had to read [code]*[/code] out loud (I haven't had to do that so far), I'd say <i>star</i> or just <i>type</i>.
-
-Okay, now let's see what the kind of [code]Maybe[/code] is.
+O que são classes e pra que elas servem? Bem, vamos examinar a classe de um tipo usando o comando [code]:k[/code] no GHCI.
 
 
 
 
-The [code]Maybe[/code] type constructor takes one concrete type (like [code]Int[/code]) and then returns a concrete type like [code]Maybe Int[/code]. And that's what this kind tells us. Just like [code]Int -&gt; Int[/code] means that a function takes an [code]Int[/code] and returns an [code]Int[/code], [code]* -&gt; *[/code] means that the type constructor takes one concrete type and returns a concrete type. Let's apply the type parameter to [code]Maybe[/code] and see what the kind of that type is.
+Uma estrela? Que exótico. O que isso significa? Uma [code]*[/code] significa que o tipo é um tipo concreto. Um tipo concretor é um tipo que não pega nenhum parâmetro de tipo e os valores só podem ter tipos que são tipos concretos. Se eu tiver que ler [code]*[/code] em voz alta (Eu nunca tive que fazer isso até hoje), Eu diria <i>estrela</i> ou só <i>tipo</i>.
+
+Ok, agora vamos ver qual a classe de [code]Maybe[/code] .
 
 
 
 
-Just like I expected! We applied the type parameter to [code]Maybe[/code] and got back a concrete type (that's what [code]* -&gt; *[/code] means. A parallel (although not equivalent, types and kinds are two different things) to this is if we do [code]:t isUpper[/code] and [code]:t isUpper 'A'[/code]. [code]isUpper[/code] has a type of [code]Char -&gt; Bool[/code] and [code]isUpper 'A'[/code] has a type of [code]Bool[/code], because its value is basically [code]False[/code]. Both those types, however, have a kind of [code]*[/code].
-
-We used [code]:k[/code] on a type to get its kind, just like we can use [code]:t[/code] on a value to get its type. Like we said, types are the labels of values and kinds are the labels of types and there are parallels between the two.
-
-Let's look at another kind.
-
-
-
-Aha, this tells us that [code]Either[/code] takes two concrete types as type parameters to produce a concrete type. It also looks kind of like a type declaration of a function that takes two values and returns something. Type constructors are curried (just like functions), so we can partially apply them.
+O construtor de tipo [code]Maybe[/code] pega um tipo concreto (como [code]Int[/code]) e depois retorna um tipo concreto como [code]Maybe Int[/code]. E é isso que essa classe nos diz. Assim como [code]Int -&gt; Int[/code] significa que uma função pega um [code]Int[/code] e retorna um [code]Int[/code], [code]* -&gt; *[/code] significa que o construtor de tipos pega um tipo concreto e retorna um tipo concreto. Vamos aplicar o parâmetro de tipo ao [code]Maybe[/code] e ver qual a classe desse tipo.
 
 
 
 
-When we wanted to make [code]Either[/code] a part of the [code]Functor[/code] typeclass, we had to partially apply it because [code]Functor[/code] wants types that take only one parameter while [code]Either[/code] takes two. In other words, [code]Functor[/code] wants types of kind [code]* -&gt; *[/code] and so we had to partially apply [code]Either[/code] to get a type of kind [code]* -&gt; *[/code] instead of its original kind [code]* -&gt; * -&gt; *[/code]. If we look at the definition of [code]Functor[/code] again
+Exatamente como eu esperava! Nós aplicamos o parâmetro de tipo ao [code]Maybe[/code] e recebemos de volta um tipo concreto (é isso o que [code]* -&gt; *[/code] significa. Um paralelo (embora não seja equivalente, tipos e classes são duas coisas diferentes) a isso é se nós fizermos [code]:t isUpper[/code] and [code]:t isUpper 'A'[/code]. [code]isUpper[/code] tem como tipo [code]Char -&gt; Bool[/code] e [code]isUpper 'A'[/code] tem como tipo [code]Bool[/code], porque seu valor é basicamente [code]False[/code]. Ambos os tipo, porém, têm uma espécie de [code]*[/code].
+
+Nós usamos [code]:k[/code] em um tipo para obter sua classe, assim como nós podemos usar [code]:t[/code] em um valor para obter seu tipo. Como nós dissermos, tipos são os rótulos dos valores e classes são os rótulos dos tipos e existem paralelos entre os dois.
+
+Vamos olhar para outra classe.
+
+
+
+Arrá, isso nos diz que [code]Either[/code] pega dois tipos concretos como parâmetros de tipo para produzir um tipo concreto. Isso também se parece com uma declaração de tipo de uma função que pega dois valores e retorna alguma coisa. Construtores de tipo são curriadas (assim como funções), assim nós podemos aplicá-las parcialment.
 
 
 
 
-we see that the [code]f[/code] type variable is used as a type that takes one concrete type to produce a concrete type. We know it has to produce a concrete type because it's used as the type of a value in a function. And from that, we can deduce that types that want to be friends with [code]Functor[/code] have to be of kind [code]* -&gt; *[/code].
-
-Now, let's do some type-foo. Take a look at this typeclass that I'm just going to make up right now:
+Quando nós queríamos fazer de [code]Either[/code] uma parte da typeclass de [code]Functor[/code] , nós tínhamos que aplicá-la parcialmente porque [code]Functor[/code] requer tipos que pegam somente um parâmetro enquanto que [code]Either[/code] pega dois. Em outras palavras, [code]Functor[/code] requer tipos da classe [code]* -&gt; *[/code] e então nós teremos que aplicar parcialmente [code]Either[/code] para ter um tipo da classe [code]* -&gt; *[/code] ao invés da sua classe original, [code]* -&gt; * -&gt; *[/code]. Se nós olharmos para a definição de [code]Functor[/code] de novo
 
 
 
 
+nós vemos que a variável de tipo [code]f[/code] é usada como um tipo que pega um tipo concreto para produzir um tipo concreto. nós sabemos que isso tem que produzir um tipo concreto porque isso é usado como o tipo de um valor em uma função. E disso, nós podemos deduzir que tipos que quiserem ser amigos de [code]Functor[/code] têm que ser da classe [code]* -&gt; *[/code].
 
-Man, that looks weird. How would we make a type that could be an instance of that strange typeclass? Well, let's look at what its kind would have to be. Because [code]j a[/code] is used as the type of a value that the [code]tofu[/code] function takes as its parameter, [code]j a[/code] has to have a kind of [code]*[/code]. We assume [code]*[/code] for [code]a[/code] and so we can infer that [code]j[/code] has to have a kind of [code]* -&gt; *[/code]. We see that [code]t[/code] has to produce a concrete value too and that it takes two types. And knowing that [code]a[/code] has a kind of [code]*[/code] and [code]j[/code] has a kind of [code]* -&gt; *[/code], we infer that [code]t[/code] has to have a kind of [code]* -&gt; (* -&gt; *) -&gt; *[/code]. So it takes a concrete type ([code]a[/code]), a type constructor that takes one concrete type ([code]j[/code]) and produces a concrete type. Wow.
-
-OK, so let's make a type with a kind of [code]* -&gt; (* -&gt; *) -&gt; *[/code]. Here's one way of going about it.
-
-
-
-
-How do we know this type has a kind of [code]* -&gt; (* -&gt; *) - &gt; *[/code]? Well, fields in ADTs are made to hold values, so they must be of kind [code]*[/code], obviously. We assume [code]*[/code] for [code]a[/code], which means that [code]b[/code] takes one type parameter and so its kind is [code]* -&gt; *[/code]. Now we know the kinds of both [code]a[/code] and [code]b[/code] and because they're parameters for [code]Frank[/code], we see that [code]Frank[/code] has a kind of [code]* -&gt; (* -&gt; *) -&gt; *[/code] The first [code]*[/code] represents [code]a[/code] and the [code](* -&gt; *)[/code] represents [code]b[/code]. Let's make some [code]Frank[/code] values and check out their types.
+Agora, vamos ver algumas classes-foo. Dê uma olhada nessa typeclass que eu vou fazer agora:
 
 
 
 
 
-Hmm. Because [code]frankField[/code] has a type of form [code]a b[/code], its values must have types that are of a similar form as well. So they can be [code]Just "HAHA"[/code], which has a type of [code]Maybe [Char][/code] or it can have a value of [code]['Y','E','S'][/code], which has a type of [code][Char][/code] (if we used our own list type for this, it would have a type of [code]List Char[/code]). And we see that the types of the [code]Frank[/code] values correspond with the kind for [code]Frank[/code]. [code][Char][/code] has a kind of [code]*[/code] and [code]Maybe[/code] has a kind of [code]* -&gt; *[/code]. Because in order to have a value, it has to be a concrete type and thus has to be fully applied, every value of [code]Frank blah blaah[/code] has a kind of [code]*[/code].
+Cara, isso parece estranho. Como vamos fazer um tipo que pode ser uma instância dessa estranha typeclass? Bom, vamos olhar no que a sua classe deveria ser. Pelo fato de [code]j a[/code] ser usado como o tipo de um valor que a função [code]tofu[/code] pega como seu parâmetro, [code]j a[/code] tem ser da classe [code]*[/code]. Nós assumimos [code]*[/code] para [code]a[/code] e então nós podemos inferir que [code]j[/code] tem que ser da classe [code]* -&gt; *[/code]. Nós vemos que [code]t[/code] tem que produzir um valor concreto também e que ele pega dois tipos. E sabendo que [code]a[/code] é da classe [code]*[/code] e [code]j[/code] é da classe [code]* -&gt; *[/code], nós inferimos que [code]t[/code] tem que ser da classe [code]* -&gt; (* -&gt; *) -&gt; *[/code]. Então ele pega um tipo concreto ([code]a[/code]), um construtor de tipos que pega um tipo concreto ([code]j[/code]) e produz um tipo concreto. Uau.
 
-Making [code]Frank[/code] an instance of [code]Tofu[/code] is pretty simple. We see that [code]tofu[/code] takes a [code]j a[/code] (so an example type of that form would be [code]Maybe Int[/code]) and returns a [code]t a j[/code]. So if we replace [code]Frank[/code] with [code]j[/code], the result type would be [code]Frank Int Maybe[/code].
-
-
-
-
-Not very useful, but we did flex our type muscles. Let's do some more type-foo. We have this data type:
+OK, vamos fazer um tipo com a classe [code]* -&gt; (* -&gt; *) -&gt; *[/code]. Aqui está uma maneira de fazer isso.
 
 
 
 
-And now we want to make it an instance of [code]Functor[/code]. [code]Functor[/code] wants types of kind [code]* -&gt; *[/code] but [code]Barry[/code] doesn't look like it has that kind. What is the kind of [code]Barry[/code]? Well, we see it takes three type parameters, so it's going to be [code]something -&gt; something -&gt; something -&gt; *[/code]. It's safe to say that [code]p[/code] is a concrete type and thus has a kind of [code]*[/code]. For [code]k[/code], we assume [code]*[/code] and so by extension, [code]t[/code] has a kind of [code]* -&gt; *[/code]. Now let's just replace those kinds with the <i>somethings</i> that we used as placeholders and we see it has a kind of [code](* -&gt; *) -&gt; * -&gt; * -&gt; *[/code]. Let's check that with GHCI.
+Como nós sabemos que esse tipo é da classe [code]* -&gt; (* -&gt; *) - &gt; *[/code]? Bem, campos em ADTs são feitos para guardar valores, então eles devem ser da classe [code]*[/code], obviamente. Nós assumimos [code]*[/code] para [code]a[/code], o que significa que [code]b[/code] pega um parâmetro de tipo e então sua classe é [code]* -&gt; *[/code]. Agora nós sabemos as classes de ambos [code]a[/code] e [code]b[/code] e como eles são parâmetros para [code]Frank[/code], nós vimos que [code]Frank[/code] é da classe [code]* -&gt; (* -&gt; *) -&gt; *[/code] . O primeiro [code]*[/code] representa [code]a[/code] e o [code](* -&gt; *)[/code] representa [code]b[/code]. Vamos fazer algums valores [code]Frank[/code] e verificar seus tipos.
 
 
 
 
 
-Ah, we were right. How satisfying. Now, to make this type a part of [code]Functor[/code] we have to partially apply the first two type parameters so that we're left with [code]* -&gt; *[/code]. That means that the start of the instance declaration will be: [code]instance Functor (Barry a b) where[/code]. If we look at [code]fmap[/code] as if it was made specifically for [code]Barry[/code], it would have a type of [code]fmap :: (a -&gt; b) -&gt; Barry c d a -&gt; Barry c d b[/code], because we just replace the [code]Functor[/code]'s [code]f[/code] with [code]Barry c d[/code]. The third type parameter from [code]Barry[/code] will have to change and we see that it's conviniently in its own field.
+Humm. Como [code]frankField[/code] tem um tipo da forma [code]a b[/code], seus valores tem que ter tipos que tem uma forma similar. Então eles podem ser [code]Just "HAHA"[/code], que é do tipo [code]Maybe [Char][/code] ou ele pode ter o valor [code]['Y','E','S'][/code], que é do tipo [code][Char][/code] (se nós usássemos nossa própria lista para isso, ele seria do tipo [code]List Char[/code]). E nós vemos que os tipos dos valores de [code]Frank[/code] correspondem com a classe de [code]Frank[/code]. [code][Char][/code] é da classe [code]*[/code] e [code]Maybe[/code] é da classe [code]* -&gt; *[/code]. Para se obter um valor, isso tem que ser um tipo concreto e ainda tem que ser completamente aplicado, pois todo valor de [code]Frank blah blaah[/code] é da classe [code]*[/code].
+
+Tornar [code]Frank[/code] uma instância de [code]Tofu[/code] é bem simples. Nós vemos que [code]tofu[/code] pega um [code]j a[/code] (logo um exemplo de tipo dessa forma seria [code]Maybe Int[/code]) e retorna um [code]t a j[/code]. Logo, se nós trocarmos [code]Frank[/code] por [code]j[/code], o tipo do resultado seria [code]Frank Int Maybe[/code].
 
 
 
-There we go! We just mapped the [code]f[/code] over the first field.
 
-In this section, we took a good look at how type parameters work and kind of formalized them with kinds, just like we formalized function parameters with type declarations. We saw that there are interesting parallels between functions and type constructors. They are, however, two completely different things. When working on real Haskell, you usually won't have to mess with kinds and do kind inference by hand like we did now. Usually, you just have to partially apply your own type to [code]* -&gt; *[/code] or [code]*[/code] when making it an instance of one of the standard typeclasses, but it's good to know how and why that actually works. It's also interesting to see that types have little types of their own. Again, you don't really have to understand everything we did here to read on, but if you understand how kinds work, chances are that you have a very solid grasp of Haskell's type system.
+Não muito útil, mas nós flezionamos nossos 'músculos de tipo'. vamos fazer alguns outros tipo-foo. nós temos esse tipo de dado:
+
+
+
+
+E agora nós queremos fazer dele uma instância de [code]Functor[/code]. [code]Functor[/code] requer tipos da classe [code]* -&gt; *[/code] mas [code]Barry[/code] não parece ser dessa classe. Qual a classe de [code]Barry[/code]? Bem, nós vemos que ele pega três parâmetros de tipo, então ele será [code]something -&gt; something -&gt; something -&gt; *[/code]. É seguro dizer que [code]p[/code] é um tipo concreto e que é da classe [code]*[/code]. Para [code]k[/code], nós assumimos [code]*[/code] e por extensão, [code]t[/code] é da classe [code]* -&gt; *[/code]. Agora vamos apenas trocar essas classes pelo <i>somethings</i> que usamos como placeholders e veremos se é da classe [code](* -&gt; *) -&gt; * -&gt; * -&gt; *[/code]. Vamos checar com o GHCI.
+
+
+
+
+
+Ah, estávamos certos. Que satisfatório. Agora, para fazer disso uma parte de [code]Functor[/code] , nós temos que aplicar parcialmente os dois primeiros parâmetros de tipo e assim só nos resta [code]* -&gt; *[/code]. Isso significa que o começo de uma declaração de instância será: [code]instance Functor (Barry a b) where[/code]. Se nós olharmos para [code]fmap[/code] como se ele fosse feito especificamente para [code]Barry[/code], ele seria do tipo [code]fmap :: (a -&gt; b) -&gt; Barry c d a -&gt; Barry c d b[/code], porque nós só trocamos o [code]f[/code] do [code]Functor[/code] pelo [code]Barry c d[/code]. O terceiro tipo de parâmetro de [code]Barry[/code] terá que mudar e nós vemos que isso está convenientemente no seu campo.
+
+
+
+Aqui vamos nós! Nós acabamos de mapear o [code]f[/code] sobre o primeiro campo.
+
+Nessa seção, nós demos uma boa olhada em como parâmetros de tipo funcionam e meio que formalizamos eles com classes, assim como nós formalizamos parâmetros de função com declaração de tipos. Nós vimos que existem paralelos interessantes entre funções e construtores de tipos. Eles são, porém, duas coisas completamente diferentes. Quando trabalhar com Haskell de verdade, você normalmente não vai se confundir com classes e fará inferência de classes na mão como nós fizemos agora. Normalmente, você só tem que aplicar parcialmente seu próprio tipo em [code]* -&gt; *[/code] ou [code]*[/code] quando for fazer uma instância de uma das typeclasses padrão,mas é bom saber como e porquê isso de fato funciona. Também é interessante ver que tipos tem seus próprios pequenos tipos. De novo, você não precisa entender tudo que fizemos aqui para continuar a leitura , mas se você entendeu como classes funcionam,você provavelmente tem uma base muito sólida do sistema de tipos de Haskell.
