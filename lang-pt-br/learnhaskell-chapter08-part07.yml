@@ -1,94 +1,93 @@
 title: Typeclasses 102
 
-text: So far, we've learned about some of the standard Haskell typeclasses and we've seen which types are in them. We've also learned how to automatically make our own types instances of the standard typeclasses by asking Haskell to derive the instances for us. In this section, we're going to learn how to make our own typeclasses and how to make types instances of them by hand.
+text: Até agora, temos aprendido sobre algumas das typeclasses padrões de Haskell e temos visto quais tipos estão nelas. Também temos aprendido como criar automaticamente nossas próprias instâncias de tipo a partir das typeclasses padrões por pedir a Haskell para que derive as instâncias para nós. Nessa seção, vamos aprender como criar nossas próprias typeclasses e como criar instâncias de tipo delas na mão.
 
-A quick recap on typeclasses: typeclasses are like interfaces. A typeclass defines some behavior (like comparing for equality, comparing for ordering, enumeration) and then types that can behave in that way are made instances of that typeclass. The behavior of typeclasses is achieved by defining functions or just type declarations that we then implement. So when we say that a type is an instance of a typeclass, we mean that we can use the functions that the typeclass defines with that type.
+Uma recapitulação rápida sobre typeclasses: typeclasses são como interfaces. Uma typeclass define algum comportamento (como comparação para igualdade, comparação para ordenação, enumeração) e daí tipos que podem agir de tal forma são feitas instâncias daquela typeclass. O comportamento de typeclasses é alcançado definindo-se funções ou apenas declarações de tipo que então nós implementamos. Então quando dizemos que um tipo é uma instância de uma typeclass, queremos dizer que podemos usar as funções que tal typeclass define com  aquele tipo.
 
-Typeclasses have pretty much nothing to do with classes in languages like Java or Python. This confuses many people, so I want you to forget everything you know about classes in imperative languages right now.
+Typeclasses não têm nada a ver com classes de linguagens como Java ou Python. Isso confunde muita gente. daí eu quero que você esqueça tudo que você sabe até agora de classes em linguagens imperativas exatamente agora.
 
-For example, the [code]Eq[/code] typeclass is for stuff that can be equated. It defines the functions [code]==[/code] and [code]/=[/code]. If we have a type (say, [code]Car[/code]) and comparing two cars with the equality function [code]==[/code] makes sense, then it makes sense for [code]Car[/code] to be an instance of [code]Eq[/code].
+Por exemplo, a typeclass [code]Eq[/code] é para coisas que podem ser igualadas. Ela define as funções [code]==[/code] e [code]/=[/code]. Se nós tivermos um tipo (digamos, [code]Car[/code]) e a comparação entre dois carros com a função de igualdade [code]==[/code] fizer sentido, então faz sentido que [code]Car[/code] seja uma instância de [code]Eq[/code].
 
-This is how the [code]Eq[/code] class is defined in the standard prelude:
-
-
-
-Woah, woah, woah! Some new strange syntax and keywords there! Don't worry, this will all be clear in a second. First off, when we write [code]class Eq a where[/code], this means that we're defining a new typeclass and that's called [code]Eq[/code]. The [code]a[/code] is the type variable and it means that [code]a[/code] will play the role of the type that we will soon be making an instance of [code]Eq[/code]. It doesn't have to be called [code]a[/code], it doesn't even have to be one letter, it just has to be a lowercase word. Then, we define several functions. It's not mandatory to implement the function bodies themselves, we just have to specify the type declarations for the functions.
-
-Some people might understand this better if we wrote [code]class Eq equatable where[/code] and then specified the type declarations like [code](==) :: equatable -&gt; equatable -&gt; Bool[/code].
-
-Anyway, we <i>did</i> implement the function bodies for the functions that [code]Eq[/code] defines, only we defined them in terms of mutual recursion. We said that two instances of [code]Eq[/code] are equal if they are not different and they are different if they are not equal. We didn't have to do this, really, but we did and we'll see how this helps us soon.
-
-If we have say [code]class Eq a where[/code] and then define a type declaration within that class like [code](==) :: a -&gt; -a -&gt; Bool[/code], then when we examine the type of that function later on, it will have the type of [code](Eq a) =&gt; a -&gt; a -&gt; Bool[/code].
-
-So once we have a class, what can we do with it? Well, not much, really. But once we start making types instances of that class, we start getting some nice functionality. So check out this type:
+É assim que a classe [code]Eq[/code] está definida no prelúdio padrão:
 
 
 
+Opa, opa, opa! Sintaxe e palavras-chave estranhas apareceram aí! Não e preocupe, isso ficará totalmente claro em alguns egundos. Primeiramente, quando escrevemos [code]class Eq a where[/code], isso significa que estamos definindo uma typeclass nova e que é chamada [code]Eq[/code]. O [code]a[/code] é a variável de tipo e ela significa que [code]a[/code] terá o papel do tipo que logo será uma insância de [code]Eq[/code]. Isso não tem que ser chamado [code]a[/code], não tem nem que ser apenas uma letra, tem apenas que ser uma palavra apenas com letras minúsculas. Daí, definimos várias funções. Não é mandatório implementar os corpos das funções, temos apenas de especificar as declarações de tipo para as funções.
 
-It defines the states of a traffic light. Notice how we didn't derive any class instances for it. That's because we're going to write up some instances by hand, even though we could derive them for types like [code]Eq[/code] and [code]Show[/code]. Here's how we make it an instance of [code]Eq[/code].
+Algumas pessoas podem entender tudo isso melhor se escrevermos [code]class Eq igualavel where[/code] e então especificarmos as declarações de tipo como [code](==) :: igualavel -&gt; igualavel -&gt; Bool[/code].
+
+De qualquer forma, nós de fato implementamos o corpo das funções que [code]Eq[/code] define, mas nós o definimos em termos de recursão mútua. Dissemos que duas instâncias de [code]Eq[/code] são iguais se elas não forem diferentes e são diferentes se não forem iguais. Não tínhamos de fazer isso, mesmo, mas fizemos e vamos ver como isso nos ajudará posteriormente.
 
 
+Se tivermos de dizer [code]class Eq a where[/code] e então definir uma declaração de tipo no interior dessa classe, como [code](==) :: a -&gt; -a -&gt; Bool[/code], então quando examinarmos o tipo dessa função mais tarde, ela terá o tipo de [code](Eq a) =&gt; a -&gt; a -&gt; Bool[/code].
 
-We did it by using the <i>instance</i> keyword. So <i>class</i> is for defining new typeclasses and <i>instance</i> is for making our types instances of typeclasses. When we were defining [code]Eq[/code], we wrote [code]class Eq a where[/code] and we said that [code]a[/code] plays the role of whichever type will be made an instance later on. We can see that clearly here, because when we're making an instance, we write [code]instance Eq TrafficLight where[/code]. We replace the [code]a[/code] with the actual type.
-
-Because [code]==[/code] was defined in terms of [code]/=[/code] and vice versa in the <i>class</i> declaration, we only had to overwrite one of them in the instance declaration. That's called the minimal complete definition for the typeclass &mdash; the minimum of functions that we have to implement so that our type can behave like the class advertises. To fulfill the minimal complete definition for [code]Eq[/code], we have to overwrite either one of [code]==[/code] or [code]/=[/code]. If [code]Eq[/code] was defined simply like this:
+Então, uma vez que temos uma classe, o que podemos fazer com ela? Bem, não muito, na realidade. Mas quando começamos a fazer instâncias de tipo dessa classe, começamos a ganhar algumas funcionalidades legais. Com isso, observe esse tipo:
 
 
 
 
-we'd have to implement both of these functions when making a type an instance of it, because Haskell wouldn't know how these two functions are related. The minimal complete definition would then be: both [code]==[/code] and [code]/=[/code].
-
-You can see that we implemented [code]==[/code] simply by doing pattern matching. Since there are many more cases where two lights aren't equal, we specified the ones that are equal and then just did a catch-all pattern saying that if it's none of the previous combinations, then two lights aren't equal.
-
-Let's make this an instance of [code]Show[/code] by hand, too. To satisfy the minimal complete definition for [code]Show[/code], we just have to implement its [code]show[/code] function, which takes a value and turns it into a string.
+Ele define os estados de um semáforo. Perceba como não derivamos nenhuma instância de classe para tal. Então uma vez que vamos escrever algumas instanciações na mão, mesmo podendo derivá-las de tipos como [code]Eq[/code] and [code]Show[/code]. Aqui está como fazemos uma instância de [code]Eq[/code].
 
 
 
+Nós fizemos isso usando a palavra-chave <i>instance</i>. Então <i>class</i> é para se definir novas typeclasses e <i>instance</i> é para se fazer novas instâncias de tipos a partir de typeclasses. Quando estávamos definindo [code]Eq[/code], escrevemos [code]class Eq a where[/code] e dissemos que [code]a[/code] tem o papel de representar o tipo do qual será feita uma instância mais tarde. Podemos ver isso claramente aqui porque quando estamos criando uma instância, escrevemos [code]instance Eq TrafficLight where[/code]. Substituímos o [code]a[/code] com o tipo de verdade.
 
-Once again, we used pattern matching to achieve our goals. Let's see how it works in action:
+Uma vez que [code]==[/code] foi definido em termos de [code]/=[/code] e vice-versa na declaração <i>class</i>, tivemos apenas de sobrescrever um deles na declaração da instância. Isso se chama definição completa mínima da typeclass &mdash; o mínimo de funções que temos de implementar para que nosso tipo possa se comportar como a classe informa. Para cumprir a definição mínima completa para [code]Eq[/code], temos de sobrescrever ou [code]==[/code] ou [code]/=[/code]. Se [code]Eq[/code] fosse definido simplesmente assim:
 
 
 
 
-Nice. We could have just derived [code]Eq[/code] and it would have had the same effect (but we didn't for educational purposes). However, deriving [code]Show[/code] would have just directly translated the value constructors to strings. But if we want lights to appear like [code]"Red light"[/code], then we have to make the instance declaration by hand.
+teríamos de implementar ambas as funções quando estivéssemos criando as instâncias dos tipos, uma vez que Haskell não saberia como estas duas funções estariam relacionadas. A definição mínima completa seria então: ambos [code]==[/code] e [code]/=[/code].
 
-You can also make typeclasses that are subclasses of other typeclasses. The <i>class</i> declaration for [code]Num[/code] is a bit long, but here's the first part:
+Você pode ver que implementamos [code]==[/code] simplesmente fazendo casamento de padrões. Já que existem mais casos onde duas luzes não são iguais, especificamos os que são iguais e então fizemos um padrão mais geral dizendo que se não for nenhuma das combinações anteriores, então duas luzes não são iguais.
 
-
-
-
-As we mentioned previously, there are a lot of places where we can cram in class constraints. So this is just like writing [code]class Num a where[/code], only we state that our type [code]a[/code] must be an instance of [code]Eq[/code]. We're essentially saying that we have to make a type an instance of [code]Eq[/code] before we can make it an instance of [code]Num[/code]. Before some type can be considered a number, it makes sense that we can determine whether values of that type can be equated or not. That's all there is to subclassing really, it's just a class constraint on a <i>class</i> declaration! When defining function bodies in the <i>class</i> declaration or when defining them in <i>instance</i> declarations, we can assume that [code]a[/code] is a part of [code]Eq[/code] and so we can use [code]==[/code] on values of that type.
-
-But how are the [code]Maybe[/code] or list types made as instances of typeclasses? What makes [code]Maybe[/code] different from, say, [code]TrafficLight[/code] is that [code]Maybe[/code] in itself isn't a concrete type, it's a type constructor that takes one type parameter (like [code]Char[/code] or something) to produce a concrete type (like [code]Maybe Char[/code]). Let's take a look at the [code]Eq[/code] typeclass again:
+Vamos criar uma instância de [code]Show[/code] na mão, também. Para satisfazer a definição completa mínima para [code]Show[/code], temos apenas de implementar sua função  [code]show[/code], que recebe um valor e o transforma em uma string.
 
 
 
+Mais uma vez, usamos casamento de padrões para alcançar nossos objetivos. Vamos ver como isso funciona na prática:
 
-From the type declarations, we see that the [code]a[/code] is used as a concrete type because all the types in functions have to be concrete (remember, you can't have a function of the type [code]a -&gt; Maybe[/code] but you can have a function of [code]a -&gt; Maybe a[/code] or [code]Maybe Int -&gt; Maybe String[/code]). That's why we can't do something like
 
+
+Legal. Poderíamos ter simplesmente derivado [code]Eq[/code] e teríamos tido o mesmo efeito (mas não o fizemos por propósitos educacionais). Entretanto, derivar [code]Show[/code] teria sido apenas traduzir diretamente o valor dos construtores para strings. Mas se quisermos que as luzes apareçam como [code]"Red light"[/code], então temos que fazer a declaração da instância na mão.
+
+Você pode também fazer typeclasses que são subclasses de outras typeclasses. A declaração <i>class</i> para [code]Num[/code] é um pouco longa, mas aqui vai a primeira parte:
+
+
+
+
+Como mencionamos anteriormente, há muitos lugares onde podemos amontoar restrições de classe. Isso é como escrever [code]class Num a where[/code], mas assim dizemos que nosso tipo  [code]a[/code] deve ser uma instância de [code]Eq[/code]. Estamos essencialmente dizendo que temos de fazer uma instância de tipo de [code]Eq[/code] antes que possamos torná-la uma instância de [code]Num[/code]. Antes que algum tipo possa ser considerado um número, faz sentido que possamos determinar se valores de tal tipo podem ser igualados ou não. Isso é realmente tudo que temos em subclasses, é apenas uma restrição de classe numa declaração <i>class</i>! Ao definir o corpo de funções na declaração <i>class</i> ou quando definindo-as nas declarações <i>instance</i>, podemos assumir que [code]a[/code] é parte de [code]Eq[/code] e então podemos usar [code]==[/code] em valores desse tipo.
+
+Mas como são os tipos [code]Maybe[/code] ou listas feitas instâncias de typeclasses? O que faz [code]Maybe[/code] diferente de, digamos, [code]TrafficLight[/code], é que [code]Maybe[/code] por si só não é um tipo concreto, é um construtor de tipo que recebe um parâmetro de tipo (como [code]Char[/code] ou algo do tipo) para produzir um tipo concreto (like [code]Maybe Char[/code]). Vamos dar uma olhada na typeclass [code]Eq[/code] novamente:
+
+
+
+
+Pela declaração dos tipos, vemos que [code]a[/code] é usado como tipo concreto porque todos os tipos em funções têm que ser concretos (lembre-se, você não pode ter uma função do tipo [code]a -&gt; Maybe[/code] mas você pode ter uma função do tipo [code]a -&gt; Maybe a[/code] ou [code]Maybe Int -&gt; Maybe String[/code]). Por isso não podemos fazer algo do tipo
 
 
 
 
 
-Because like we've seen, the [code]a[/code] has to be a concrete type but [code]Maybe[/code] isn't a concrete type. It's a type constructor that takes one parameter and then produces a concrete type. It would also be tedious to write [code]instance Eq (Maybe Int) where[/code], [code]instance Eq (Maybe Char) where[/code], etc. for every type ever. So we could write it out like so:
+
+Porque como nós vimos, o [code]a[/code] tem de ser um tipo concreto, mas[code]Maybe[/code] não é concreto. É um construtor de tipo que recebe um parâmetro e então produz um tipo concreto. Também seria entediante escrever [code]instance Eq (Maybe Int) where[/code], [code]instance Eq (Maybe Char) where[/code], etc. para todo, todo tipo. Então poderíamos escrevê-lo como:
 
 
 
 
-This is like saying that we want to make all types of the form [code]Maybe something[/code] an instance of [code]Eq[/code]. We actually could have written [code](Maybe something)[/code], but we usually opt for single letters to be true to the Haskell style. The [code](Maybe m)[/code] here plays the role of the [code]a[/code] from [code]class Eq a where[/code]. While [code]Maybe[/code] isn't a concrete type, [code]Maybe m[/code] is. By specifying a type parameter ([code]m[/code], which is in lowercase), we said that we want all types that are in the form of [code]Maybe m[/code], where [code]m[/code] is any type, to be an instance of [code]Eq[/code].
+Isso é como se disséssemos que queremos que todos os tipos da forma [code]Maybe something[/code] sejam uma instância de [code]Eq[/code]. Na verdade poderíamos ter escrito [code](Maybe something)[/code], mas geralmente optamos por letras singulares para nos manter fiéis ao estilo de Haskell. O [code](Maybe m)[/code] aqui te o papel do [code]a[/code] de [code]class Eq a where[/code]. Enquanto que [code]Maybe[/code] não é um tipo concreto, [code]Maybe m[/code] é. Por especificar um parâmetro de tipo ([code]m[/code], que está com todas as letras em minúsculo), dissemos que queremos todos os tipos que estão na forma [code]Maybe m[/code], onde [code]m[/code] é qualquer tipo, para ser uma instância de [code]Eq[/code].
 
-There's one problem with this though. Can you spot it? We use [code]==[/code] on the contents of the [code]Maybe[/code] but we have no assurance that what the [code]Maybe[/code] contains can be used with [code]Eq[/code]! That's why we have to modify our <i>instance</i> declaration like this:
-
-
+Há, entretanto, um problema com isso. Consegue encontrá-lo? Nós usamos [code]==[/code] no conteúdo de [code]Maybe[/code] mas não temos garantias de que o que o [code]Maybe[/code] contém pode ser usado com[code]Eq[/code]! Por isso temos que modificar nossa declaração <i>instance</i> assim:
 
 
-We had to add a class constraint! With this <i>instance</i> declaration, we say this: we want all types of the form [code]Maybe m[/code] to be part of the [code]Eq[/code] typeclass, but only those types where the [code]m[/code] (so what's contained inside the [code]Maybe[/code]) is also a part of [code]Eq[/code]. This is actually how Haskell would derive the instance too.
 
-Most of the times, class constraints in <i>class</i> declarations are used for making a typeclass a subclass of another typeclass and class constraints in <i>instance</i> declarations are used to express requirements about the contents of some type. For instance, here we required the contents of the [code]Maybe[/code] to also be part of the [code]Eq[/code] typeclass.
 
-When making instances, if you see that a type is used as a concrete type in the type declarations (like the [code]a[/code] in [code]a -&gt; a -&gt; Bool[/code]), you have to supply type parameters and add parentheses so that you end up with a concrete type.
+Tivemos de declarar uma restrição de classe! Com essa declaração <i>instance</i>, dizemos isso: queremos que todos os tipos na forma [code]Maybe m[/code] sejam parte da typeclass [code]Eq[/code], mas apenas se esses tipos fossem o [code]m[/code] (dessa forma o que estivesse contido denteo de [code]Maybe[/code]) também seria parte de [code]Eq[/code]. Na verdade isso é também como Haskell deriva a instância.
 
-Take into account that the type you're trying to make an instance of will replace the parameter in the <i>class</i> declaration. The [code]a[/code] from [code]class Eq a where[/code] will be replaced with a real type when you make an instance, so try mentally putting your type into the function type declarations as well. [code](==) :: Maybe -&gt; Maybe -&gt; Bool[/code] doesn't make much sense but [code](==) :: (Eq m) =&gt; Maybe m -&gt; Maybe m -&gt; Bool[/code] does. But this is just something to think about, because [code]==[/code] will always have a type of [code](==) :: (Eq a) =&gt; a -&gt; a -&gt; Bool[/code], no matter what instances we make.
+Na maioria das vezes, restrições de classe em declarações <i>class</i> são utilizadas para tornar uma typeclass uma subclasse de outra typeclass e as restriçõees de classe em declarações <i>instance</i> são utilizadas para expressar requisitos sobre os conteúdos de algum tipo. Por exemplo, aqui nós precisávamos que o conteúdo do [code]Maybe[/code] também fosse parte da typeclass [code]Eq[/code].
 
-Ooh, one more thing, check this out! If you want to see what the instances of a typeclass are, just do [code]:info YourTypeClass[/code] in GHCI. So typing [code]:info Num[/code] will show which functions the typeclass defines and it will give you a list of the types in the typeclass. [code]:info[/code] works for types and type constructors too. If you do [code]:info Maybe[/code], it will show you all the typeclasses that [code]Maybe[/code] is an instance of. Also [code]:info[/code] can show you the type declaration of a function. I think that's pretty cool.
+Ao se criar instâncias, se você notar que um tipo é usado como um tipo concreto nas declarações de tipo (como o [code]a[/code] em [code]a -&gt; a -&gt; Bool[/code]), você deve suprir parâmetros de tipo e adicionar parênteses para se obter um tipo concreto.
+
+Leve em conta que o tipo que você está tentando criar uma instância vai substiruir o parâmetro na declaração <i>class</i>. O [code]a[/code] de [code]class Eq a where[/code] será substituído com um tipo real quando você criar uma instância, então tente também pôr mentalmente seu tipo em uma declaração de tipo de função. [code](==) :: Maybe -&gt; Maybe -&gt; Bool[/code] não faz muito sentido, mas [code](==) :: (Eq m) =&gt; Maybe m -&gt; Maybe m -&gt; Bool[/code] faz. Mas isso é apenas algo para se pensar, porque [code]==[/code] sempre terá o tipo de [code](==) :: (Eq a) =&gt; a -&gt; a -&gt; Bool[/code], não importa que instância criemos.
+
+Eeita, mais uma coisa, olha! Se você quiser ver quais são as instâncias de uma typeclass, apenas digite [code]:info YourTypeClass[/code] no GHCI. Então digitar [code]:info Num[/code] mostrará que funções a typeclass define e te dará uma lista dos tipos da typeclass. [code]:info[/code] funciona também para tipos e construtores de tipos. Se você fizer [code]:info Maybe[/code], ele te mostrara todas as typeclasses das quais [code]Maybe[/code] é uma instância. E também, [code]:info[/code] cpode te mostrar a declaração de tipo de uma função. Eu acho que isso é muito massa.
