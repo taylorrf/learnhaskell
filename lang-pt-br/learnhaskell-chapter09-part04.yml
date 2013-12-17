@@ -1,4 +1,4 @@
-title: Randomness
+title: Aleatoriedade
 
 text: Many times while programming, you need to get some random data. Maybe you're making a game where a dice needs to be thrown or you need to generate some test data to test out your program. There are a lot of uses for random data when programming. Well, actually, pseudo-random, because we all know that the only true source of randomness is a monkey on a unicycle with a cheese in one hand and its butt in the other. In this section, we'll take a look at how to make Haskell generate seemingly random data.
 
