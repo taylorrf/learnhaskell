@@ -32,5 +32,6 @@ list comprehension                                      compreensão de lista (c
 stream                                                  stream
 pipe/piping                                             pipe/fazendo piping
 handle                                                  handle
+curry							curriar
 type synonym                                            tipo sinônimo
 flush                                                   descarregar
