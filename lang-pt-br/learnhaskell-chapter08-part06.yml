@@ -1,98 +1,98 @@
 title: Estruturas de dados recursivas
 
-text: As we've seen, a constructor in an algebraic data type can have several (or none at all) fields and each field must be of some concrete type. With that in mind, we can make types whose constructors have fields that are of the same type! Using that, we can create recursive data types, where one value of some type contains values of that type, which in turn contain more values of the same type and so on.
+text: Como nos vimos, um construtor em um tipo de dados algébrico pode ter muitos (ou nenhum) campos e cada um pode ser de algum tipo concreto. Com isso em mente, nós podemos fazer construtores cujo tipo dos campos são do mesmo tipo! Usando isso, nós podemos criar tipos de dados recursivos, onde o valor de um tipo contém valores daquele tipo, que por sua vez contém mais valores do mesmo tipo, e assim por diante.
 
-Think about this list: [code][5][/code]. That's just syntactic sugar for [code]5:[][/code]. On the left side of the [code]:[/code], there's a value and on the right side, there's a list. And in this case, it's an empty list. Now how about the list [code][4,5][/code]? Well, that desugars to [code]4:(5:[])[/code]. Looking at the first [code]:[/code], we see that it also has en element on its left side and a list ([code]5:[][/code]) on its right side. Same goes for a list like [code]3:(4:(5:6:[]))[/code], which could be written either like that or like [code]3:4:5:6:[][/code] (because [code]:[/code] is right-associative) or [code][3,4,5,6][/code].
+Pense na lista: [code][5][/code]. Isso é apenas açúcar estático para [code]5:[][/code]. Do lado esquerdo do [code]:[/code], há um valor e do lado direito, há uma lista. E neste caso, há uma lista vazia. E agora sobre a lista [code][4,5][/code]? Bem, isso é desaçucarado para [code]4:(5:[])[/code]. Olhando para o primeiro [code]:[/code], nós vemos que isso também tem um elemento do lado esquerdo e uma lista ([code]5:[][/code]) do lado direito. O mesmo vale para uma lista como [code]3:4:5:6:[][/code] (pois [code]:[/code] é associativo a direita) ou [code][3,4,5,6][/code].
 
-We could say that a list can be an empty list or it can be an element joined together with a [code]:[/code] with another list (that can be either the empty list or not).
+Nós podemos dizer que a lista pode ser uma lista vazia ou ela pode ser um elemento unido com um [code]:[/code] com outra lista (que pode ser outra lista vazia ou não).
 
-Let's use algebraic data types to implement our own list then!
+Então vamos usar tipos de dados algébricos para implementar nossa própria lista!
 
 
 
+A leitura e quase como nossa definição de lista de um dos parágrafos anteriores. Isto é ou uma lista vazia ou a combinação de uma cabeça com algum valor e uma lista. Se você está confuso sobre isso, você pode achar mais fácil de entender a sintaxe dos registros.
 
-This reads just like our definition of lists from one of the previous paragraphs. It's either an empty list or a combination of a head with some value and a list. If you're confused about this, you might find it easier to understand in record syntax.
 
 
 
+Você também pode estar confuso com este construtor aqui [code]Cons[/code]. <i>cons</i> é outra palavra para [code]:[/code]. Você vê, em listas, [code]:[/code] é atualmente um construtor que pega dois valores e outra lista e retorna uma lista. Nós já podemos usar o nosso novo tipo de lista! Em outras palavras, isto tem dois campos. Um campos é do tipo de [code]a[/code] e o outro é do tipo de [code][a][/code].
 
-You might also be confused about the [code]Cons[/code] constructor here. <i>cons</i> is another word for [code]:[/code]. You see, in lists, [code]:[/code] is actually a constructor that takes a value and another list and returns a list. We can already use our new list type! In other words, it has two fields. One field is of the type of [code]a[/code] and the other is of the type [code][a][/code].
 
 
 
 
+Nós chamamos nosso [code]Cons[/code] em de uma maneira infixada então você pode ver que ele é como [code]:[/code]. [code]Empty[/code] é como [code][][/code] e [code]4 `Cons` (5 `Cons` Empty)[/code] é como [code]4:(5:[])[/code].
 
-We called our [code]Cons[/code] constructor in an infix manner so you can see how it's just like [code]:[/code]. [code]Empty[/code] is like [code][][/code] and [code]4 `Cons` (5 `Cons` Empty)[/code] is like [code]4:(5:[])[/code].
+Nós podemos definir funções para serem infixadas automaticamente, tornando-as compostas apenas por caracteres especiais. Nós também podemos fazer o mesmo com construtores, já que eles são apenas funções que retornam um tipo de dados. Veja isso então.
 
-We can define functions to be automatically infix by making them comprised of only special characters. We can also do the same with constructors, since they're just functions that return a data type. So check this out.
 
 
 
+Primeiramente, nós notamos uma nova construção sintática, as declarações de precedência. Quando nós definimos funções como operadores, nós podemos usar isso para dar uma precedência (mas não precisamos). Um estado de precedência e como hermeticamente associar um operador para ser ou associativo a esquerda ou associativo a direita. Por exemplo, [code]*[/code] tem forma de precedência [code]infixl 7 *[/code] e [code]+[/code] tem forma de precedência [code]infixl 6[/code]. Isto significa que que ele são ambos associativos a esquerda ([code]4 * 3 * 2[/code] é [code](4 * 3) * 2[/code]) mas [code]*[/code] associa mais que [code]+[/code], porque ele tem uma precedência maior, então [code]5 * 4 + 3[/code] é [code](5 * 4) + 3[/code].
 
-First off, we notice a new syntactic construct, the fixity declarations. When we define functions as operators, we can use that to give them a fixity (but we don't have to). A fixity states how tightly the operator binds and whether it's left-associative or right-associative. For instance, [code]*[/code]'s fixity is [code]infixl 7 *[/code] and [code]+[/code]'s fixity is [code]infixl 6[/code]. That means that they're both left-associative ([code]4 * 3 * 2[/code] is [code](4 * 3) * 2[/code]) but [code]*[/code] binds tighter than [code]+[/code], because it has a greater fixity, so [code]5 * 4 + 3[/code] is [code](5 * 4) + 3[/code].
+Por outro lado, nos apenas escrevemos [code]a :-: (List a)[/code] em vez de [code]Cons a (List a)[/code]. Agora nós podemos escrever as listas em nosso tipo de lista assim:
 
-Otherwise, we just wrote [code]a :-: (List a)[/code] instead of [code]Cons a (List a)[/code]. Now, we can write out lists in our list type like so:
 
 
 
+Quando nossos tipos derivam de [code]Show[/code], Haskell permanecerá mostrando ele como se o construtor estivesse na forma de função prefixada, portanto com parênteses em volta do operador (lembre-se, [code]4 + 3[/code] é [code](+) 4 3[/code]).
 
+Vamos criar uma função que junta duas das nossas listas em uma. Esta é como [code]++[/code] definida para listas normais:
 
-When deriving [code]Show[/code] for our type, Haskell will still display it as if the constructor was a prefix function, hence the parentheses around the operator (remember, [code]4 + 3[/code] is [code](+) 4 3[/code]).
 
-Let's make a functions that adds two of our lists together. This is how [code]++[/code] is defined for normal lists:
 
 
+Então nós vamos apenas roubar para nossa própria lista. Nós iremos chamar a função [code].++[/code].
 
 
-So we'll just steal that for our own list. We'll name the function [code].++[/code].
 
+E vamos ver se isso funciona…
 
 
-And let's see if it works ...
 
+Legal. Isto é legal. Se nós quisermos, nós podemos implementar todas as funções que operam com listas usando nosso próprio tipo de lista.
 
+Note como o padrão casa com [code](x :-: xs)[/code]. Isso funciona porque o casamento de padrão e atualmente um casamento de construtores. Nós podemos casar com [code]:-:[/code] porque ele é um construtor para o nosso tipo de lista e nós também podemos casar com [code]:[/code] porque ele é um construtor para o tipo de lista padrão. O mesmo ocorre com [code][][/code]. Porque o casamento de padrão funciona (apenas) em construtores, nós podemos também casar para coisas como, construtores normalmente prefixados ou coisas como [code]8[/code] ou [code]'a'[/code], que são basicamente construtores para tipos números e caracteres, respectivamente.
 
-Nice. Is nice. If we wanted, we could implement all of the functions that operate on lists on our own list type.
+Agora, nós iremos implementar uma <em>árvore de busca binária</em>. Se você não esta familiarizado com arvores de busca binárias de linguagens como C, aqui está o que elas são: um elemento aponta para dois elementos, um deles está a esquerda e o outro a direita. O elemento da esquerda e menor, o elemento para direita é maior. Cada um destes elementos pode também apontar para dois elementos (ou um, ou nenhum). Na realidade, cada elemento tem até duas sub-árvores. A coisas legal sobre árvores de busca binária e que nos conhecemos que todos os elementos de sub-árvore esquerda são menores, dizendo, 5 é tem de ser menor que 5. Elementos da sub-árvore direita serão maiores. Então se nós precisamos buscar por 8 em nossa árvore, nós começamos com 5 e então pelo fato de 8 ser maior que 5, no iremos para direita. Nós estamos agora no 7 e porque 8 e maior que 7, nós vamos para a direita novamente. E nos então encontramos nosso elemento em três saltos! Agora se isto for uma lista normal (ou uma árvore, mas não balanceada), podem ser necessários sete pulos em vez de três para ver se 8 está lá.
 
-Notice how we pattern matched on [code](x :-: xs)[/code]. That works because pattern matching is actually about matching constructors. We can match on [code]:-:[/code] because it is a constructor for our own list type and we can also match on [code]:[/code] because it is a constructor for the built-in list type. Same goes for [code][][/code]. Because pattern matching works (only) on constructors, we can match for stuff like that, normal prefix constructors or stuff like [code]8[/code] or [code]'a'[/code], which are basically constructors for the numeric and character types, respectively.
+Conjuntos e mapeamentos de [code]Data.Set[/code] e [code]Data.Map[/code] são implementados usando arvores, em vez de árvores de busca binária normais, eles usam arvores de busca binária balanceadas, que estão sempre balanceadas. Mas por enquanto, nós iremos apenas implementar uma árvore de busca binária normal.
 
-Now, we're going to implement a <em>binary search tree</em>. If you're not familiar with binary search trees from languages like C, here's what they are: an element points to two elements, one on its left and one on its right. The element to the left is smaller, the element to the right is bigger. Each of those elements can also point to two elements (or one, or none). In effect, each element has up to two sub-trees. And a cool thing about binary search trees is that we know that all the elements at the left sub-tree of, say, 5 are going to be smaller than 5. Elements in its right sub-tree are going to be bigger. So if we need to find if 8 is in our tree, we'd start at 5 and then because 8 is greater than 5, we'd go right. We're now at 7 and because 8 is greater than 7, we go right again. And we've found our element in three hops! Now if this were a normal list (or a tree, but really unbalanced), it would take us seven hops instead of three to see if 8 is in there.
+Aqui está o que nós iremos dizer: uma árvore é ou uma árvore vazia ou é um elemento que contém algum valor e duas arvores. Soa perfeitamente para um tipo de dados algébrico!
 
-Sets and maps from [code]Data.Set[/code] and [code]Data.Map[/code] are implemented using trees, only instead of normal binary search trees, they use balanced binary search trees, which are always balanced. But right now, we'll just be implementing normal binary search trees.
 
-Here's what we're going to say: a tree is either an empty tree or it's an element that contains some value and two trees. Sounds like a perfect fit for an algebraic data type!
 
+Ok, tudo bem, isso é bom. Em vez de manualmente construir uma árvore, nós iremos criar uma função que pega uma árvore e um elemento e insere um elemento nela. Nós fazemos isso pela comparação do valor que nós queremos inserir com o nó raiz e então se ele é menor, nós iremos para a esquerda, se ele é maior, nós iremos para direita. Nós fazemos o mesmo para cada nó subsequente até encontrar uma árvore vazia. Um vez que nos encontramos uma árvore vazia, nós apenas inserimos um nó com o valor em vez de uma árvore vazia.
 
 
-Okay, good, this is good. Instead of manually building a tree, we're going to make a function that takes a tree and an element and inserts an element. We do this by comparing the value we want to insert to the root node and then if it's smaller, we go left, if it's larger, we go right. We do the same for every subsequent node until we reach an empty tree. Once we've reached an empty tree, we just insert a node with that value instead of the empty tree.
+Em linguagens como C, nós fazemos isso pela modificação de ponteiros e valores dentro da árvore. Em Haskell, nós não podemos realmente modificar nossa árvore, então nós temos de fazer uma nova sub-árvore cada vez que nós decidimos ir para esquerda ou direita e no fim da função de inserção nós retornamos uma árvore completamente nova, porque Haskell realmente não tem um conceito de ponteiros, apenas valores. Por isso, o tipo de nossa função de inserção é algo como [code]a -&gt; Tree a - &gt; Tree a[/code]. Ela pega um elemento e uma árvore e retorna uma nova árvore que tem o elemento inserido. Isto pode parecer como algo ineficiente, mas a avaliação preguiçosa cuida do problema.
 
-In languages like C, we'd do this by modifying the pointers and values inside the tree. In Haskell, we can't really modify our tree, so we have to make a new sub-tree each time we decide to go left or right and in the end the insertion function returns a completely new tree, because Haskell doesn't really have a concept of pointer, just values. Hence, the type for our insertion function is going to be something like [code]a -&gt; Tree a - &gt; Tree a[/code]. It takes an element and a tree and returns a new tree that has that element inside. This might seem like it's inefficient but laziness takes care of that problem.
+Então, aqui há duas funções. Uma é uma função utilitária para fazer uma árvore monódica (uma árvore com apenas um nó) e uma função que insere um elemento na árvore.
 
-So, here are two functions. One is a utility function for making a singleton tree (a tree with just one node) and a function to insert an element into a tree.
 
 
 
+A função [code]singleton[/code] é apenas um atalho para fazer um no que tem alguma coisa e então duas sub-árvores vazias. Em nossa função de inserção, nos primeiro temos uma condição de limites como padrão. Se nos alcançarmos uma sub-árvore vazia, isso significa que nós estamos onde queremos e em vez de uma árvore vazia, nos pomos uma árvore monódica com nossos elemento. Se nós não estamos inserindo em uma árvore vazia, então nós temos de checar alguma coisas. Primeiro, se o elemento que nós estamos inserindo é igual ao elemento da raiz, apenas retornamos uma árvore que é ela mesma. Se ele é menor, retornamos uma árvore que tem o mesmo valor na raiz, a mesma sub-árvore a direita, mas em vez de sua sub-árvore esquerda, nos pomos uma árvore que tem nosso valor inserido nela. Da mesma forma (mas de forma contrária) fazemos isso se o elemento é maior que o elemento da raiz.
 
-The [code]singleton[/code] function is just a shortcut for making a node that has something and then two empty sub-trees. In the insertion function, we first have the edge condition as a pattern. If we've reached an empty sub-tree, that means we're where we want and instead of the empty tree, we put a singleton tree with our element. If we're not inserting into an empty tree, then we have to check some things. First off, if the element we're inserting is equal to the root element, just return a tree that's the same. If it's smaller, return a tree that has the same root value, the same right sub-tree but instead of its left sub-tree, put a tree that has our value inserted into it. Same (but the other way around) goes if our value is bigger than the root element.
+Em seguida, nós iremos criar uma função que checa se algum elemento está na árvore. Primeiro, vamos definir uma condição de limite. Se nós estamos buscando por um elemento em uma arvore vazia, então e certo que ele não está ali. Ok. Note como isto é o mesmo que uma condição de limites quando buscamos por um elemento em listas. Se nós estamos procurando por um elemento e uma lista vazia, ele não está lá. De qualquer maneira, se nós estamos procurando por um elemento em uma árvore que não está vazia, então nos checamos algumas coisas. Se o elemento na raiz do no é o que nós estamos procurando, maravilha! Se não é, o que fazer então? Bem, nós podemos tirar vantagem do conhecimento de que todos os elementos a esquerda são menores que a raiz do no. Então se o elemento que nós estamos procurando é menor que a raiz do no, checamos para ver se ele está na sub-árvore esquerda. Se ele é maior, checamos para ver se ele não está na sub-árvore direita.
 
-Next up, we're going to make a function that checks if some element is in the tree. First, let's define the edge condition. If we're looking for an element in an empty tree, then it's certainly not there. Okay. Notice how this is the same as the edge condition when searching for elements in lists. If we're looking for an element in an empty list, it's not there. Anyway, if we're not looking for an element in an empty tree, then we check some things. If the element in the root node is what we're looking for, great! If it's not, what then? Well, we can take advantage of knowing that all the left elements are smaller than the root node. So if the element we're looking for is smaller than the root node, check to see if it's in the left sub-tree. If it's bigger, check to see if it's in the right sub-tree.
 
 
 
 
+Tudo o que tínhamos a fazer era escrever o parágrafo anterior em código. Vamos ter alguma diversão com nossas árvores! Em vez de manualmente construir uma (embora podermos), nós iremos usar um varredor de listas para construir uma árvore a partir de uma lista. Lembre-se, praticamente tudo que atravessa uma lista elemento por elemento e então retorna algum tipo de valor pode ser implementado com um interador de lista (fold)! Nós vamos iniciar com uma árvore vazia e então percorrer a lista da direita elemento por elemento inserindo-os na nossa árvore acumuladora.
 
-All we had to do was write up the previous paragraph in code. Let's have some fun with our trees! Instead of manually building one (although we could), we'll use a fold to build up a tree from a list. Remember, pretty much everything that traverses a list one by one and then returns some sort of value can be implemented with a fold! We're going to start with the empty tree and then approach a list from the right and just insert element after element into our accumulator tree.
 
 
 
 
-In that [code]foldr[/code], [code]treeInsert[/code] was the folding function (it takes a tree and a list element and produces a new tree) and [code]EmptyTree[/code] was the starting accumulator. [code]nums[/code], of course, was the list we were folding over.
+Nesse [code]foldr[/code], [code]treeInsert[/code] foi uma função de interação (isso pega uma arvore e uma lista de elementos e produz uma nova árvore) e [code]EmptyTree[/code] foi o acumulador inicial. [code]nums[/code], claro, foi a lista sobre a qual interamos.
 
-When we print our tree to the console, it's not very readable, but if we try, we can make out its structure. We see that the root node is 5 and then it has two sub-trees, one of which has the root node of 3 and the other a 7, etc.
+Quando nos imprimimos nossa árvore no terminal, ela não é muito legível, mas se nos tentarmos, nós podemos decifrar esta estrutura. Nos vemos que o nó raiz é 5 e então há duas sub-árvores, uma que tem o nó raiz 3 e a outra um 7, e etc.
 
 
 
 
-Checking for membership also works nicely. Cool.
+Verificar se um elemento pertence também funciona perfeitamente. Legal.
 
-So as you can see, algebraic data structures are a really cool and powerful concept in Haskell. We can use them to make anything from boolean values and weekday enumerations to binary search trees and more!
+Então como você pode ver, estrutura de dados algébricos são um conceito realmente legal e poderosos em Haskell. Nos podemos usa-los para fazer qualquer coisa desde valores booleanos e enumeradores para dias de semana para árvores de busca binária e muito mais!
