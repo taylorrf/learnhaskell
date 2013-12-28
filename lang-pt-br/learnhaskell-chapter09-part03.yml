@@ -1,96 +1,61 @@
-title: Command line arguments
+title: Argumentos de linha de comando
 
-text: Dealing with command line arguments is pretty much a necessity if you want to make a script or application that runs on a terminal. Luckily, Haskell's standard library has a nice way of getting command line arguments of a program.
+text: Lidar com argumentos de linha de comando é quase uma necessidade se você quiser criar um script ou aplicação que rode em um terminal. Felizmente, a biblioteca padrão de Haskell tem um método elegante de obter os argumentos de linha de comando de um programa.
 
-In the previous section, we made one program for adding a to-do item to our to-do list and one program for removing an item. There are two problems with the approach we took. The first one is that we just hardcoded the name of our to-do file in our code. We just decided that the file will be named <i>todo.txt</i> and that the user will never have a need for managing several to-do lists.
+Na seção anterior, fizemos um programa para adicionar um item à nossa lista de itens a fazer e um programa para remover um item. Existem dois problemas com a nossa abordagem. O primeiro é que simplesmente embutimos o nome do  arquivo contendo a lista no nosso código. Nós simplesmente decidimos que o arquivo se chamaria <i>todo.txt</i> e que o usuário nunca teria a necessidade de lidar com várias listas de coisas a fazer.
 
-One way to solve that is to always ask the user which file they want to use as their to-do list. We used that approach when we wanted to know which item the user wants to delete. It works, but it's not so good, because it requires the user to run the program, wait for the program to ask something and then tell that to the program. That's called an interactive program and the difficult bit with interactive command line programs is this &mdash; what if you want to automate the execution of that program, like with a batch script? It's harder to make a batch script that interacts with a program than a batch script that just calls one program or several of them.
+Um modo de resolver isso é sempre perguntar ao usuário qual arquivo ele quer usar como sua lista. Usamos essa abordagem quando queríamos saber qual item o usuário queria excluir. Isso funciona, mas não é tão bom, porque requer que o usuário execute o programa, espere que o programa pergunte algo e então responda a ele. Isso é chamado de programa interativo e a dificuldade com programas de linha de comando interativos é a seguinte &mdash; e se você quiser automatizar a execução desse programa, como feito em um script de lotes? É mais difícil criar um script que interaja com um programa do que um script que simplesmente invoque um programa ou vários deles.
 
-That's why it's sometimes better to have the user tell the program what they want when they run the program, instead of having the program ask the user once it's run. And what better way to have the user tell the program what they want it to do when they run it than via command line arguments!
+Por isso que algumas vezes é melhor que o usuário diga ao programa o que ele quer quando ele executar o programa, ao invés de o programa perguntar ao usuário quando for executado. E que melhor maneira de o usuário dizer ao programa o que ele quer que seja feito do que usando argumentos de linha de comando.
 
-The [code]System.Environment[/code] module has two cool I/O actions. One is [function]getArgs[/function], which has a type of [code]getArgs :: IO [String][/code] and is an I/O action that will get the arguments that the program was run with and have as its contained result a list with the arguments. [function]getProgName[/function] has a type of [code]getProgName :: IO String[/code] and is an I/O action that contains the program name.
+O módulo [code]System.Environment[/code] tem duas ações de E/S interessantes. Uma é [function]getArgs[/function], que tem o tipo [code]getArgs :: IO [String][/code] e é uma ação de E/S que receberá os agumentos com os quais o programa foi invocado e terá como resultado encapsulado uma lista com os argumentos. [function]getProgName[/function] tem o tipo [code]getProgName :: IO String[/code] e é uma ação de E/S que contém o nome do programa.
 
-Here's a small program that demonstrates how these two work:
+Aqui está um pequeno programa que demonstra como as duas funcionam:
 
+Nós associamos [code]getArgs[/code] e [code]progName[/code] a [code]args[/code] e [code]progName[/code]. Escrevemos [code]Os argumentos são:[/code] e então para todo argumento em [code]args[/code], executamos [code]putStrLn[/code]. Finalmente, também imprimimos o nome do programa. Vamos compilar isto como [code]arg-test[/code].
 
+Perfeito. Munido desse conhecimento você poderia criar algumas aplicações legais de linha de comando. Na verdade, vamos prosseguir e criar uma. Na seção anterior, fizemos um programa para adicionar tarefas e outro para excluí-las. Agora, iremos juntá-los em um único programa, que irá funcionar dependendo dos argumentos de linha de comando. Também o faremos operar com diferentes arquivos, não somente com <i>todo.txt</i>.
 
+Iremos chamá-lo simplesmtente de <i>todo</i> e ele será capaz de fazer três coisas diferentes:
 
-We bind [code]getArgs[/code] and [code]progName[/code] to [code]args[/code] and [code]progName[/code]. We say [code]The arguments are:[/code] and then for every argument in [code]args[/code], we do [code]putStrLn[/code]. Finally, we also print out the program name. Let's compile this as [code]arg-test[/code].
+    <li>Visualizar tarefas</li>
+    <li>Adicionar tarefas</li>
+    <li>Excluir tarefas</li>
 
+Por enquanto não iremos nos preocupar muito com possíveis más entradas.
 
+Nosso programa será feito de uma forma que se quisermos adicionar a tarefa [code]Find the magic sword of power[/code] ao arquivo <i>todo.txt</i>, teremos que digitar [code]todo add todo.txt "Find the magic sword of power"[/code] no terminal. Para visualizar as tarefas simplesmente escreveremos [code]todo view todo.txt[/code] e para remover a tarefa com o índice 2, escreveremos [code]todo remove todo.txt 2[/code].
 
+Vamos começar criando uma lista de associações de redirecionamento. Ela consiste em uma lista de associações simples que tem argumentos de linha de comando como chaves e funções como seus valores correspondentes. Todas essas funções serão do tipo [code][String] -&gt; IO ()[/code]. Elas irão receber a lista de argumentos como um parâmetro e retornar uma ação de E/S que fará a vizualização, adição, remoção, etc.
 
+Temos ainda que definir [code]main[/code], [code]add[/code], [code]view[/code] e [code]remove[/code], então vamos começar com [code]main[/code]:
 
-Nice. Armed with this knowledge you could create some cool command line apps. In fact, let's go ahead and make one. In the previous section, we made a separate program for adding tasks and a separate program for deleting them. Now, we're going to join that into one program, what it does will depend on the command line arguments. We're also going to make it so it can operate on different files, not just <i>todo.txt</i>.
+Primeiro, pegamos os argumentos e os associamos a [code](command:args)[/code]. Se você se lembra de casamento de padrões, isso significa que o primeiro argumento será associado a [code]command[/code] e o resto deles será associado a [code]args[/code]. Se executarmos nosso programa usando a linha de comando [code]todo add todo.txt "Spank the monkey"[/code], [code]command[/code] será [code]"add"[/code] e [code]args[/code] será [code]["todo.txt", "Spank the monkey"][/code].
 
-We'll call it simply <i>todo</i> and it'll be able to do (haha!) three different things:
+Na próxima linha, procuramos nosso comando na lista de redirecionamentos. Como [code]"add"[/code] está associado a [code]add[/code], obtemos [code]Just add[/code] como resultado. Usamos casamento de padrão novamente para extrair nossa função do [code]Maybe[/code]. O que acontece se nosso comando não estiver na lista de redirecionamento? Bem, então a busca retornará [code]Nothing[/code], mas dissemos que não nos preocuparemos muito em falhar elegantemente, então o casamento de padrões falhará e nosso programa lançará uma exceção.
 
-    <li>View tasks</li>
-    <li>Add tasks</li>
-    <li>Delete tasks</li>
+Finalmente, chamamos nossa função [code]action[/code] (que agora é, digamos, [code]add[/code]) com o restante da lista de argumentos. Isso retornará uma ação de E/S que adiciona um item, mostra uma lista de itens ou remove um item e devido a essa ação ser parte do bloco <i>do</i> [code]main[/code], ela será executada.
 
-We're not going to concern ourselves with possible bad input too much right now.
+Excelente! Tudo que falta agora é implementar [code]add[/code], [code]view[/code] e [code]remove[/code]. Vamos começar com [code]add[/code]:
 
-Our program will be made so that if we want to add the task [code]Find the magic sword of power[/code] to the file <i>todo.txt</i>, we have to punch in [code]todo add todo.txt "Find the magic sword of power"[/code] in our terminal. To view the tasks we'll just do [code]todo view todo.txt[/code] and to remove the task with the index of 2, we'll do [code]todo remove todo.txt 2[/code].
+Se chamarmos nosso programa com a linha de comando [code]todo add todo.txt "Spank the monkey"[/code], o [code]"add"[/code] será associado a [code]command[/code] no primeiro casamento de padrões no bloco [code]main[/code], enquanto [code]["todo.txt", "Spank the monkey"][/code] será passada à função que nós obtemos da lista de redirecionamento. Então, como não estamos lidando com entradas incorretas por enquanto, nós apenas reconhecemos imediatamente um padrão que é uma lista com esses dois elementos e retornamos uma ação de E/S que acrescenta a linha ao final do arquivo, juntamente com um caractere de nova linha.
 
-We'll start by making a dispatch association list. It's going to be a simple association list that has command line arguments as keys and functions as their corresponding values. All these functions will be of type [code][String] -&gt; IO ()[/code]. They're going to take the argument list as a parameter and return an I/O action that does the viewing, adding, deleting, etc.
+Agora, vamos implementar a funcionalidade de visualização da lista. Se quisermos visualizar os itens em um arquivo, escrevemos [code]todo view todo.txt[/code]. Assim, no primeiro casamento de padrão, [code]command[/code] será [code]"view"[/code] e [code]args[/code] será [code]["todo.txt"][/code].
 
+Nós já fizemos praticamente a mesma coisa no programa que apenas remove tarefas quando estamos mostrando as tarefas para que o usuário possa escolher uma para remoção, só que aqui nós apenas mostramos as tarefas.
 
+Por fim, vamos implementar [code]remove[/code]. Ela será bem parecida com o programa que apenas remove tarefas, então se você não entender como a remoção de itens funciona aqui, dê uma olhada na explicação sobre aquele programa. A principal diferença é que não estamos embutindo <i>todo.txt</i> no código, mas obtendo com um argumento. Nós também não estamos perguntando ao usuário o número da tarefa a remover, estamos obtendo ele como um argumento.
 
+Nós abrimos o arquivo com o nome [code]fileName[/code] e abrimos um arquivo temporário, removemos a linha com o índice que o usuário deseja excluir, escrevemos isso no arquivo temporário, removemos o arquivo original e renomeamos o arquivo temporário para [code]fileName[/code].
 
-We have yet to define [code]main[/code], [code]add[/code], [code]view[/code] and [code]remove[/code], so let's start with [code]main[/code]:
+Aqui está o programa todo de uma vez, em toda sua glória!
 
+Para resumir nossa solução: fizemos uma associação de redirecionamento que mapeia comandos para funções que recebem alguns argumentos de linha de comando e retornam uma ação de E/S. Nós vemos o que é o comando e obtemos a função apropriada através da lista de redirecionamento. Chamamos essa função com o restante dos argumentos da linha de comando para obter uma ação de E/S que fará o procedimento apropriado e então simplesmente executamos essa ação!
 
+Em outras linguagens, poderíamos ter implementado isso com um grande bloco switch ou algo parecido, mas usar funções de alta ordem nos permite simplesmente dizer à lista de redirecionamento para nos dar a função apropriada e então dizer a essa função para nos dar uma ação de E/S para alguns argumentos de linha de comando.
 
+Vamos testar nossa aplicação!
 
+Outra coisa legal sobre isto é que é fácil adicionar funcionalidades adicionais. Basta adicionar uma entrada na lista de associações de redirecionamento e implementar a função correspondente e não terá nada mais para se preocupar! como um exercício, você pode tentar implementar uma função [code]bump[/code] que irá receber um arquivo e um número de tarefa e retornar uma ação de E/S que coloca essa tarefa no topo da lista de coisas a  fazer.
 
-First, we get the arguments and bind them to [code](command:args)[/code]. If you remember your pattern matching, this means that the first argument will get bound to [code]command[/code] and the rest of them will get bound to [code]args[/code]. If we call our program like [code]todo add todo.txt "Spank the monkey"[/code], [code]command[/code] will be [code]"add"[/code] and [code]args[/code] will be [code]["todo.xt", "Spank the monkey"][/code].
-
-In the next line, we look up our command in the dispatch list. Because [code]"add"[/code] points to [code]add[/code], we get [code]Just add[/code] as a result. We use pattern matching again to extract our function out of the [code]Maybe[/code]. What happens if our command isn't in the dispatch list? Well then the lookup will return [code]Nothing[/code], but we said we won't concern ourselves with failing gracefully too much, so the pattern matching will fail and our program will throw a fit.
-
-Finally, we call our [code]getAction[/code] function (which is now, say, [code]add[/code]) with the rest of the argument list. That will return an I/O action that either adds an item, displays a list of items or deletes an item and because that action is part of the [code]main[/code] <i>do</i> block, it will get performed.
-
-Great! All that's left now is to implement [code]add[/code], [code]view[/code] and [code]remove[/code]. Let's start with [code]add[/code]:
-
-
-
-
-
-If we call our program like [code]todo add todo.txt "Spank the monkey"[/code], the [code]"add"[/code] will get bound to [code]command[/code] in the first pattern match in the [code]main[/code] block, whereas [code]["todo.txt", "Spank the monkey"][/code] will get passed to the function that we get from the dispatch list. So, because we're not dealing with bad input right now, we just pattern match against a list with those two elements right away and return an I/O action that appends that line to the end of the file, along with a newline character.
-
-Next, let's implement the list viewing functionality. If we want to view the items in a file, we do [code]todo view todo.txt[/code]. So in the first pattern match, [code]command[/code] will be [code]"view"[/code] and [code]args[/code] will be [code]["todo.txt"][/code].
-
-
-
-
-
-We already did pretty much the same thing in the program that only deleted tasks when we were displaying the tasks so that the user can choose one for deletion, only here we just display the tasks.
-
-And finally, we're going to implement [code]remove[/code]. It's going to be very similar to the program that only deleted the tasks, so if you don't understand how deleting an item here works, check out the explanation under that program. The main difference is that we're not hardcoding <i>todo.txt</i> but getting it as an argument. We're also not prompting the user for the task number to delete, we're getting it as an argument.
-
-
-
-
-
-
-We opened up the file based on [code]fileName[/code] and opened a temporary file, deleted the line with the index that the user wants to delete, wrote that to the temporary file, removed the original file and renamed the temporary file back to [code]fileName[/code].
-
-Here's the whole program at once, in all its glory!
-
-
-
-
-
-
-To summarize our solution: we made a dispatch association that maps from commands to functions that take some command line arguments and return an I/O action. We see what the command is and based on that we get the appropriate function from the dispatch list. We call that function with the rest of the command line arguments to get back an I/O action that will do the appropriate thing and then just perform that action!
-
-In other languages, we might have implemented this with a big switch case statement or whatever, but using higher order functions allows us to just tell the dispatch list to give us the appropriate function and then tell that function to give us an I/O action for some command line arguments.
-
-Let's try our app out!
-
-
-
-
- cool thing about this is that it's easy to add extra functionality. Just add an entry in the dispatch association list and implement the corresponding function and you're laughing! As an exercise, you can try implementing a [code]bump[/code] function that will take a file and a task number and return an I/O action that bumps that task to the top of the to-do list.
-
-You could make this program fail a bit more gracefully in case of bad input (for example, if someone runs [code]todo UP YOURS HAHAHAHA[/code]) by making an I/O action that just reports there has been an error (say, [code]errorExit :: IO ()[/code]) and then check for possible erronous input and if there is erronous input, perform the error reporting I/O action. Another way is to use exceptions, which we will meet soon.
+Você poderia fazer esse programa falhar de um modo um pouco mais elegante no caso de más entradas (por exemplo, se alguém escrever [code]todo UP YOURS HAHAHAHA[/code]) criando uma ação de E/S que somente notifique que houve um erro (digamos, [code]errorExit :: IO ()[/code]), depois verificando possíveis entradas inconsistentes e se existirem, executa-se a ação de E/S de notificação de erros. Outro modo é usar exceções, que nós estudaremos em breve.
