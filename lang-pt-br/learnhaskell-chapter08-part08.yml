@@ -1,52 +1,51 @@
-title: A yes-no typeclass
+title: Uma typeclass sim-não
 
-text: In JavaScript and some other weakly typed languages, you can put almost anything inside an if expression. For example, you can do all of the following: [code]if (0) alert("YEAH!") else alert("NO!")[/code], [code]if ("") alert ("YEAH!") else alert("NO!")[/code], [code]if (false) alert("YEAH") else alert("NO!)[/code], etc. and all of these will throw an alert of [code]NO![/code]. If you do [code]if ("WHAT") alert ("YEAH") else alert("NO!")[/code], it will alert a [code]"YEAH!"[/code] because JavaScript considers non-empty strings to be a sort of true-ish value.
+text: Em JavaScript e outras linguagens fracamente tipadas, você pode por quase qualquer coisa dentro de uma expressão. Por exemplo, você pode fazer tudo o que se segue: [code]if (0) alert("YEAH!") else alert("NO!")[/code], [code]if ("") alert ("YEAH!") else alert("NO!")[/code], [code]if (false) alert("YEAH") else alert("NO!)[/code], etc. e todos esses vão mandar um alerta de [code]NO![/code]. Se você fizer [code]if ("WHAT") alert ("YEAH") else alert("NO!")[/code], vai alertar um [code]"YEAH!"[/code] porque JavaScript considera palavras não vazias como tendo um valor meio verdadeiro.
 
-Even though strictly using [code]Bool[/code] for boolean semantics works better in Haskell, let's try and implement that JavaScript-ish behavior anyway. For fun! Let's start out with a <i>class</i> declaration.
-
-
-
-
-Pretty simple. The [code]YesNo[/code] typeclass defines one function. That function takes one value of a type that can be considered to hold some concept of true-ness and tells us for sure if it's true or not. Notice that from the way we use the [code]a[/code] in the function, [code]a[/code] has to be a concrete type.
-
-Next up, let's define some instances. For numbers, we'll assume that (like in JavaScript) any number that isn't 0 is true-ish and 0 is false-ish.
+Mesmo que o uso estrito de [code]Bool[/code] para semânticas booleanas funcione melhor em Haskell, vamos tentar implementar aquele comportamento meio JavaScript. Por diversão! Vamos começar com uma declaração <i>class</i>.
 
 
 
 
-Empty lists (and by extensions, strings) are a no-ish value, while non-empty lists are a yes-ish value.
+Muito simples. A typeclass [code]YesNo[/code] define uma função. Tal função pega um valor de um tipo que é considerado conter algum valor de verdade e nos diz com certeza se é verdadeiro ou não. Note que da forma como utilizamos [code]a[/code] na função, [code]a[/code] tem que ser um tipo concreto.
+
+Agora, vamos definir algumas instâncias. Para números, vamos assumir que (como em JavaScript) qualquer número que não seja 0 é verdadeiro e 0 é falso.
 
 
 
 
-Notice how we just put in a type parameter [code]a[/code] in there to make the list a concrete type, even though we don't make any assumptions about the type that's contained in the list. What else, hmm ... I know, [code]Bool[/code] itself also holds true-ness and false-ness and it's pretty obvious which is which.
-
-Huh? What's [code]id[/code]? It's just a standard library function that takes a parameter and returns the same thing, which is what we would be writing here anyway.
-
-Let's make [code]Maybe a[/code] an instance too.
+Listas vazias (e por extensão, strings) são valores negativos, enquanto que listas não-vazias são valores verdadeiros.
 
 
 
 
-We didn't need a class constraint because we made no assumptions about the contents of the [code]Maybe[/code]. We just said that it's true-ish if it's a [code]Just[/code] value and false-ish if it's a [code]Nothing[/code]. We still had to write out [code](Maybe a)[/code] instead of just [code]Maybe[/code] because if you think about it, a [code]Maybe -&gt; Bool[/code] function can't exist (because [code]Maybe[/code] isn't a concrete type), whereas a [code]Maybe a -&gt; Bool[/code] is fine and dandy. Still, this is really cool because now, any type of the form [code]Maybe something[/code] is part of [code]YesNo[/code] and it doesn't matter what that [code]something[/code] is.
+Note como acabamos de pôr um parâmetro de tipo [code]a[/code] lá para tornar a lista um tipo concreto, mesmo que não façamos nenhuma suposição sobre o tipo que está contido na lista. O que mais, hm...Já sei, o próprio [code]Bool[/code] guarda verdade e falsidade, e é bem óbvio qual é qual.
 
-Previously, we defined a [code]Tree a[/code] type, that represented a binary search tree. We can say an empty tree is false-ish and anything that's not an empty tree is true-ish.
+Han? O que é [code]id[/code]? É apenas uma função padrão da biblioteca que pega um parâmetro e retorna a mesma coisa, que é o que estaríamos escrevendo de qualquer forma.
 
-
-
-
-Can a traffic light be a yes or no value? Sure. If it's red, you stop. If it's green, you go. If it's yellow? Eh, I usually run the yellows because I live for adrenaline.
+Vamos tornar [code]Maybe a[/code] uma instância também.
 
 
 
 
-Cool, now that we have some instances, let's go play!
+Nós não precisamos de uma restrição de classe porque ão fizemos nenhuma suposição sobre o conteúdo de [code]Maybe[/code]. Apenas dissemos que é verdadeiro se for um valor [code]Just[/code] e falso se for um [code]Nothing[/code]. Ainda tivemos de escrever [code](Maybe a)[/code] ao invés de apenas [code]Maybe[/code] porque, se você parar pra pensar, uma função [code]Maybe -&gt; Bool[/code] não pode existir (porque [code]Maybe[/code] não é um tipo concreto), onde que [code]Maybe a -&gt; Bool[/code] está bem e elegante. Ainda sim, isso é muito legal porque, agora, qualquer tipo na forma [code]Maybe something[/code] é parte de [code]YesNo[/code] e não importa o que [code]something[/code] é.
+
+Anteriormente, definimos um tipo[code]Tree a[/code], que representava uma árvore de busca binária. Podemos dizer que uma árvore vazia é falsa e qualquer coisa que não seja vazia seja verdadeira.
 
 
 
 
-Right, it works! Let's make a function that mimics the if statement, but it works with [code]YesNo[/code] values.
+Um semáforo pode ter um valor de sim ou não? Certamente. Se for vermelho, você para. Se for verde, você vai. Se for amarelo? Eh, eu geralmente ultrapasso amarelos porque eu vivo para a adrenalina.
 
 
 
-Pretty straightforward. It takes a yes-no-ish value and two things. If the yes-no-ish value is more of a yes, it returns the first of the two things, otherwise it returns the second of them.
+Legal, agora que temos algumas instâncias, vamos brincar!
+
+
+
+
+Certo, funciona! Vamos fazer uma função que imita o if, mas funciona com valores [code]YesNo[/code].
+
+
+
+Bem direto ao ponto. Precisa de um valor sim-ou-não e duas coisas. Se o valor s-m-ou-não for mais pra um sim, retorna a primeira das duas coisas, caso contário, retorna a segunda delas.
