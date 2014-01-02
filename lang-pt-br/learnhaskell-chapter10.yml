@@ -1,89 +1,89 @@
-chapter: Functionally Solving Problems
+chapter: Resolvendo Problemas Funcionalmente
 
-In this chapter, we'll take a look at a few interesting problems and how to think functionally to solve them as elegantly as possible. We probably won't be introducing any new concepts, we'll just be flexing our newly acquired Haskell muscles and practicing our coding skills. Each section will present a different problem. First we'll describe the problem, then we'll try and find out what the best (or least worst) way of solving it is.
+Neste capitulo, no iremos dar uma olhada em alguns problemas interessantes e como pensar funcionalmente para resolvê-los tão elegantemente quanto possível. Nos provavelmente não introduziremos nenhum novo conceito, nós apenas iremos ser flexíveis com nossos recém-adquiridos músculos de Haskell e praticar nossas habilidades de codar. Cada sessão irá apresentar um problema diferente. Primeiro nos descreveremos o problema, então nós iremos tentar encontrar a melhor (ou menos pior) forma de resolver o problema.
 
-title: Reverse Polish notation calculator
+title: Calculadora de Notação Polonesa Inversa
 
-text: Usually when we write mathematical expressions in school, we write them in an infix manner. For instance, we write [code]10 - (4 + 3) * 2[/code]. [code]+[/code], [code]*[/code] and [code]-[/code] are infix operators, just like the infix functions we met in Haskell ([code]+[/code], [code]`elem`[/code], etc.). This makes it handy because we, as humans, can parse it easily in our minds by looking at such an expression. The downside to it is that we have to use parentheses to denote precedence.
-
-
-[link]Reverse Polish notation[/link] is another way of writing down mathematical expressions. Initially it looks a bit weird, but it's actually pretty easy to understand and use because there's no need for parentheses and it's very easy to punch into a calculator. While most modern calculators use infix notation, some people still swear by RPN calculators. This is what the previous infix expression looks like in RPN: [code]10 4 3 + 2 * -[/code]. How do we calculate what the result of that is? Well, think of a stack. You go over the expression from left to right. Every time a number is encountered, push it on to the stack. When we encounter an operator, take the two numbers that are on top of the stack (we also say that we <i>pop</i> them), use the operator and those two and then push the resulting number back onto the stack. When you reach the end of the expression, you should be left with a single number if the expression was well-formed and that number represents the result.
+text: Normalmente quando nós escrevemos expressões matemáticas na escola, nós as escrevemos de uma maneira infixada. Por exemplo, nós escrevemos [code]10 - (4 + 3) * 2[/code]. [code]+[/code], [code]*[/code] e [code]-[/code] são operadores infixos, da mesma forma que funções infixadas que nos encontramos em Haskell ([code]+[/code], [code]`elem`[/code], etc.). Isto tornar tudo mais prático para nós, como humanos, podemos facilmente realizar o parser em nossas mentes facilmente apenas olhando qual é a expressão. A desvantagem disto é que nós temos de usar parênteses para denotar precedência.
 
 
-Let's go over the expression [code]10 4 3 + 2 * -[/code] together! First we push [code]10[/code] on to the stack and the stack is now [code]10[/code]. The next item is [code]4[/code], so we push it to the stack as well. The stack is now [code]10, 4[/code]. We do the same with [code]3[/code] and the stack is now [code]10, 4, 3[/code]. And now, we encounter an operator, namely [code]+[/code]! We pop the two top numbers from the stack (so now the stack is just [code]10[/code]), add those numbers together and push that result to the stack. The stack is now [code]10, 7[/code]. We push [code]2[/code] to the stack, the stack for now is [code]10, 7, 2[/code]. We've encountered an operator again, so let's pop [code]7[/code] and [code]2[/code] off the stack, multiply them and push that result to the stack. Multiplying [code]7[/code] and [code]2[/code] produces a [code]14[/code], so the stack we have now is [code]10, 14[/code]. Finally, there's a [code]-[/code]. We pop [code]10[/code] and [code]14[/code] from the stack, subtract [code]14[/code] from [code]10[/code] and push that back. The number on the stack is now [code]-4[/code] and because there are no more numbers or operators in our expression, that's our result!
-
-Now that we know how we'd calculate any RPN expression by hand, let's think about how we could make a Haskell function that takes as its parameter a string that contains a RPN expression, like [code]"10 4 3 + 2 * -"[/code] and gives us back its result.
-
-What would the type of that function be? We want it to take a string as a parameter and produce a number as its result. So it will probably be something like [code]solveRPN :: (Num a) =&gt; String -&gt; a[/code].
+[link]Notação Polonesa Inversa[/link] é outra forma de escrever matematicamente expressões. Inicialmente isso pode soar estranho, mas esta é atualmente a forma mais fácil de entender e usar porque não é necessário usar parênteses e é muito fácil de por isso em uma calculadora. Enquanto muitas das calculadoras modernas usam notação infixa, algumas pessoas continuam usando calculadoras NPI. É assim que a expressão infixa previamente mostrada parece na NPI: [code]10 4 3 + 2 * -[/code]. Como nos podemos calcular qual o resultado disso? Bem, pense em uma pilha. Quando nos encontramos um operador, pegamos os dois números que estão no topo da pilha (nós também dizemos que nós estamos fazendo um <i>pop</i>), usamos o operador e estes dois e então colocamos o número resultante de volta à pilha. Quando você encontrar o fim de uma expressão, você deve estar com um único número se a expressão foi bem formada e este numero representa o resultado.
 
 
-<em>Protip:</em> it really helps to first think what the type declaration of a function should be before concerning ourselves with the implementation and then write it down. In Haskell, a function's type declaration tells us a whole lot about the function, due to the very strong type system.
+Vamos analisar a expressão [code]10 4 3 + 2 * -[/code] juntos! Primeiro nos colocamos [code]10[/code] na pilha e a pilha agora está assim [code]10[/code]. O próximo item é [code]4[/code] então nos colocamos ele na pilha também. A pilha agora esta assim [code]10, 4[/code]. Nós fazemos a mesma coisa com [code]3[/code] e a pilha agora esta assim [code]10, 4, 3[/code]. Novamente nos encontramos uma operação, nomeadamente [code]+[/code]! Nós pegamos dois números do topo da pilha (então agora a pilha está apenas com [code]10[/code]), adicionando estes números e então colocamos o resultado na pilha. A pilha agora esta assim [code]10, 7[/code]. Nós colocamos [code]2[/code] na pilha, e a pilha agora está assim [code]10, 7, 2[/code]. Nós então encontramos um operador novamente, então vamos pegar o [code]7[/code] e [code]2[/code] da pilha, multiplicamos e então colocamos o resultado na pilha. Multiplicando [code]7[/code] e [code]2[/code] produz um [code]14[/code], então a pilha que nós temos agora está assim [code]10, 14[/code]. Finalmente, há um [code]-[/code]. Nós pegamos [code]10[/code] e [code]14[/code] da pilha, subtraímos [code]14[/code] de [code]10[/code] e então colocamos o resultado de volta. O número na pilha agora é [code]-4[/code] e como não há mais nenhum número ou operador em nossa expressão, este é nosso resultado!
+
+Agora que nós sabemos como nós podemos calcular qualquer expressão NPI manualmente, vamos pensar como nós podemos fazer uma função de Haskell que pega essa expressão como uma string que contém uma expressão NPI, como [code]"10 4 3 + 2 * -"[/code] e nos devolve o resultado.
+
+Qual pode ser o tipo desta função? Nós queremos pegar uma string como parâmetro e produzir um número como resultado. Então provavelmente será algo como [code]solveRPN :: (Num a) =&gt; String -&gt; a[/code].
 
 
-Cool. When implementing a solution to a problem in Haskell, it's also good to think back on how you did it by hand and maybe try to see if you can gain any insight from that. Here we see that we treated every number or operator that was separated by a space as a single item. So it might help us if we start by breaking a string like [code]"10 4 3 + 2 * -"[/code] into a list of items like [code]["10","4","3","+","2","*","-"][/code].
-
-Next up, what did we do with that list of items in our head? We went over it from left to right and kept a stack as we did that. Does the previous sentence remind you of anything? Remember, in the section about <a href="higher-order-functions/#folds">folds</a>, we said that pretty much any function where you traverse a list from left to right or right to left one element by element and build up (accumulate) some result (whether it's a number, a list, a stack, whatever) can be implemented with a fold.
-
-In this case, we're going to use a left fold, because we go over the list from left to right. The accumulator value will be our stack and hence, the result from the fold will also be a stack, only as we've seen, it will only have one item.
-
-One more thing to think about is, well, how are we going to represent the stack? I propose we use a list. Also I propose that we keep the top of our stack at the head of the list. That's because adding to the head (beginning) of a list is much faster than adding to the end of it. So if we have a stack of, say, [code]10, 4, 3[/code], we'll represent that as the list [code][3,4,10][/code].
-
-Now we have enough information to roughly sketch our function. It's going to take a string, like, [code]"10 4 3 + 2 * -"[/code] and break it down into a list of items by using [code]words[/code] to get [code]["10","4","3","+","2","*","-"][/code]. Next, we'll do a left fold over that list and end up with a stack that has a single item, so [code][-4][/code]. We take that single item out of the list and that's our final result!
-
-So here's a sketch of that function:
+<em>Dica útil:</em> realmente ajuda primeiro pensar qual o tipo que a função declarada pode ser antes de nós mesmos escrevermos a implementação. Em Haskell, a declaração do tipo de uma função nos diz muito sobre a função, devido ao sistema de tipos muito forte de Haskell.
 
 
+Legal. Ao implementar uma solução para um problema em Haskell, é bom pensar um pouco e como você pode fazer isso manualmente e talvez tentar ver se você pode ter alguma inspiração de como fazer. Aqui nós vemos que nós tratamos cada número ou operador que estava separado por um espaço como um item único. Então isto pode nos ajudar se nós queremos começar a quebrar a string como [code]"10 4 3 + 2 * -"[/code] em uma lista de itens como [code]["10","4","3","+","2","*","-"][/code].
 
+A seguir, o que nos fazer com esta lista de itens em nossas cabeças? Nós queremos ir sobre ela da esquerda pra direita e manter uma pilha do que nós estávamos fazendo. A sentença anterior lembra você de alguma coisa? Lembre-se, na sessão sobre <a href="higher-order-functions/#folds">folds</a>, nós dizemos que uma forma bonita para qualquer função que atravessa os elementos de uma lista da esquerda pra direita ou da direita pra esquerda elemento por elemento e constrói (acumula) algum resultado (se este é um número, uma lista, uma pilha, seja lá o que for) pode ser implementado com um fold.
 
+Neste caso, nós iremos usar um left fold, porque nós iremos sobre a lista da esquerda pra direita. O valor do acumulador irá ser nossa pilha e, portanto, o resultado do nosso fold também será uma pilha, e assim como nós vimos, ele terá apenas um item.
+Mais uma coisa para pensar sobre, bem, como iremos representar uma pilha? Eu proponho que nós usemos uma lista. Eu também proponho que nós mantenhamos o topo da pilha na cabeça da pilha. Isto porque adicionando na cabeça (começo) da lista é muito mais rápido que adicionar ao fim dela. Então se nós temos uma pilha, digamos, [code]10, 4, 3[/code], nós iremos representar isso como uma lista [code][3,4,10][/code].
 
-We take the expression and turn it into a list of items. Then we fold over that list of items with the folding function. Mind the [code][][/code], which represents the starting accumulator. The accumulator is our stack, so [code][][/code] represents an empty stack, which is what we start with. After getting the final stack with a single item, we call [code]head[/code] on that list to get the item out and then we apply [code]read[/code].
+Agora nós temos informação suficiente para esboçar aproximadamente como será a nossa função. Nós vamos pegar uma string, como, [code]"10 4 3 + 2 * -"[/code] e quebrá-la em uma lista de itens usando [code]words[/code] para pegar [code]["10","4","3","+","2","*","-"][/code]. A seguir, nós iremos fazer um left fold sobre esta lista e terminar com uma pilha que tem apenas um elemento, que é [code][-4][/code]. Nós pegamos este único item da lista e então este é o nosso resultado final.
 
-So all that's left now is to implement a folding function that will take a stack, like [code][4,10][/code], and an item, like [code]"3"[/code] and return a new stack [code][3,4,10][/code]. If the stack is [code][4,10][/code] and the item [code]"*"[/code], then it will have to return [code][40][/code]. But before that, let's turn our function into <a href="higher-order-functions#composition">point-free style</a> because it has a lot of parentheses that are kind of freaking me out:
+Então aqui está o esqueleto da função:
 
 
 
 
 
-Ah, there we go. Much better. So, the folding function will take a stack and an item and return a new stack. We'll use pattern matching to get the top items of a stack and to pattern match against operators like [code]"*"[/code] and [code]"-"[/code].
+Nós pegamos a expressão e tornamos ela numa lista de itens. Então nós atravessamos a lista de itens com a função de folding. Pense em um [code][][/code], que representa o acumulador inicial. O acumulador é nossa pilha, então [code][][/code] representa uma pilha vazia, que é a que nós começamos. Após pegar a pilha final com um único item, nós chamamos [code]head[/code] em nossa lista para pegar este item e então nós aplicamos [code]read[/code].
+
+Então tudo o que nos resta agora é implementar uma função de folding que pega uma pilha, como [code][4,10][/code], e um item, como [code]"3"[/code] e retorna uma nova pilha [code][3,4,10][/code]. Se a pilha é [code][4,10][/code] e o item [code]"*"[/code], então ela irá retornar [code][40][/code]. Mas antes disso, vamos passar nossa função para o <a href="higher-order-functions#composition">estilo de ponto livre</a> porque ela tem muitos parênteses que estão me assustando.
 
 
 
 
 
-We laid this out as four patterns. The patterns will be tried from top to bottom. First the folding function will see if the current item is [code]"*"[/code]. If it is, then it will take a list like [code][3,4,9,3][/code] and call its first two elements [code]x[/code] and [code]y[/code] respectively. So in this case, [code]x[/code] would be [code]3[/code] and [code]y[/code] would be [code]4[/code]. [code]ys[/code] would be [code][9,3][/code]. It will return a list that's just like [code]ys[/code], only it has [code]x[/code] and [code]y[/code] multiplied as its head. So with this we pop the two topmost numbers off the stack, multiply them and push the result back on to the stack. If the item is not [code]"*"[/code], the pattern matching will fall through and [code]"+"[/code] will be checked, and so on.
+Ah, Vamos lá. Bem melhor. Então, a função de folding ira pegar uma pilha e um item e retornar uma nova pilha. Nós iremos usar casamento de padrões para pegar os principais itens da pilha e para reconhecer os padrões de operadores como [code]"*"[/code] e [code]"-"[/code].
 
-If the item is none of the operators, then we assume it's a string that represents a number. If it's a number, we just call [code]read[/code] on that string to get a number from it and return the previous stack but with that number pushed to the top.
 
-And that's it! Also noticed that we added an extra class constraint of [code]Read a[/code] to the function declaration, because we call [code]read[/code] on our string to get the number. So this declaration means that the result can be of any type that's part of the [code]Num[/code] and [code]Read[/code] typeclasses (like [code]Int[/code], [code]Float[/code], etc.). 
 
-For the list of items [code]["2","3","+"][/code], our function will start folding from the left. The intial stack will be [code][][/code]. It will call the folding function with [code][][/code] as the stack (accumulator) and [code]"2"[/code] as the item. Because that item is not an operator, it will be [code]read[/code] and the added to the beginning of [code][][/code]. So the new stack is now [code][2][/code] and the folding function will be called with [code][2][/code] as the stack and [code]["3"][/code] as the item, producing a new stack of [code][3,2][/code]. Then, it's called for the third time with [code][3,2][/code] as the stack and [code]"+"[/code] as the item. This causes these two numbers to be popped off the stack, added together and pushed back. The final stack is [code][5][/code], which is the number that we return.
 
-Let's play around with our function:
 
+Aqui nós estabelecemos isso como quarto padrões. Os padrões serão testados do primeiro pro último. Primeiro a função de folding irá ver se o item atual é [code]"*"[/code]. Se ele é, então ele irá pegar uma lista como [code][3,4,9,3][/code] e chamará seus primeiros dois elementos [code]x[/code] e [code]y[/code] respectivamente. Então neste caso, [code]x[/code] pode ser [code]3[/code] e [code]y[/code] pode ser [code]4[/code]. [code]ys[/code] pode ser [code][9,3][/code]. Isto irá retornar uma lista que é como [code]ys[/code], apenas se há [code]x[/code] e [code]y[/code] multiplicado em sua cabeça. Portanto com isso nós iremos retirar os dois números mais ao topo da pilha, multiplica-los e então colocar o resultado de volta na pilha. Se o item não é [code]"*"[/code], o casamento de padrão irá falhar e [code]"+"[/code] será checado, e assim em diante.
+
+Se o item não é nenhum dos operadores, então nós assumimos que ele é uma string que representa um número. Se ele é um número, nós apenas chamamos [code]read[/code] nessa string pra pegar o número dela e retornamos a pilha anterior, mas agora com este número colocado no topo dela.
+
+E é isso! Também notamos que nós adicionamos uma classe extra de restrição a [code]Read a[/code] para a declaração da função, porque nós chamamos [code]read[/code] em nossa string para pegar um número. Então esta declaração significa que o resultado pode ser apenas do tipo que é parte das classes [code]Num[/code] e [code]Read[/code] (como [code]Int[/code], [code]Float[/code], etc.).
+
+Para a lista de itens [code]["2","3","+"][/code], nossa função irá começar atravessando a partir da esquerda. A pilha inicial será [code][][/code]. Ela irá chamar a função de folding com [code][][/code] como pilha (acumulador) e [code]"2"[/code] como o item. Pois este item não é um operador, ele será lido com [code]read[/code] e adicionado ao início de [code][][/code]. Então a nova pilha agora será [code][2][/code] e a função de folding será chamada com [code][2][/code] como pilha e [code]["3"][/code] como um item, produzindo uma nova pilha [code][3,2][/code]. Então, ela é chamada pela terceira vez com [code][3,2][/code] como a pilha e [code]"+"[/code] como o item. Isto porque estes dois números precisam ser retirados da pilha, somados e então o resultado posto de volta. A pilha final é [code][5][/code], que é o número que nos retornamos.
+
+Vamos brincar com a nossa função: 
 
 
 
 
 
 
-Cool, it works! One nice thing about this function is that it can be easily modified to support various other operators. They don't even have to be binary operators. For instance, we can make an operator [code]"log"[/code] that just pops one number off the stack and pushes back its logarithm. We can also make a ternary operators that pop three numbers off the stack and push back a result or operators like [code]"sum"[/code] which pop off all the numbers and push back their sum.
+Legal, ela funciona! Uma coisa boa sobre nossa função e que ela pode ser facilmente modificada para suportar vários outro operadores. Eles sem sempre tem de ser operadores binários. Por exemplo, nós podemos criar um operador [code]"log"[/code] que apenas retira um número da pilha e coloca de volta o seu logaritmo. Nós podemos criar operadores ternários que retiram três números da pilha e colocam o resultado de volta ou operações como [code]"sum"[/code] que retiram todos os números e então coloca de volta a sua soma.
 
-Let's modify our function to take a few more operators. For simplicity's sake, we'll change its type declaration so that it returns a number of type [code]Float[/code].
-
-
-
-
-Wow, great! [code]/[/code] is division of course and [code]**[/code] is floating point exponentiation. With the logarithm operator, we just pattern match against a single element and the rest of the stack because we only need one element to perform its natural logarithm. With the sum operator, we just return a stack that has only one element, which is the sum of the stack so far.
+Vamos modificar nossa função para pegar mais algumas operações. Por causa da simplicidade, nós iremos alterar a declaração do seu tipo para retornar um número do tipo [code]Float[/code].
 
 
 
 
+Wow, maravilhoso! [code]/[/code] é certamente divisão e [code]**[/code] é a exponenciação de ponto flutuante. Com o operador de logaritmo, nos apenas casamos o padrão com um único elemento e o resto da pilha porquê nos apenas precisamos de um elemento para calcular um logaritmo natural. Com o operador sum, nos apenas retornamos a pilha que tínhamos com um elemento que é a soma de todos os elementos que estavam presentes na pilha.
 
 
-Notice that we can include floating point numbers in our expression because [code]read[/code] knows how to read them.
 
 
 
-I think that making a function that can calculate arbitrary floating point RPN expressions and has the option to be easily extended in 10 lines is pretty awesome.
+
+Note que nós podemos incluir números de ponto flutuante em nossas expressões porque [code]read[/code] sabe o como ler eles.
+
+
+
+Eu penso que criar uma função que pode calcular arbitrariamente expressões NPI de ponto flutuante e tem a opção de ser facilmente estendida em 10 linhas é algo muito impressionante.
+
+Uma coisa para notar sobre nossa função é que ele não é realmente tolerante a falhas. Quando dada uma entrada que não faz sentido, ele irá apenas quebrar tudo. Nós iremos criar uma versão tolerante a falhas com esta declaração de tipo [code]solveRPN :: String -&gt; Maybe Float[/code] uma vez que nós aprendermos monads (elas não são assustadoras, confie em mim!). Nós podemos fazer uma coisa agora, mas ela pode ser um pouco tediosa porque ela pode envolver uma serie de checagens para [code]Nothing[/code] em cada passo. Se você está sentindo preparado para o desafio, você pode seguir em frente e tentar! Dica: você pode usar [code]reads[/code] para ver se a leitura foi feita com sucesso ou não.
 
 One thing to note about this function is that it's not really fault tolerant. When given input that doesn't make sense, it will just crash everything. We'll make a fault tolerant version of this with a type declaration of [code]solveRPN :: String -&gt; Maybe Float[/code] once we get to know monads (they're not scary, trust me!). We could make one right now, but it would be a bit tedious because it would involve a lot of checking for [code]Nothing[/code] on every step. If you're feeling up to the challenge though, you can go ahead and try it! Hint: you can use [code]reads[/code] to see if a read was successful or not.
