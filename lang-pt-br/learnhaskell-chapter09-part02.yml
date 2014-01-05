@@ -46,7 +46,7 @@ Só para mostar como esse resultado pode ser alcançado com muito menos código 
 
 Wow, nós realmente o reduzimos a uma única linha, o que é muito legal!
 
-Até agora, nós trabalhamos com E/S imprimindo coisas no terminal e lendo dele. Mas e quando a ler e escrever em arquivos? Bem, de certo modo, nós já estamos fazendo isso. Um modo de visualizar a leitura do terminal é imaginar que é como ler de um arquivo (um tanto especial). O mesmo vale para escrever no terminal, que é como escrever em um arquivo. Chamamos esses dois arquivos de [code]stdout[/code] e [code]stdin[/code], que significam <i>saída padrão</i> e <i>entrada padrão</i>, respectivamente. Mantendo isso em mente, veremos que escrever e ler arquivos é muito parecido com escrever na saída padrão e ler da entrada padrão.
+Até agora, nós trabalhamos com E/S imprimindo coisas no terminal e lendo dele. Mas e quanto a ler e escrever em arquivos? Bem, de certo modo, nós já estamos fazendo isso. Um modo de visualizar a leitura do terminal é imaginar que é como ler de um arquivo (um tanto especial). O mesmo vale para escrever no terminal, que é como escrever em um arquivo. Chamamos esses dois arquivos de [code]stdout[/code] e [code]stdin[/code], que significam <i>saída padrão</i> e <i>entrada padrão</i>, respectivamente. Mantendo isso em mente, veremos que escrever e ler arquivos é muito parecido com escrever na saída padrão e ler da entrada padrão.
 
 Iremos iniciar com um programa realmente simples que abre um arquivo chamado <i>girlfriend.txt</i>, que contém um verso do hit nº 1 de Avril Lavigne, <i>Girlfriend</i>, e somente o imprime no terminal. Aque está <i>girlfriend.txt</i>:
 
