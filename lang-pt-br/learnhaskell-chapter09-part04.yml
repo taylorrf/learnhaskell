@@ -1,73 +1,73 @@
 title: Aleatoriedade
 
-text: Many times while programming, you need to get some random data. Maybe you're making a game where a dice needs to be thrown or you need to generate some test data to test out your program. There are a lot of uses for random data when programming. Well, actually, pseudo-random, because we all know that the only true source of randomness is a monkey on a unicycle with a cheese in one hand and its butt in the other. In this section, we'll take a look at how to make Haskell generate seemingly random data.
+text: Muitas vezes quando esta programando, você precisa pegar dados aleatórios. Talvez você esteja fazendo um jogo onde um dado precisa ser jogado ou que você precisa gerar alguns dados de teste para testar seu programa. Há uma série de usos para dados aleatórios quando estiver programando. Bem, atualmente, pseudoaleatório, porque todos nós sabemos que a única verdadeira fonte de aleatoriedade é um macaco em um monociclo com um queijo em uma mão e a outra na bunda. Nesta seção, vamos dar uma olhada em como fazer Haskell gerar dados aparentemente aleatórios.
 
-In most other programming languages, you have functions that give you back some random number. Each time you call that function, you get back a (hopefully) different random number. How about Haskell? Well, remember, Haskell is a pure functional language. What that means is that it has referential transparency. What THAT means is that a function, if given the same parameters twice, must produce the same result twice. That's really cool because it allows us to reason differently about programs and it enables us to defer evaluation until we really need it. If I call a function, I can be sure that it won't do any funny stuff before giving me the results. All that matters are its results. However, this makes it a bit tricky for getting random numbers. If I have a function like this:
+Na maioria das outras linguagens de programação, você tem funções que lhe dar de volta um número aleatório. Cada vez que você chama essa função, você recebe de volta um número aleatório diferente(espero). E sobre Haskell? Well, lembra, Haskell é uma linguagem funcional pura. O que isto significa é que ele tem transparência referencial. O que ISTO significa é que uma função, se dado os mesmos parâmetros duas vezes, deve produzir o mesmo resultado duas vezes. Isso é muito legal, pois nos permite raciocinar de forma diferente sobre os programas e que nos permite adiar a avaliação até que realmente precisamos dele. Se eu chamar uma função, Eu posso ter certeza que ele não vai fazer qualquer coisa engraçada antes de me dar os resultados. Tudo o que importa são os resultados. No entanto, isso faz com que seja um pouco complicado para obter números aleatórios. Se eu tenho uma função como esta:
 
 
 
 
-It's not very useful as a random number function because it will always return [code]4[/code], even though I can assure you that the 4 is completely random, because I used a dice to determine it.
+Ele não é muito útil como uma função de número aleatório, porque ele vai sempre retornar [code]4[/code], mesmo que eu posso garantir que o 4 é completamente aleatório, porque eu usei um dado para determinar ele.
 
-How do other languages make seemingly random numbers? Well, they take various info from your computer, like the current time, how much and where you moved your mouse and what kind of noises you made behind your computer and based on that, give a number that looks really random. The combination of those factors (that randomness) is probably different in any given moment in time, so you get a different random number.
+Como outras linguagens fazem números aparentemente aleatórios? Bem, eles pegam várias informações do seu computador, como a hora atual, quanto e onde você moveu o mouse e que tipo de ruídos que você fez atrás de seu computador e com base nisso, dar um número que parece muito aleatório. A combinação desses fatores (que aleatoriedade) é provavelmente diferente em um determinado momento no tempo, de modo a obter um número aleatório diferente.
 
-Ah. So in Haskell, we can make a random number then if we make a function that takes as its parameter that randomness and based on that returns some number (or other data type).
+Ah. Assim em Haskell, podemos fazer um número aleatório, em seguida, se fizermos uma função que recebe como parâmetro essa aleatoriedade e com base nisso retorna um número (ou outro tipo de dados).
 
-Enter the [code]System.Random[/code] module. It has all the functions that satisfy our need for randomness. Let's just dive into one of the functions it exports then, namely [function]random[/function]. Here's its type: [code]random :: (RandomGen g, Random a) =&gt; g -&gt; (a, g)[/code]. Whoa! Some new typeclasses in this type declaration up in here! The [class]RandomGen[/class] typeclass is for types that can act as sources of randomness. The [class]Random[/class] typeclass is for things that can take on random values. A boolean value can take on a random value, namely [code]True[/code] or [code]False[/code]. A number can also take up a plethora of different random values. Can a function take on a random value? I don't think so, probably not! If we try to translate the type declaration of [code]random[/code] to English, we get something like: it takes a random generator (that's our source of randomness) and returns a random value and a new random generator. Why does it also return a new generator as well as a random value? Well, we'll see in a moment.
+Digite o [code]System.Random[/code] módulo. Ele tem todas as funções que satisfazem nossa necessidade de aleatoriedade. Vamos mergulhar em uma das funções ele exporta depois, isto é [function]random[/function]. este é o seu tipo: [code]random :: (RandomGen g, Random a) =&gt; g -&gt; (a, g)[/code]. Opa! Alguns novos tipos de classes neste tipo de declaração por aqui! O [class]RandomGen[/class] tipo da classe é para tipos que podem atuar como fontes de aleatoriedade. O [class]Random[/class] tipo da classe é para coisas que podem assumir valores aleatórios. Um valor booleano pode assumir um valor aleatório, isto é [code]True[/code] ou [code]False[/code]. Um número também pode assumir uma infinidade de valores aleatórios diferentes. Pode uma função assumir um valor aleatório? Eu não penso assim, provavelmente não! Se tentarmos traduzir a declaração de tipo de [code]random[/code] para Inglês, temos algo como: é preciso um gerador aleatório (essa é a nossa fonte de aleatoriedade) e retorna um valor aleatório e um novo gerador aleatório. Por que também retornam um novo gerador, bem como um valor aleatório? Bem, veremos em um momento.
 
-To use our [code]random[/code] function, we have to get our hands on one of those random generators. The [code]System.Random[/code] module exports a cool type, namely <span class="label type">StdGen[/code] that is an instance of the [code]RandomGen[/code] typeclass. We can either make a [code]StdGen[/code] manually or we can tell the system to give us one based on a multitude of sort of random stuff.
+Para utilizar nossa [code]random[/code] função, temos que obter em nossas mãos um desses geradores aleatórios. O [code]System.Random[/code] módulo exporta um tipo fresco, isto é <span class="label type">StdGen[/code] que é uma instância do [code]RandomGen[/code] tipo de classe. Podemos fazer um [code]StdGen[/code] manualmente ou podemos dizer ao sistema que nos dê um baseado em uma infinidade de tipo de coisas aleatórias.
 
-To manually make a random generator, use the [function]mkStdGen[/function] function. It has a type of [code]mkStdGen :: Int -&gt; StdGen[/code]. It takes an integer and based on that, gives us a random generator. Okay then, let's try using [code]random[/code] and [code]mkStdGen[/code] in tandem to get a (hardly random) number.
+Para fazer manualmente um gerador aleatório, use a função [function]mkStdGen[/function]. Tem um tipo [code]mkStdGen :: Int -&gt; StdGen[/code]. ele pega um inteiro e com base nesse, dá-nos um gerador aleatório. Certo então, vamos tentar usar [code]random[/code] e [code]mkStdGen[/code] para obter um número (quase aleatório).
 
 
 
 
 
-What's this? Ah, right, the [code]random[/code] function can return a value of any type that's part of the [code]Random[/code] typeclass, so we have to inform Haskell what kind of type we want. Also let's not forget that it returns a random value and a random generator in a pair.
+O que é isto? Ah, certo, a função [code]random[/code] pode retornar um valor de qualquer tipo, que faz parte do [code]Random[/code] type classe, por isso temos que informar Haskell que TIPO de tipo que queremos. Também não vamos esquecer que ele retorna um valor aleatório e um gerador aleatório em um par.
 
 
 
 
 
-Finally! A number that looks kind of random! The first component of the tuple is our number whereas the second component is a textual representation of our new random generator. What happens if we call [code]random[/code] with the same random generator again?
+Finalmente! Um número que parece meio aleatório! O primeiro componente da tupla é o nosso número, enquanto que o segundo componente é uma representação textual do nosso novo gerador aleatório. O que acontece se nós chamamos [code]random[/code] com o mesmo gerador aleatório novamente?
 
 
 
 
-Of course. The same result for the same parameters. So let's try giving it a different random generator as a parameter.
+Claro. O mesmo resultado para os mesmos parâmetros. Então, vamos tentar dar-lhe um gerador aleatório diferente como parâmetro.
 
 
 
 
-Alright, cool, great, a different number. We can use the type annotation to get different types back from that function.
+Certo, legal, excelente, um número diferente. Podemos usar o comentário de tipo para obter diferentes tipos de volta a partir dessa função.
 
 
 
 
-Let's make a function that simulates tossing a coin three times. If [code]random[/code] didn't return a new generator along with a random value, we'd have to make this function take three random generators as a parameter and then return coin tosses for each of them. But that sounds wrong because if one generator can make a random value of type [code]Int[/code] (which can take on a load of different values), it should be able to make three coin tosses (which can take on precisely eight combinations). So this is where [code]random[/code] returning a new generator along with a value really comes in handy.
+Vamos fazer uma função que simula jogar uma moeda três vezes. Se [code]random[/code] não retornou um novo gerador, juntamente com um valor aleatório, nós teríamos que fazer esta função levar três geradores aleatórios como um parâmetro e, em seguida, retornar aos lançamentos de moeda para cada um deles. Mas isso soa mal, porque se um gerador pode fazer um valor aleatório de tipo [code]Int[/code] (o qual pode assumir uma abundância de valores diferentes), ele deve ser capaz de fazer três lançamentos de moeda (que pode assumir precisamente oito combinações). Portanto, este é o lugar onde [code]random[/code] retornar um novo gerador, juntamente com um valor realmente vem a calhar.
 
-We'll represent a coin with a simple [code]Bool[/code]. [code]True[/code] is tails, [code]False[/code] is heads.
+Vamos representar uma moeda com um simples [code]Bool[/code]. [code]True[/code] é coroa, [code]False[/code] é cara.
 
 
 
 
 
 
-We call [code]random[/code] with the generator we got as a parameter to get a coin and a new generator. Then we call it again, only this time with our new generator, to get the second coin. We do the same for the third coin. Had we called it with the same generator every time, all the coins would have had the same value and we'd only be able to get [code](False, False, False)[/code] or [code](True, True, True)[/code] as a result.
+Chamamos [code]random[/code] com o gerador temos como parâmetro para obter uma moeda e um novo gerador. Então, nós chamamos de novo, só que desta vez com o nosso novo gerador, para obter a segunda moeda. Fazemos o mesmo para a terceira moeda. Se tivéssemos chamado com o mesmo gerador de cada vez, todas as moedas teriam o mesmo valor e nós só seríamos capazes de obter [code](False, False, False)[/code] ou [code](True, True, True)[/code] como resultado.
 
 
 
 
 
-Notice that we didn't have to do [code]random gen :: (Bool, StdGen)[/code]. That's because we already specified that we want booleans in the type declaration of the function. That's why Haskell can infer that we want a boolean value in this case.
+Observe que nós não temos que fazer [code]random gen :: (Bool, StdGen)[/code]. Isso é porque nós já especificado que nós queremos booleanos na declaração do tipo da função. É por isso que Haskell pode-se inferir que queremos um valor booleano, neste caso.
 
-So what if we want to flip four coins? Or five? Well, there's a function called [function]randoms[/function] that takes a generator and returns an infinite sequence of values based on that generator.
+Então, o que acontece se deseja inverter quatro moedas? Ou cinco? Bem, há uma função chamada [function]randoms[/function] que leva um gerador e devolve uma sequência infinita de valores com base nesse gerador.
 
 
 
 
 
-Why doesn't [code]randoms[/code] return a new generator as well as a list? We could implement the [code]randoms[/code] function very easily like this:
+Por que não [code]randoms[/code] retornar um novo gerador, bem como uma lista? Poderíamos implementar a função [code]randoms[/code] muito facilmente como esta:
 
 
 
@@ -75,86 +75,83 @@ Why doesn't [code]randoms[/code] return a new generator as well as a list? We co
 
 
 
-A recursive definition. We get a random value and a new generator from the current generator and then make a list that has the value as its head and random numbers based on the new generator as its tail. Because we have to be able to potentially generate an infinite amount of numbers, we can't give the new random generator back.
+Uma definição recursiva. Ficamos com um valor aleatório e um novo gerador do gerador de corrente e, em seguida, faça uma lista que tem o valor de sua cabeça e números aleatórios com base no novo gerador como a cauda. Porque temos que ser capaz de gerar potencialmente uma quantidade infinita de números, não podemos dar o novo gerador aleatório de volta.
 
-We could make a function that generates a finite stream of numbers and a new generator like this:
+Nós poderíamos fazer uma função que gera um fluxo finito de números e um novo gerador como esta:
 
 
 
 
 
-Again, a recursive definition. We say that if we want 0 numbers, we just return an empty list and the generator that was given to us. For any other number of random values, we first get one random number and a new generator. That will be the head. Then we say that the tail will be <i>n - 1</i> numbers generated with the new generator. Then we return the head and the rest of the list joined and the final generator that we got from getting the <i>n - 1</i> random numbers.
+Novamente, uma definição recursiva. Nós dizemos que, se quisermos 0 números, nós apenas retornar uma lista vazia e o gerador que nos foi dado. Para qualquer outro número de valores aleatórios, que primeiro obtemos um número aleatório e um novo gerador. Esse será o cabeça. Então dizemos que a cauda será <i>n - 1</i> números gerados com o novo gerador. Então voltamos a cabeça e o resto da lista se juntou e o gerador final que temos de obter os <i>n - 1</i> números aleatórios.
 
-What if we want a random value in some sort of range? All the random integers so far were outrageously big or small. What if we want to to throw a dice? Well, we use [function]randomR[/function] for that purpose. It has a type of [code]randomR :: (RandomGen g, Random a) :: (a, a) -&gt; g -&gt; (a, g)[/code], meaning that it's kind of like [code]random[/code], only it takes as its first parameter a pair of values that set the lower and upper bounds and the final value produced will be within those bounds.
+E se queremos um valor aleatório em algum tipo de intervalo? Todos os números inteiros aleatórios até agora foram escandalosamente grande ou pequeno. E se nós queremos para jogar um dado? Bem, usamos [function]randomR[/function] para esse propósito. Ela tem um tipo de [code]randomR :: (RandomGen g, Random a) :: (a, a) -&gt; g -&gt; (a, g)[/code], significando que é um tipo como [code]random[/code], só toma como seu primeiro parâmetro um par de valores que definem os limites inferior e superior e o valor final produzido será dentro desses limites.
 
 
 
 
 
 
-There's also [function]randomRs[/function], which produces a stream of random values within our defined ranges. Check this out:
+Há também [function]randomRs[/function], que produz um fluxo de valores aleatórios dentro de nossos intervalos definidos. verifique isto:
 
 
 
-Nice, looks like a super secret password or something.
+Legal, se parece com uma senha super secreta ou algo assim.
 
-You may be asking yourself, what does this section have to do with I/O anyway? We haven't done anything concerning I/O so far. Well, so far we've always made our random number generator manually by making it with some arbitrary integer. The problem is, if we do that in our real programs, they will always return the same random numbers, which is no good for us. That's why [code]System.Random[/code] offers the [function]getStdGen[/function] I/O action, which has a type of [code]IO StdGen[/code]. When your program starts, it asks the system for a good random number generator and stores that in a so called global generator. [code]getStdGen[/code] fetches you that global random generator when you bind it to something.
+Você pode estar se perguntando, o que esta secção tem a ver com I/O de qualquer maneira? Nós não fizemos nada a respeito I/O até agora. Bem, até agora nós sempre fizemos o nosso gerador de números aleatórios manualmente, fazendo-o com algum inteiro arbitrário. O problema é, se fizermos isso em nossos programas reais, eles sempre retornam os mesmos números aleatórios, o que não é bom para nós. É por isso que [code]System.Random[/code] oferece a [function]getStdGen[/function] I/O ação, que tem um tipo de [code]IO StdGen[/code]. Quando o programa é iniciado, ele pede ao sistema por um bom gerador de números aleatórios e armazena este no chamado gerador mundial. [code]getStdGen[/code] você obtém o gerador aleatório global quando você ligá-la para algo.
 
-Here's a simple program that generates a random string.
+Aqui está um programa simples que gera uma sequência aleatória.
 
 
 
 
 
-Be careful though, just performing [code]getStdGen[/code] twice will ask the system for the same global generator twice. If you do this:
+Tenha cuidado, porém, apenas realizando [code]getStdGen[/code] duas vezes vai pedir ao sistema para o mesmo gerador mundial duas vezes. Se você fizer isso:
 
 
 
 
 
-you will get the same string printed out twice! One way to get two different strings of length 20 is to set up an infinite stream and then take the first 20 characters and print them out in one line and then take the second set of 20 characters and print them out in the second line. For this, we can use the [code]splitAt[/code] function from [code]Data.List[/code], which splits a list at some index and returns a tuple that has the first part as the first component and the second part as the second component.
+Você vai ter a mesma sequência impressa duas vezes! Uma maneira de obter duas cadeias diferentes de comprimento 20 é a criação de um fluxo infinito e, em seguida, tomar os primeiros 20 elementos e imprimi-los em uma linha e, em seguida, tomar o próximo conjunto de 20 elementos e imprimi-los na segunda linha. Para isso, podemos usar a [code]splitAt[/code] função de [code]Data.List[/code], que divide uma lista de alguns índices e retorna uma tupla que tem a primeira parte, como o primeiro componente e a segunda parte como a segunda componente.
 
 
 
 
 
-Another way is to use the [function]newStdGen[/function] action, which splits our current random generator into two generators. It updates the global random generator with one of them and encapsulates the other as its result.
+Outra forma é usar a ação [function]newStdGen[/function], que divide o nosso gerador aleatório atual em dois geradores. Ele atualiza o gerador aleatório global com um deles e encapsula o outro como seu resultado.
 
 
 
 
 
-Not only do we get a new random generator when we bind [code]newStdGen[/code] to something, the global one gets updated as well, so if we do [code]getStdGen[/code] again and bind it to something, we'll get a generator that's not the same as [code]gen[/code].
+Não só temos um novo gerador aleatório quando ligamos [code]newStdGen[/code] para algo, o global é atualizado assim, portanto se fizermos [code]getStdGen[/code] novamente e vinculá-lo a algo, teremos um gerador que não é o mesmo que [code]gen[/code].
 
-Here's a little program that will make the user guess which number it's thinking of.
+Aqui está um pequeno programa que irá fazer o usuário adivinhar que número o programa está pensando.
 
 
 
 
 
 
-We make a function [code]askForNumber[/code], which takes a random number generator and returns an I/O action that will prompt the user for a number and tell him if he guessed it right. In that function, we first generate a random number and a new generator based on the generator that we got as a parameter and call them [code]randNumber[/code] and [code]newGen[/code]. Let's say that the number generated was [code]7[/code]. Then we tell the user to guess which number we're thinking of. We perform [code]getLine[/code] and bind its result to [code]numberString[/code]. When the user enters [code]7[/code], [code]numberString[/code] becomes [code]"7"[/code]. Next, we use [code]when[/code] to check if the string the user entered is an empty string. If it is, an empty I/O action of [code]return ()[/code] is performed, which effectively ends the program. If it isn't, the action consisting of that <i>do</i> block right there gets performed. We use [code]read[/code] on [code]numberString[/code] to convert it to a number, so [code]number[/code] is now [code]7[/code].
+Fazemos uma função [code]askForNumber[/code], que leva um gerador de números aleatórios e retorna um I/O ação que irá solicitar ao usuário um número e dizer-lhe se ele adivinhou certo. Nesta função, que primeiro geramos um número aleatório e um novo gerador baseado no gerador que temos como parâmetro e chamá-los [code]randNumber[/code] e [code]newGen[/code]. Vamos dizer que o número gerado foi [code]7[/code]. Então nós dizemos ao usuário para adivinhar qual o número que o programa está pensando. Realizamos [code]getLine[/code] e ligue seu resultado para [code]numberString[/code]. Quando o usuário digita [code]7[/code], [code]numberString[/code] torna-se [code]"7"[/code]. Depois, usamos [code]when[/code] para verificar se a string que o usuário digitou é uma cadeia vazia. Se for, um vazio I/O ação da [code]return ()[/code] é realizada, que efetivamente termina o programa. Se não for, a ação que consiste no <i>do</i> bloco ali se realizaram. Usamos [code]read[/code] na [code]numberString[/code] convertê-la para um número, assim [code]number[/code] é agora [code]7[/code].
 
-<b>Excuse me!</b> If the user gives us some input here that [code]read[/code] can't read (like [code]"haha"[/code]), our program will crash with an ugly error message. If you don't want your program to crash on erronous input, use [function]reads[/function], which returns an empty list when it fails to read a string. When it succeeds, it returns a singleton list with a tuple that has our desired value as one component and a string with what it didn't consume as the other.
+<b>Desculpe!</b> Se o usuário dá-nos algumas informações aqui que [code]read[/code] não posso ler (como [code]"haha"[/code]), nosso programa irá falhar com uma mensagem de erro feia. Se você não quer que seu programa falhar com entrada errônea, use [function]reads[/function], que retorna uma lista vazia quando ele não consegue ler uma string. Quando ele consegue, ele retorna uma lista única com uma tupla que tem o nosso valor desejado como um componente e uma string com que ele não consome como o outro.
 
-We check if the number that we entered is equal to the one generated randomly and give the user the appropriate message. And then we call [code]askForNumber[/code] recursively, only this time with the new generator that we got, which gives us an I/O action that's just like the one we performed, only it depends on a different generator and we perform it.
+Vamos verificar se o número que damos como entrada é igual ao gerado aleatoriamente e dar ao usuário a mensagem apropriada. E então chamamos [code]askForNumber[/code] recursivamente, só que desta vez com o novo gerador que temos, o que nos dá uma I/O ação que é igual à que foi realizada, apenas ela depende de um gerador diferente e vamos realizá-la.
 
-[code]main[/code] consists of just getting a random generator from the system and calling [code]askForNumber[/code] with it to get the initial action.
+[code]main[/code] consiste em apenas obter um gerador aleatório do sistema e chamar [code]askForNumber[/code] com ele para obter a ação inicial.
 
-Here's our program in action!
+Aqui está o nosso programa em ação!
 
 
 
 
 
 
-Another way to make this same program is like this:
+Outra maneira de fazer este mesmo programa é assim:
 
 
 
 
 
-It's very similar to the previous version, only instead of making a function that takes a generator and then calls itself recursively with the new updated generator, we do all the work in [code]main[/code]. After telling the user whether they were correct in their guess or not, we update the global generator and then call [code]main[/code] again. Both approaches are valid but I like the first one more since it does less stuff in [code]main[/code] and also provides us with a function that we can reuse easily.
-
-
-
+É muito semelhante à versão anterior, só que em vez de fazer uma função que recebe um gerador e, em seguida, chama a si mesmo de forma recursiva com o novo gerador atualizada, nós fazemos todo o trabalho no [code]main[/code]. Depois de dizer ao usuário se eles estavam corretos em sua suposição ou não, nós atualizamos o gerador global e, em seguida, chamar [code]main[/code] novamente. Ambas as abordagens são válidas, mas eu gosto mais do primeiro, uma vez que faz menos coisas em [code]main[/code] e também nos fornece uma função que podemos reutilizar facilmente.
