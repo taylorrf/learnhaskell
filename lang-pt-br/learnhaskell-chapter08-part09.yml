@@ -1,8 +1,8 @@
 title: A typeclass Functor
 
-text: Até agora, nós temos encontrado diversas typeclasses na biblioteca padrão. Nós brincamos com [code]Ord[/code], que é feito para coisas que podem ser ordenadas. Nós fizemos amizade com [code]Eq[/code], que é feito para coisas que podem ser igualadas. Nós vimos [code]Show[/code], que serve de interface para tipos nos quais seus valores podem ser mostrados como strings. Nosso bom amigo [code]Read[/code] está aqui sempre que nós precisamos converter uma string para um valor de algum tipo. E agora, nós vamos dar uma olhada no código da typeclass [code]Functor[/code] , que é basicamente para coisas que podem ser mapeadas. Você provavelmente está pensando em listas, já que mapeamento sobre listas é um idioma dominante em Haskell. E você está certo, o tipo list é parte do typeclass [code]Functor[/code] .
+text: Até agora, nós temos encontrado diversas typeclasses na biblioteca padrão. Nós brincamos com [code]Ord[/code], que é feito para coisas que podem ser ordenadas. Nós fizemos amizade com [code]Eq[/code], que é feito para coisas que podem ser igualadas. Nós vimos [code]Show[/code], que serve de interface para tipos nos quais seus valores podem ser mostrados como strings. Nosso bom amigo [code]Read[/code] está aqui sempre que nós precisamos converter uma string para um valor de algum tipo. E agora, nós vamos dar uma olhada no código da typeclass [code]Functor[/code], que é basicamente para coisas que podem ser mapeadas. Você provavelmente está pensando em listas, já que mapeamento sobre listas é um idioma dominante em Haskell. E você está certo, o tipo list é parte do typeclass [code]Functor[/code].
 
-Que maneira melhor de conhecer o typeclass [code]Functor[/code] typeclass do que ver como ele é implementado? Vamos dar uma olhada.
+Que maneira melhor de conhecer o typeclass [code]Functor[/code] do que ver como ele é implementado? Vamos dar uma olhada.
 
 
 
@@ -11,7 +11,7 @@ OK. Nós vimos que ele define uma função, [code]fmap[/code], e não fornece ne
 
 Se isso soa um pouco confuso, não se preocupe. Tudo será revelado em breve quando nós observamos alguns exemplos. Humm, essa declaração de tipo de [code]fmap[/code] me lembra de alguma coisa. Se você não sabe qual é a assinatura de tipo de [code]map[/code] , é essa: [code]map :: (a -&gt; b) -&gt; [a] -&gt; [b][/code].
 
-Ah, interessante! Ele pega uma função de um tipo para outro e uma lista de um tipo e retorna uma lista do outro tipo. Meus amigos, Eu acho que nós temos um functor! De fato, [code]map[/code] é só um [code]fmap[/code] que só funciona com listas. Aqui está a prova de que list é uma instância do typeclass [code]Functor[/code].
+Ah, interessante! Ele pega uma função de um tipo para outro e uma lista de um tipo e retorna uma lista do outro tipo. Meus amigos, eu acho que nós temos um functor! De fato, [code]map[/code] é só um [code]fmap[/code] que só funciona com listas. Aqui está a prova de que list é uma instância do typeclass [code]Functor[/code].
 
 
 
@@ -26,7 +26,7 @@ Já que para listas, [code]fmap[/code] é só [code]map[/code], nós temos os me
 
 O que acontece quando nós usamos [code]map[/code] ou [code]fmap[/code] em uma lista vazia? Bom, com certeza nós obtemos uma lista vazia. Isso só torna uma lista vazia do tipo [code][a][/code] em uma lista vazia do tipo [code][b][/code].
 
-Tipos que podem agir como uma caixa podem ser functors. Você pode pensar numa lista como uma caixa que tem uma quantidade infinita de pequenos compartimentos e eles podem estar todos vazios,um pode estar cheio e os outros vazios ou um conjunto deles pode estar cheio. Então, o que mais tem a propriedade de ser como uma caixa? Por exemplo, o tipo [code]Maybe a[/code] . De certo modo, é como uma caixa que pode não ter nada, nesse caso ela temo valor [code]Nothing[/code], ou ela pode ter um item, como [code]"HAHA"[/code], e nesse caso ela tem o valor [code]Just "HAHA"[/code]. Aqui está como [code]Maybe[/code] é um functor.
+Tipos que podem agir como uma caixa podem ser functors. Você pode pensar numa lista como uma caixa que tem uma quantidade infinita de pequenos compartimentos e eles podem estar todos vazios, um pode estar cheio e os outros vazios ou um conjunto deles pode estar cheio. Então, o que mais tem a propriedade de ser como uma caixa? Por exemplo, o tipo [code]Maybe a[/code]. De certo modo, é como uma caixa que pode não ter nada, nesse caso ela tem o valor [code]Nothing[/code], ou ela pode ter um item, como [code]"HAHA"[/code], e nesse caso ela tem o valor [code]Just "HAHA"[/code]. Aqui está como [code]Maybe[/code] é um functor.
 
 
 
@@ -34,7 +34,7 @@ Tipos que podem agir como uma caixa podem ser functors. Você pode pensar numa l
 
 Novamente, perceba como nós escrevemos [code]instance Functor Maybe where[/code] ao invés de [code]instance Functor (Maybe m) where[/code], como nós fizemos quando estávamos lidando com [code]Maybe[/code] e [code]YesNo[/code]. [code]Functor[/code] quer um construtor de tipo que pegue um tipo e não um tipo concreto. Se você mentalmente trocar os [code]f[/code] pelos [code]Maybe[/code], [code]fmap[/code] age como um [code](a -&gt; b) -&gt; Maybe a -&gt; Maybe b[/code] para esse tipo particular, o que parece OK. Mas se você trocar [code]f[/code] por [code](Maybe m)[/code], então ele parece agir como [code](a -&gt; b) -&gt; Maybe m a -&gt; Maybe m b[/code], o que não faz nenhum sentido porque [code]Maybe[/code] só pega um parâmetro de tipo.
 
-De qualquer modo, a implementação de [code]fmap[/code] é bem simples. Se ele é um valor vazio de [code]Nothing[/code], então só retorne um [code]Nothing[/code]. Se nós mapearmos sobre uma caixa vazia, nós temos uma caixa vazia. Isso faz sentido. Do mesmo jeito, Se nós mapearmos sobre uma lista vazia, nós temos uma lista vazia. Se isso não é um valor vazio, mas sim um simples valor encapsulado em um [code]Just[/code], então nós aplicamos a função no conteúdo de [code]Just[/code].
+De qualquer modo, a implementação de [code]fmap[/code] é bem simples. Se ele é um valor vazio de [code]Nothing[/code], então só retorne um [code]Nothing[/code]. Se nós mapearmos sobre uma caixa vazia, nós temos uma caixa vazia. Isso faz sentido. Do mesmo jeito, se nós mapearmos sobre uma lista vazia, nós temos uma lista vazia. Se isso não é um valor vazio, mas sim um simples valor encapsulado em um [code]Just[/code], então nós aplicamos a função no conteúdo de [code]Just[/code].
 
 
 
@@ -57,12 +57,12 @@ Bem bem, o que nós fizemos aqui? você pode ver como nós fizemos [code]Either 
 
 
 
-Bom, se nós quisermos mapear uma função sobre ambas, [code]a[/code] e [code]b[/code] devem ser do mesmo tipo. Ou seja, Se nós tentarmos mapear uma função que pega uma string e retorna uma string e o [code]b[/code] como uma string mas o [code]a[/code] como um número, isso não iria realmente funcionar. Além disso, vendo o que o tipo de [code]fmap[/code] seria se isso operasse só com valores [code]Either[/code] , nós vemos que o primeiro parâmetro tem que permanecer o mesmo enquanto o segundo pode mudar e o primeiro parâmetro é atualizado pelo construtor de valor [code]Left[/code] .
+Bom, se nós quisermos mapear uma função sobre ambas, [code]a[/code] e [code]b[/code] devem ser do mesmo tipo. Ou seja, Se nós tentarmos mapear uma função que pega uma string e retorna uma string e o [code]b[/code] como uma string mas o [code]a[/code] como um número, isso não iria realmente funcionar. Além disso, vendo o que o tipo de [code]fmap[/code] seria se isso operasse só com valores [code]Either[/code], nós vemos que o primeiro parâmetro tem que permanecer o mesmo enquanto o segundo pode mudar e o primeiro parâmetro é atualizado pelo construtor de valor [code]Left[/code].
 
 Isso também funciona bem com nossa analogia de caixa se nós pensarmos na parte [code]Left[/code] como uma espécie de uma caixa vazia com uma mensagem de erro escrita do lado nos dizendo porque ela está vazia.
 
-Maps de [code]Data.Map[/code] também pode ser feito um functor porque ele guarda valroes (ou não!). No caso de [code]Map k v[/code], [code]fmap[/code] vai mapear uma função [code]v -&gt; v'[/code] sobre um mapa do tipo [code]Map k v[/code] e retornar um mapa do tipo [code]Map k v'[/code]. </p><div class="hintbox">Note que o [code]'[/code] não tem um significado especial em tipos assim como ele não tem significado especial quando nomeia valores. Ele é usado para denotar coisas que são similares, apenas um pouco modificadas.
+Mapas de [code]Data.Map[/code] também podem fazer um functor porque eles guardam valores (ou não!). No caso de [code]Map k v[/code], [code]fmap[/code] vai mapear uma função [code]v -&gt; v'[/code] sobre um mapa do tipo [code]Map k v[/code] e retornar um mapa do tipo [code]Map k v'[/code]. </p><div class="hintbox">Note que o [code]'[/code] não tem um significado especial em tipos assim como ele não tem significado especial quando nomeia valores. Ele é usado para denotar coisas que são similares, apenas um pouco modificadas.
 
 Tente imaginar como [code]Map k[/code] é uma instância de [code]Functor[/code] por si mesmo!
 
-Com a typeclass [code]Functor[/code] , nós vimos como typeclasses podem representar conceitos de alta ordem bem legais. Nós também tivemos alguma prática com tipos parcialmente aplicáveis e criação de instâncias. Em um dos próximos capítulos, nós também vamos dar uma olhada em algumas regras que se aplicam para functors.
+Com a typeclass [code]Functor[/code], nós vimos como typeclasses podem representar conceitos de alta ordem bem legais. Nós também tivemos alguma prática com tipos parcialmente aplicáveis e criação de instâncias. Em um dos próximos capítulos, nós também vamos dar uma olhada em algumas regras que se aplicam para functors.
