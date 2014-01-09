@@ -1,10 +1,10 @@
 title: Typeclasses 102
 
-text: Até agora, temos aprendido sobre algumas das typeclasses padrões de Haskell e temos visto quais tipos estão nelas. Também temos aprendido como criar automaticamente nossas próprias instâncias de tipo a partir das typeclasses padrões por pedir a Haskell para que derive as instâncias para nós. Nessa seção, vamos aprender como criar nossas próprias typeclasses e como criar instâncias de tipo delas na mão.
+text: Até agora, temos aprendido sobre algumas das typeclasses padrões de Haskell e temos visto quais tipos estão nelas. Também temos aprendido como criar automáticamente nossas próprias instâncias de tipo a partir das typeclasses padrões por pedir a Haskell para que derive as instâncias para nós. Nessa seção, vamos aprender como criar nossas próprias typeclasses e como criar instâncias de tipo delas na mão.
 
-Uma recapitulação rápida sobre typeclasses: typeclasses são como interfaces. Uma typeclass define algum comportamento (como comparação para igualdade, comparação para ordenação, enumeração) e daí tipos que podem agir de tal forma são feitas instâncias daquela typeclass. O comportamento de typeclasses é alcançado definindo-se funções ou apenas declarações de tipo que então nós implementamos. Então quando dizemos que um tipo é uma instância de uma typeclass, queremos dizer que podemos usar as funções que tal typeclass define com  aquele tipo.
+Uma recapitulação rápida sobre typeclasses: typeclasses são como interfaces. Uma typeclass define algum comportamento (como comparação para igualdade, comparação para ordenação, enumeração) e daí tipos que podem agir de tal forma são feitas instâncias daquela typeclass. O comportamento de typeclasses é alcançado definindo-se funções ou apenas declarações de tipo que então nós implementamos. Então quando dizemos que um tipo é uma instância de uma typeclass, queremos dizer que podemos usar as funções que tal typeclass define com aquele tipo.
 
-Typeclasses não têm nada a ver com classes de linguagens como Java ou Python. Isso confunde muita gente. daí eu quero que você esqueça tudo que você sabe até agora de classes em linguagens imperativas exatamente agora.
+Typeclasses não têm nada a ver com classes de linguagens como Java ou Python. Isso confunde muita gente, então eu quero que você esqueça tudo que sabe até agora de classes em linguagens imperativas exatamente agora.
 
 Por exemplo, a typeclass [code]Eq[/code] é para coisas que podem ser igualadas. Ela define as funções [code]==[/code] e [code]/=[/code]. Se nós tivermos um tipo (digamos, [code]Car[/code]) e a comparação entre dois carros com a função de igualdade [code]==[/code] fizer sentido, então faz sentido que [code]Car[/code] seja uma instância de [code]Eq[/code].
 
@@ -12,11 +12,11 @@ Por exemplo, a typeclass [code]Eq[/code] é para coisas que podem ser igualadas.
 
 
 
-Opa, opa, opa! Sintaxe e palavras-chave estranhas apareceram aí! Não e preocupe, isso ficará totalmente claro em alguns egundos. Primeiramente, quando escrevemos [code]class Eq a where[/code], isso significa que estamos definindo uma typeclass nova e que é chamada [code]Eq[/code]. O [code]a[/code] é a variável de tipo e ela significa que [code]a[/code] terá o papel do tipo que logo será uma insância de [code]Eq[/code]. Isso não tem que ser chamado [code]a[/code], não tem nem que ser apenas uma letra, tem apenas que ser uma palavra apenas com letras minúsculas. Daí, definimos várias funções. Não é mandatório implementar os corpos das funções, temos apenas de especificar as declarações de tipo para as funções.
+Opa, opa, opa! Sintaxe e palavras-chave estranhas apareceram aí! Não se preocupe, isso ficará totalmente claro em alguns segundos. Primeiramente, quando escrevemos [code]class Eq a where[/code], isso significa que estamos definindo uma typeclass nova e que é chamada [code]Eq[/code]. O [code]a[/code] é a variável de tipo e ela significa que [code]a[/code] terá o papel do tipo que logo será uma insância de [code]Eq[/code]. Isso não tem que ser chamado [code]a[/code], não tem nem que ser apenas uma letra, tem apenas que ser uma palavra apenas com letras minúsculas. Daí, definimos várias funções. Não é mandatório implementar os corpos das funções, temos apenas de especificar as declarações de tipo para as funções.
 
 Algumas pessoas podem entender tudo isso melhor se escrevermos [code]class Eq igualavel where[/code] e então especificarmos as declarações de tipo como [code](==) :: igualavel -&gt; igualavel -&gt; Bool[/code].
 
-De qualquer forma, nós de fato implementamos o corpo das funções que [code]Eq[/code] define, mas nós o definimos em termos de recursão mútua. Dissemos que duas instâncias de [code]Eq[/code] são iguais se elas não forem diferentes e são diferentes se não forem iguais. Não tínhamos de fazer isso, mesmo, mas fizemos e vamos ver como isso nos ajudará posteriormente.
+De qualquer forma, nós de fato implementamos o corpo das funções que [code]Eq[/code] define, mas nós o definimos em termos de recursão mútua. Dissemos que duas instâncias de [code]Eq[/code] são iguais se elas não forem diferentes e são diferentes se não forem iguais. Não tínhamos de fazer isso, sério, mas fizemos e vamos ver como isso nos ajudará posteriormente.
 
 
 Se tivermos de dizer [code]class Eq a where[/code] e então definir uma declaração de tipo no interior dessa classe, como [code](==) :: a -&gt; -a -&gt; Bool[/code], então quando examinarmos o tipo dessa função mais tarde, ela terá o tipo de [code](Eq a) =&gt; a -&gt; a -&gt; Bool[/code].
@@ -26,7 +26,7 @@ Então, uma vez que temos uma classe, o que podemos fazer com ela? Bem, não mui
 
 
 
-Ele define os estados de um semáforo. Perceba como não derivamos nenhuma instância de classe para tal. Então uma vez que vamos escrever algumas instanciações na mão, mesmo podendo derivá-las de tipos como [code]Eq[/code] and [code]Show[/code]. Aqui está como fazemos uma instância de [code]Eq[/code].
+Ele define os estados de um semáforo. Perceba como não derivamos nenhuma instância de classe para tal. Então uma vez que vamos escrever algumas instanciações na mão, mesmo podendo derivá-las de tipos como [code]Eq[/code] e [code]Show[/code]. Aqui está como fazemos uma instância de [code]Eq[/code].
 
 
 
@@ -75,19 +75,19 @@ Porque como nós vimos, o [code]a[/code] tem de ser um tipo concreto, mas[code]M
 
 
 
-Isso é como se disséssemos que queremos que todos os tipos da forma [code]Maybe something[/code] sejam uma instância de [code]Eq[/code]. Na verdade poderíamos ter escrito [code](Maybe something)[/code], mas geralmente optamos por letras singulares para nos manter fiéis ao estilo de Haskell. O [code](Maybe m)[/code] aqui te o papel do [code]a[/code] de [code]class Eq a where[/code]. Enquanto que [code]Maybe[/code] não é um tipo concreto, [code]Maybe m[/code] é. Por especificar um parâmetro de tipo ([code]m[/code], que está com todas as letras em minúsculo), dissemos que queremos todos os tipos que estão na forma [code]Maybe m[/code], onde [code]m[/code] é qualquer tipo, para ser uma instância de [code]Eq[/code].
+Isso é como se disséssemos que queremos que todos os tipos da forma [code]Maybe something[/code] sejam uma instância de [code]Eq[/code]. Na verdade poderíamos ter escrito [code](Maybe something)[/code], mas geralmente optamos por letras singulares para nos manter fiéis ao estilo de Haskell. O [code](Maybe m)[/code] aqui tem o papel do [code]a[/code] de [code]class Eq a where[/code]. Enquanto que [code]Maybe[/code] não é um tipo concreto, [code]Maybe m[/code] é. Por especificar um parâmetro de tipo ([code]m[/code], que está com todas as letras em minúsculo), dissemos que queremos todos os tipos que estão na forma [code]Maybe m[/code], onde [code]m[/code] é qualquer tipo, para ser uma instância de [code]Eq[/code].
 
-Há, entretanto, um problema com isso. Consegue encontrá-lo? Nós usamos [code]==[/code] no conteúdo de [code]Maybe[/code] mas não temos garantias de que o que o [code]Maybe[/code] contém pode ser usado com[code]Eq[/code]! Por isso temos que modificar nossa declaração <i>instance</i> assim:
-
-
+Há, entretanto, um problema com isso. Consegue encontrá-lo? Nós usamos [code]==[/code] no conteúdo de [code]Maybe[/code] mas não temos garantias de que o que [code]Maybe[/code] contém pode ser usado com[code]Eq[/code]! Por isso temos que modificar nossa declaração <i>instance</i> assim:
 
 
-Tivemos de declarar uma restrição de classe! Com essa declaração <i>instance</i>, dizemos isso: queremos que todos os tipos na forma [code]Maybe m[/code] sejam parte da typeclass [code]Eq[/code], mas apenas se esses tipos fossem o [code]m[/code] (dessa forma o que estivesse contido denteo de [code]Maybe[/code]) também seria parte de [code]Eq[/code]. Na verdade isso é também como Haskell deriva a instância.
+
+
+Tivemos de declarar uma restrição de classe! Com essa declaração <i>instance</i>, dizemos isso: queremos que todos os tipos na forma [code]Maybe m[/code] sejam parte da typeclass [code]Eq[/code], mas apenas se esses tipos fossem o [code]m[/code] (dessa forma o que estivesse contido dentro de [code]Maybe[/code]) também seria parte de [code]Eq[/code]. Na verdade isso é também como Haskell deriva a instância.
 
 Na maioria das vezes, restrições de classe em declarações <i>class</i> são utilizadas para tornar uma typeclass uma subclasse de outra typeclass e as restriçõees de classe em declarações <i>instance</i> são utilizadas para expressar requisitos sobre os conteúdos de algum tipo. Por exemplo, aqui nós precisávamos que o conteúdo do [code]Maybe[/code] também fosse parte da typeclass [code]Eq[/code].
 
 Ao se criar instâncias, se você notar que um tipo é usado como um tipo concreto nas declarações de tipo (como o [code]a[/code] em [code]a -&gt; a -&gt; Bool[/code]), você deve suprir parâmetros de tipo e adicionar parênteses para se obter um tipo concreto.
 
-Leve em conta que o tipo que você está tentando criar uma instância vai substiruir o parâmetro na declaração <i>class</i>. O [code]a[/code] de [code]class Eq a where[/code] será substituído com um tipo real quando você criar uma instância, então tente também pôr mentalmente seu tipo em uma declaração de tipo de função. [code](==) :: Maybe -&gt; Maybe -&gt; Bool[/code] não faz muito sentido, mas [code](==) :: (Eq m) =&gt; Maybe m -&gt; Maybe m -&gt; Bool[/code] faz. Mas isso é apenas algo para se pensar, porque [code]==[/code] sempre terá o tipo de [code](==) :: (Eq a) =&gt; a -&gt; a -&gt; Bool[/code], não importa que instância criemos.
+Leve em conta que o tipo que você está tentando criar uma instância vai substituir o parâmetro na declaração <i>class</i>. O [code]a[/code] de [code]class Eq a where[/code] será substituído com um tipo real quando você criar uma instância, então tente também pôr mentalmente seu tipo em uma declaração de tipo de função. [code](==) :: Maybe -&gt; Maybe -&gt; Bool[/code] não faz muito sentido, mas [code](==) :: (Eq m) =&gt; Maybe m -&gt; Maybe m -&gt; Bool[/code] faz. Mas isso é apenas algo para se pensar, porque [code]==[/code] sempre terá o tipo de [code](==) :: (Eq a) =&gt; a -&gt; a -&gt; Bool[/code], não importa que instância criemos.
 
-Eeita, mais uma coisa, olha! Se você quiser ver quais são as instâncias de uma typeclass, apenas digite [code]:info YourTypeClass[/code] no GHCI. Então digitar [code]:info Num[/code] mostrará que funções a typeclass define e te dará uma lista dos tipos da typeclass. [code]:info[/code] funciona também para tipos e construtores de tipos. Se você fizer [code]:info Maybe[/code], ele te mostrara todas as typeclasses das quais [code]Maybe[/code] é uma instância. E também, [code]:info[/code] cpode te mostrar a declaração de tipo de uma função. Eu acho que isso é muito massa.
+Eeita, mais uma coisa, olha! Se você quiser ver quais são as instâncias de uma typeclass, apenas digite [code]:info YourTypeClass[/code] no GHCI. Então digitar [code]:info Num[/code] mostrará que funções a typeclass define e te dará uma lista dos tipos da typeclass. [code]:info[/code] funciona também para tipos e construtores de tipos. Se você fizer [code]:info Maybe[/code], ele te mostrara todas as typeclasses das quais [code]Maybe[/code] é uma instância. E também, [code]:info[/code] pode te mostrar a declaração de tipo de uma função. Eu acho que isso é muito massa.
