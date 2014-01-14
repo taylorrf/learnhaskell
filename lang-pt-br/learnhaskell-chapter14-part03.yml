@@ -1,82 +1,79 @@
-title: A trail of breadcrumbs
+title: Uma trilha de migalhas de pão
 
-text: Okay, so for focusing on a sub-tree, we want something better than just a listof directions that we always follow from the root of our tree. Would it help ifwe start at the root of the tree and move either left or right one step at atime and sort of leave breadcrumbs? That is, when we go left, we remember thatwe went left and when we go right, we remember that we went right. Sure, we cantry that.
+text: Então, para focar em um sub-árvore queremos algo melhor do que só uma lista de direções para seguir da raiz da nossa árvore. Será que ajudaria se começássemos a partir da raiz da árvore e percorremos tanto para a esquerda quanto para a direita, um passo cada vez e deixássemos migalhas espalhadas? É isso, quando formos para a esquerda vamos nos lembrar que viemos da esquerda e quando formos para direita vamos lembrar que viemos da direita. Claro, nós podemos tentar isso.
 
-To represent our breadcrumbs, we'll also use a list of [code]Direction[/code] (which is either [code]L[/code] or [code]R[/code]), only instead of calling it[code]Directions[/code], we'll call it [code]Breadcrumbs[/code], because our directions will now be reversed since we're leaving them aswe go down our tree:
+Para representar as migalhas, nós também podemos usar uma lista de [code]Direções[/code] (qual pode ser [code]E[/code] ou [code]D[/code]), só que ao invés de chamarmos de [code]Direções[/code] nós podemos dizer que são [code]Migalhas[/code], pois agora o sentido será o inverso já que estamos deixando a medida que descemos nossa árvore:
 
-Here's a function that takes a tree and some breadcrumbs and moves to the leftsub-tree while adding [code]L[/code] to the head of the list thatrepresents our breadcrumbs:
+Aqui está a função que recebe a árvore e algumas migalhas percorrendo a sub-árvore esquerda enquanto adiciona [code]E[/code] para a cabeça da lista que representa as migalhas:
 
-We ignore the element at the root and the right sub-tree and just return theleft sub-tree along with the old breadcrumbs with [code]L[/code]as the head. Here's a function to go right:
+Nós ignoramos o elemento da raiz e a sub-árvore direita retornando a sub-árvore esquerda juntamente com a lista de migalhas antiga com [code]E[/code] como cabeça da lista. Aqui está a função para ir para direita:
 
-It works the same way. Let's use these functions to take our [code]freeTree[/code] and go right and then left:
+Funciona do mesmo jeito. Vamos usar essas funções para receber nossa [code]árvore[/code] e ir para direita e para esquerda:
 
-Okay, so now we have a tree that has [code]'W'[/code] in its root and [code]'C'[/code] in the root of its left sub-treeand [code]'R'[/code] in the root of its right sub-tree. Thebreadcrumbs are [code][L,R][/code], because we first went rightand then left.
+Ok, então agora nós temos a árvore que tem [code]‘W’[/code] na raiz, [code]‘C’[/code] na raiz da sub-árvore esquerda e [code]‘R’[/code] na raiz da sub-arvore direita. As migalhas são [code][E,D][/code], pois primeiro fomos para direita para depois ir para a esquerda.
 
-To make walking along our tree clearer, we can use the [code]-:[/code] function that we defined like so:
+Para percorrer a árvore de maneira mais clara, nós podemos usar a função [code]-:[/code] que definimos assim:
 
-Which allows us to apply functions to values by first writing the value, thenwriting a [code]-:[/code] and then the function. So instead of[code]goRight (freeTree, [])[/code], we can write [code](freeTree, []) -: goRight[/code]. Using this, we can rewritethe above so that it's more apparent that we're first going right and then left:
+Essa função nos permite aplicar as funções nos valores primeiramente escrevendo o valor, depois a função [code]-:[/code] e por último a função. Então, ao invés de [code]goRight (freeTree, [])[/code], nós podemos escrever [code](freeTree, []) -: goRight[/code]. Usando isso podemos reescrever o código acima de modo mais evidente de que estamos indo primeiro para direita e depois para esquerda.
 
-- Going back up
+- Voltando para cima
 
-What if we now want to go back up in our tree? From our breadcrumbs we knowthat the current tree is the left sub-tree of its parent and that it is theright sub-tree of its parent, but that's it. They don't tell us enough about theparent of the current sub-tree for us to be able to go up in the tree. It would seem that apart from the direction that we took, asingle breadcrumb should also contain all other data that we need to go back up. In this case, that's the element in the parent tree along with its rightsub-tree.
+E se agora nós quiséssemos voltar para cima na nossa árvore? Por causa das nossas migalhas nós sabemos que a árvore atual é ou a sub-arvore direita ou esquerda de seus pais, mas é só isso. Elas não nos dizem o suficiente sobre o pai da sub-arvore analisada para que nós sejamos capazes de voltar para o elemento pai na árvore. Parece que além da direção que tomamos, uma única migalhas também deve conter todos os outros dados que precisamos para voltar a subir. Neste caso, que é o elemento na árvore do pai junto com sua sub-árvore direita.
 
-In general, a single breadcrumb should contain all the data needed toreconstruct the parent node. So it should have the information from all the pathsthat we didn't take and it should also know the direction that we did take, butit must not contain the sub-tree that we're currently focusing on. That's becausewe already have that sub-tree in the first component of the tuple, so if we alsohad it in the breadcrumbs, we'd have duplicate information.
+Em geral uma única migalha deve conter todas as informações necessárias para reconstruir o nó pai. Por isso, devem ter a informação de todos os caminhos que não levam e também deve saber a direção que tomou, mas não deve conter a sub-árvore que estamos atualmente focando. Isso acontece porque nós já temos a sub-árvore no primeiro componente da tupla, então se tivéssemos também nas migalhas nós teríamos informação duplicada.
 
-Let's modify our breadcrumbs so that they also contain information about everythingthat we previously ignored when moving left and right. Instead of [code]]Direction[/code], we'll make a new data type:
+Vamos modificar nossa migalha para que elas também contenham as informações sobre tudo que que anteriormente nós ignoramos quando caminhamos para esquerda e direita. Ao invés de [code]Direções[/code], nós iremos fazer uma novo tipo de dados.
 
-Now, instead of just [code]L[/code], we have a [code]LeftCrumb[/code] that also contains the element in the node that wemoved from and the right tree that we didn't visit. Instead of [code]]R[/code], we have [code]RightCrumb[/code], whichcontains the element in the node that we moved from and the left tree that wedidn't visit.
+Agora, ao invés de só [code]L[/code], nós temos a [code]LeftCrumb[/code] que também contém o elemento do nó de onde viemos e a árvore direita que não visitamos. Ao invés de [code]D[/code], nós temos [code]RightCrumb[/code], que contém o elemento do nó de onde viemos e a árvore esquerda que nós não visitamos.
 
-These breadcrumbs now contain all the data needed to recreate the tree that wewalked through. So instead of just being normal bread crumbs, they're now morelike floppy disks that we leave as we go along, because they contain a lot moreinformation than just the direction that we took.
+Essas migalhas agora contém todas as informações necessárias para recriar a árvore pelo qual nós caminhamos. Ao invés de ser só migalhas comuns, elas agora são mais como disquetes que nós deixamos pelo meio do caminho, pois eles contém mais informações do que só direções que nós tomamos.
 
-In essence, every breadcrumb is now like a tree node with a hole in it. When wemove deeper into a tree, the breadcrumb carries all the information that thenode that we moved away from carried <i>except</i> the sub-tree that we chose tofocus on. It also has to note where the hole is. In the case of a[code]LeftCrumb[/code], we know that we moved left, so thesub-tree that's missing is the left one.
+Em essência, toda migalha é agora como um nó de árvore com um buraco. Quando nos movemos para o interior da árvore, a migalha carrega toda a informação do nó de onde viemos <i>exceto</i> a sub-árvore que nós escolhemos para focar.Também temos que notar onde o buraco está. Nesse caso da [code]LeftCrumb[/code], nós sabemos que nós viemos da esquerda, então a sub-árvore que está faltando é a esquerda.
 
-Let's also change our [code]Breadcrumbs[/code] type synonym toreflect this:
+Vamos também mudar nosso tipo [code]Breadcrumbs[/code] para um sinônimo que reflita isso:
 
-Next up, we have to modify the [code]goLeft[/code] and [code]goRight[/code] functions to store information about thepaths that we didn't take in our breadcrumbs, instead of ignoring thatinformation like they did before. Here's [code]goLeft[/code]:
+A seguir, temos que modificar as funções [code]goLeft[/code] e o [code]goRigth[/code] para guardarem as informações sobre os caminhos que nós não fomos nas migalhas, ao invés de ignorar essa informação como fazíamos antes. Aqui está o [code]goLeft[/code]:
 
-You can see that it's very similar to our previous [code]goLeft[/code], only instead of just adding a [code]L[/code] to the head of ourlist of breadcrumbs, we add a [code]LeftCrumb[/code] to signifythat we went left and we equip our [code]LeftCrumb[/code] with theelement in the node that we moved from (that's the [code]x[/code])and the right sub-tree that we chose not to visit.
+Você pode notar que é bastante semelhante ao nosso [code]goLeft[/code] anterior, a diferença está que ao invés de só adicionar [code]L[/code] a cabeça da nossa lista de migalhas, nós adicionamos a [code]LeftCrumb[/code] para que signifique que viemos da esquerda e equipamos a [code]LeftCrumb[/code] com o elemento do nó de que viemos (isso é o [code]x[/code]) e a sub-árvore direita que decidimos não visitar.
 
-Note that this function assumes that the current tree that's under focus isn't [code]Empty[/code]. An empty tree doesn't have any sub-trees, soif we try to go left from an empty tree, an error will occur because the patternmatch on [code]Node[/code] won't succeed and there's no patternthat takes care of [code]Empty[/code].
+Note que essa função assume que a árvore em foco não está [code]Vazia[/code]. Uma árvore vazia não possui sub-árvores, então se nós tentarmos ir para esquerda em uma árvore vazia um erro acontecerá pois o caminho do [code]nó[/code] não existe e não existe representação para o valor Vazio.
 
-[code]goRight[/code] is similar:
+A função [code]goRigth[/code] é similar:
 
-We were previously able to go left and right. What we've gotten now is theability to actualy go back up by remembering stuff about the parent nodes andthe paths that we didn't visit. Here's the [code]goUp[/code]function:
+Nós éramos capazes de ir para direita e para esquerda. O que conseguimos agora é a habilidade de ir para trás pois conseguimos relembrar informações sobre os pais dos nós e os caminhos que não visitamos. Aqui está a função [code]goUp[/code]:
 
-We're focusing on the tree [code]t[/code] and we check what thelatest [code]Crumb[/code] is. If it's a [code]LeftCrumb[/code], then we construct a new tree where our tree [code]t[/code] is the leftsub-tree and we use the information about the right sub-tree that we didn'tvisit and the element to fill out the rest of the [code]Node[/code]. Because we moved back so to speak and picked up the last breadcrumb to recreatewith it the parent tree, the new list of breadcrumbs doesn't contain it.
+Nós estamos focando na árvore [code]t[/code] e checamos qual é a última [code]Migalha[/code]. Se a última migalha for uma [code]LeftCrumb[/code], então nós construímos uma nova árvore onde nossa árvore [code]t[/code] é a sub-árvore esquerda e nós usamos a informação sobre a sub-árvore direita que nós não visitamos e o elemento para completar o resto do [code]nó[/code]. Porque nós voltamos vamos e pegamos a migalha para formar a árvore a nova lista de migalhas não contém a migalha usada.
 
-Note that this function causes an error if we're already at the top of a treeand we want to move up. Later on, we'll use the [code]Maybe[/code]monad to represent possible failure when moving focus.
+Note que essa função causa um erro se tentarmos voltar a partir do topo da árvore. Mais tarde iremos usar o [code]Maybe[/code] monad para representar essa possibilidade de falha quando mudamos o foco.
 
-With a pair of [code]Tree a[/code] and [code]Breadcrumbs a[/code], we have all the information to rebuild the whole tree and we also have a focuson a sub-tree. This scheme also enables us to easily move up, left and right.Such a pair that contains a focused part of a data structure and its surroundings iscalled a zipper, because moving our focus up and down the data structure resembles theoperation of a zipper on a regular pair of pants. So it's cool to make a typesynonym as such:
+Com um par de [code]Árvore a[/code] e [code]Breadcrumbs a[/code], nós temos toda a informação para reconstruir toda a árvore e também temos o foco na sub-árvore. Esse esquema também permiti facilmente mover para cima, direita ou esquerda na árvore. O par que contém a parte em foco da estrutura de dados e seus arredores é chamado de zíper, pois movendo seu foco para cima e para baixo da estrutura de dados lembra o movimento de um zíper de uma calça comum. Então é legal fazer um tipo com esse significado:
 
-I'd prefer naming the type synonym [code]Focus[/code] because thatmakes it clearer that we're focusing on a part of a data structure, but the termzipper is more widely used to describe such a setup, so we'll stick with[code]Zipper[/code].
+Eu preferia chamar esse tipo de [code]Focus[/code] pois faz mais sentido já que estamos focando em um parte da estrutura de dados, mas o termo zíper é mais largamente usado para descrever tal configuração, então vou ficar com [code]Zipper[/code].
 
+- Manipulando árvores sobe o foco
 
-- Manipulating trees under focus
+Agora que podemos nos mover para cima e para baixo, vamos fazer uma função que modifique um elemento na raiz de uma sub-árvore que o zipper está focado:
 
-Now that we can move up and down, let's make a function that
-modifies the element in the root of the sub-tree that the zipper is focusing on:
+Se nós focamos em um nó, vamos modificar a raiz do elemento com a função 
+[code]f[/code]. Se focarmos em uma árvore vazia, nós deixamos ela como ela é. Agora nós podemos começar com árvore, percorrer qualquer caminho que quisermos e modificar um elemento tudo isso enquanto mantemos o foco naquele elemento podendo facilmente ir para cima ou para baixo. Um exemplo:
 
-If we're focusing on a node, we modify its root element with the function
-[code]f[/code]. If we're focusing on an empty tree, we leave it asit is.  Now we can start off with a tree, move to anywhere we want and modify anelement, all while keeping focus on that element so that we can easily movefurther up or down. An example:
+Nós vamos para esquerda, depois para direita e depois modificamos o elemento da raiz para o valor
+[code]‘P’[/code]. Fica melhor se usarmos a função [code]-:[/code]:
 
-We go left, then right and then modify the root element by replacing it with a
-[code]'P'[/code]. This reads even better if we use [code]-:[/code]:
+Nós podemos ir para cima se quisermos e substituir o elemento com o misterioso [code]'X'[/code]:
 
-We can then move up if we want and replace anelement with a mysterious [code]'X'[/code]:
+Ou se escrevermos com [code]-:[/code]:
 
-Or if we wrote it with [code]-:[/code]:
+Mover para cima é fácil pois as migalhas que deixamos formam uma parte da estrutura de dados que não estamos focando, mas se invertermos, torna-se mais difícil. É por isso que quando queremos mover para cima nós não temos que começar da raiz e ir fazendo nossa descida, mas nós só pegamos o topo de uma árvore invertida, assim, deixando de ser invertida e adicionando uma parte ao foco.
 
-Moving up is easy because the breadcrumbs that we leave form the part of thedata structure that we're not focusing on, but it's inverted, sort of like turning asock inside out. That's why when we want to move up, we don't have to start fromthe root and make our way down, but we just take the top of our inverted tree,thereby uninverting a part of it and adding it to our focus.
+Cada nó tem duas sub-árvores, mesmo que essas sub-árvores sejam vazias. Então, se nós focarmos em um sub-árvore vazia, uma coisa que podemos fazer é substituir ela por uma sub-árvore não vazia inserindo uma árvore a um nó folha. O código para isso é simples:
 
-Each node has two sub-trees, even if those sub-trees are empty trees. So ifwe're focusing on an empty sub-tree, one thing we can do is to replace it with anon-empty subtree, thus attaching a tree to a leaf node. The code for this issimple:
+Nós recebemos uma árvore e um zipper e retornamos um novo zipper que tem o foco mudado para a árvore fornecida. Não só podemos estender árvores desse modo nós podemos substituir sub-árvores vazias por novas árvores e substituir uma sub-árvore por completo. Vamos adicionar uma árvore ao lado esquerda da nossa [code]freeTree[/code]:
 
-We take a tree and a zipper and return a new zipper that has its focus replacedwith the supplied tree. Not only can we extend trees this way by replacing emptysub-trees with new trees, we can also replace whole existing sub-trees. Let'sattach a tree to the far left of our [code]freeTree[/code]:
+[code]newFocus[/code] é focada agora na árvore que acabamos de adicionar e o resto permanece contido nas migalhas. Se nós usarmos a função [code]goUp[/code] para caminhar até o topo da árvore, irá ser a mesma árvore [code]freeTree[/code] porém com um elemento [code]‘Z’[/code] adicionado a sua esquerda.
 
-[code]newFocus[/code] is now focused on the tree that we justattached and the rest of the tree lies inverted in the breadcrumbs. If we wereto use [code]goUp[/code] to walk all the way to the top of thetree, it would be the same tree as [code]freeTree[/code] but withan additional [code]'Z'[/code] on its far left.
+- Eu vou direto para o topo, oh yeah, até onde o ar é fresco e limpo!
 
+Fazer uma função que percorre todo caminho até o topo da árvore, independente de onde está o foco, é bem fácil. Aqui está:
 
-- I'm going straight to the top, oh yeah, up where the air is fresh and clean!
-
-Making a function that walks all the way to the top of the tree, regardless ofwhat we're focusing on, is really easy. Here it is:
-
-If our trail of beefed up breadcrumbs is empty, this means that we're already atthe root of our tree, so we just return the current focus. Otherwise, we go upto get the focus of the parent node and then recursively apply [code]topMost[/code] to that. So now we can walk around our tree, goingleft and right and up, applying [code]modify[/code] and [code]attach[/code] as we go along and then when we're done withour modifications, we use [code]topMost[/code] to focus on theroot of our tree and see the changes that we've done in proper perspective.
+Se nossa trilha de migalhas reforçadas estiver vazia siginifica que nós já estamos na raiz da árvore, então nós só voltamos o foco.Caso contrário, nós vamos até o topo até conseguir o foco do pai e aplicamos recursivamente a função [code]topMost[/code] para isso. Então agora nós podemos percorrer toda a árvore usando as funções [code]modify[/code] e [code]attach[/code] à medida que avançamos e, em seguida, quando terminarmos de fazer as nossas modificações, utilizamos [code]topMost[/code] para focar na raiz da árvore e ver as modificações na pespectiva certa.
