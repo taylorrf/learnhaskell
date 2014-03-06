@@ -1,15 +1,15 @@
 title: tipos e algumas classes-foo
 
-text: Construtores de tipo pegam outros tipos como parâmetros para eventualmente produzir tipos concretos. Isso meio que me lembra de funções, que pega valores como parâmetros para produzir valores. Nós vimos que esses construtores de tipo podem ser parcialmente aplicados ([code]Either String[/code] é um tipo que pega um tipo e produz um tipo concreto, como [code]Either String Int[/code]), assim como as funções podem. Isso é, de fato, muito interessante.Nessa seção, nós daremos uma olhada na definição formal de como tipos são aplicados a construtores de tipos, assim como nós demos uma olhada em como definir formalmente como valores são aplicados a funções usando declarações de tipo. <em>Você não precisa realmente ler essa seção para continuar sua jornada mágica em Haskell quest</em> e se você não entender isso, não se preocupe. Porém, entender isso vai te dar um conhecimento muito profundo do sistema de tipos.
+text: Construtores de tipos pegam outros tipos como parâmetros para eventualmente produzir tipos concretos. Isso meio que me lembra de funções, que pega valores como parâmetros para produzir valores. Nós vimos que esses construtores de tipo podem ser parcialmente aplicados ([code]Either String[/code] é um tipo que pega um tipo e produz um tipo concreto, como [code]Either String Int[/code]), assim como as funções podem. Isso é, de fato, muito interessante. Nessa seção, nós daremos uma olhada na definição formal de como tipos são aplicados a construtores de tipos, assim como nós demos uma olhada em como definir formalmente como valores são aplicados a funções usando declarações de tipo. <em>Você não precisa realmente ler essa seção para continuar sua jornada mágica em Haskell</em> e se você não entender isso, não se preocupe. Porém, entender isso vai te dar um conhecimento muito profundo do sistema de tipos.
 
-Então, valores como [code]3[/code], [code]"YEAH"[/code] ou [code]takeWhile[/code] (funções também são valores, porque nós podemos passar elas como parâmetro) têm cada um seu próprio tipo. Tipos são pequenos rótulos que os valores carregam para que nós possamos pensar a respeito dos valores. Mas os tipos têm seus próprios rótulos, chamados <em>classes</em>. Uma classe é mais ou menos um tipo de tipo. Isso pode soar um pouco estranho e confuso,mas é de fato um conceito muito legal.
+Então, valores como [code]3[/code], [code]"YEAH"[/code] ou [code]takeWhile[/code] (funções também são valores, porque nós podemos passar elas como parâmetro) têm cada um seu próprio tipo. Tipos são pequenos rótulos que os valores carregam para que nós possamos pensar a respeito dos valores. Mas os tipos têm seus próprios rótulos, chamados <em>classes</em>. Uma classe é mais ou menos um tipo de tipo. Isso pode soar um pouco estranho e confuso, mas é de fato um conceito muito legal.
 
 O que são classes e pra que elas servem? Bem, vamos examinar a classe de um tipo usando o comando [code]:k[/code] no GHCI.
 
 
 
 
-Uma estrela? Que exótico. O que isso significa? Uma [code]*[/code] significa que o tipo é um tipo concreto. Um tipo concretor é um tipo que não pega nenhum parâmetro de tipo e os valores só podem ter tipos que são tipos concretos. Se eu tiver que ler [code]*[/code] em voz alta (Eu nunca tive que fazer isso até hoje), Eu diria <i>estrela</i> ou só <i>tipo</i>.
+Uma estrela? Que exótico. O que isso significa? Uma [code]*[/code] significa que o tipo é um tipo concreto. Um tipo concreto é um tipo que não pega nenhum parâmetro de tipo e os valores só podem ter tipos que são tipos concretos. Se eu tiver que ler [code]*[/code] em voz alta (eu nunca tive que fazer isso até hoje), eu diria <i>estrela</i> ou só <i>tipo</i>.
 
 Ok, agora vamos ver qual a classe de [code]Maybe[/code] .
 
@@ -23,23 +23,22 @@ O construtor de tipo [code]Maybe[/code] pega um tipo concreto (como [code]Int[/c
 
 Exatamente como eu esperava! Nós aplicamos o parâmetro de tipo ao [code]Maybe[/code] e recebemos de volta um tipo concreto (é isso o que [code]* -&gt; *[/code] significa. Um paralelo (embora não seja equivalente, tipos e classes são duas coisas diferentes) a isso é se nós fizermos [code]:t isUpper[/code] and [code]:t isUpper 'A'[/code]. [code]isUpper[/code] tem como tipo [code]Char -&gt; Bool[/code] e [code]isUpper 'A'[/code] tem como tipo [code]Bool[/code], porque seu valor é basicamente [code]False[/code]. Ambos os tipo, porém, têm uma espécie de [code]*[/code].
 
-Nós usamos [code]:k[/code] em um tipo para obter sua classe, assim como nós podemos usar [code]:t[/code] em um valor para obter seu tipo. Como nós dissermos, tipos são os rótulos dos valores e classes são os rótulos dos tipos e existem paralelos entre os dois.
+Nós usamos [code]:k[/code] em um tipo para obter sua classe, assim como nós podemos usar [code]:t[/code] em um valor para obter seu tipo. Como nós dissemos, tipos são os rótulos dos valores e classes são os rótulos dos tipos e existem paralelos entre os dois.
 
 Vamos olhar para outra classe.
 
 
 
-Arrá, isso nos diz que [code]Either[/code] pega dois tipos concretos como parâmetros de tipo para produzir um tipo concreto. Isso também se parece com uma declaração de tipo de uma função que pega dois valores e retorna alguma coisa. Construtores de tipo são curriadas (assim como funções), assim nós podemos aplicá-las parcialment.
+Arrá, isso nos diz que [code]Either[/code] pega dois tipos concretos como parâmetros de tipo para produzir um tipo concreto. Isso também se parece com uma declaração de tipo de uma função que pega dois valores e retorna alguma coisa. Construtores de tipo são curriadas (assim como funções), assim nós podemos aplicá-las parcialmente.
 
 
 
 
-Quando nós queríamos fazer de [code]Either[/code] uma parte da typeclass de [code]Functor[/code] , nós tínhamos que aplicá-la parcialmente porque [code]Functor[/code] requer tipos que pegam somente um parâmetro enquanto que [code]Either[/code] pega dois. Em outras palavras, [code]Functor[/code] requer tipos da classe [code]* -&gt; *[/code] e então nós teremos que aplicar parcialmente [code]Either[/code] para ter um tipo da classe [code]* -&gt; *[/code] ao invés da sua classe original, [code]* -&gt; * -&gt; *[/code]. Se nós olharmos para a definição de [code]Functor[/code] de novo
+Quando nós queríamos fazer de [code]Either[/code] uma parte da typeclass de [code]Functor[/code], nós tínhamos que aplicá-la parcialmente porque [code]Functor[/code] requer tipos que pegam somente um parâmetro enquanto que [code]Either[/code] pega dois. Em outras palavras, [code]Functor[/code] requer tipos da classe [code]* -&gt; *[/code] e então nós teremos que aplicar parcialmente [code]Either[/code] para obter um tipo da classe [code]* -&gt; *[/code] ao invés da sua classe original, [code]* -&gt; * -&gt; *[/code]. Se nós olharmos para a definição de [code]Functor[/code] de novo
 
 
+nós vemos que a variável de tipo [code]f[/code] é usada como um tipo que pega um tipo concreto para produzir um tipo concreto. Nós sabemos que isso tem que produzir um tipo concreto porque isso é usado como o tipo de um valor em uma função. E disso, nós podemos deduzir que tipos que quiserem ser amigos de [code]Functor[/code] têm que ser da classe [code]* -&gt; *[/code].
 
-
-nós vemos que a variável de tipo [code]f[/code] é usada como um tipo que pega um tipo concreto para produzir um tipo concreto. nós sabemos que isso tem que produzir um tipo concreto porque isso é usado como o tipo de um valor em uma função. E disso, nós podemos deduzir que tipos que quiserem ser amigos de [code]Functor[/code] têm que ser da classe [code]* -&gt; *[/code].
 
 Agora, vamos ver algumas classes-foo. Dê uma olhada nessa typeclass que eu vou fazer agora:
 
@@ -54,7 +53,7 @@ OK, vamos fazer um tipo com a classe [code]* -&gt; (* -&gt; *) -&gt; *[/code]. A
 
 
 
-Como nós sabemos que esse tipo é da classe [code]* -&gt; (* -&gt; *) - &gt; *[/code]? Bem, campos em ADTs são feitos para guardar valores, então eles devem ser da classe [code]*[/code], obviamente. Nós assumimos [code]*[/code] para [code]a[/code], o que significa que [code]b[/code] pega um parâmetro de tipo e então sua classe é [code]* -&gt; *[/code]. Agora nós sabemos as classes de ambos [code]a[/code] e [code]b[/code] e como eles são parâmetros para [code]Frank[/code], nós vimos que [code]Frank[/code] é da classe [code]* -&gt; (* -&gt; *) -&gt; *[/code] . O primeiro [code]*[/code] representa [code]a[/code] e o [code](* -&gt; *)[/code] representa [code]b[/code]. Vamos fazer algums valores [code]Frank[/code] e verificar seus tipos.
+Como nós sabemos que esse tipo é da classe [code]* -&gt; (* -&gt; *) - &gt; *[/code]? Bem, campos em ADTs são feitos para guardar valores, então eles devem ser da classe [code]*[/code], obviamente. Nós assumimos [code]*[/code] para [code]a[/code], o que significa que [code]b[/code] pega um parâmetro de tipo e então sua classe é [code]* -&gt; *[/code]. Agora nós sabemos as classes de ambos [code]a[/code] e [code]b[/code] e como eles são parâmetros para [code]Frank[/code], nós vimos que [code]Frank[/code] é da classe [code]* -&gt; (* -&gt; *) -&gt; *[/code]. O primeiro [code]*[/code] representa [code]a[/code] e o [code](* -&gt; *)[/code] representa [code]b[/code]. Vamos fazer algums valores [code]Frank[/code] e verificar seus tipos.
 
 
 
@@ -67,7 +66,7 @@ Tornar [code]Frank[/code] uma instância de [code]Tofu[/code] é bem simples. N�
 
 
 
-Não muito útil, mas nós flezionamos nossos 'músculos de tipo'. vamos fazer alguns outros tipo-foo. nós temos esse tipo de dado:
+Não muito útil, mas nós flexionamos nossos 'músculos de tipo'. Vamos fazer alguns outros tipo-foo. Nós temos esse tipo de dado:
 
 
 
@@ -78,10 +77,10 @@ E agora nós queremos fazer dele uma instância de [code]Functor[/code]. [code]F
 
 
 
-Ah, estávamos certos. Que satisfatório. Agora, para fazer disso uma parte de [code]Functor[/code] , nós temos que aplicar parcialmente os dois primeiros parâmetros de tipo e assim só nos resta [code]* -&gt; *[/code]. Isso significa que o começo de uma declaração de instância será: [code]instance Functor (Barry a b) where[/code]. Se nós olharmos para [code]fmap[/code] como se ele fosse feito especificamente para [code]Barry[/code], ele seria do tipo [code]fmap :: (a -&gt; b) -&gt; Barry c d a -&gt; Barry c d b[/code], porque nós só trocamos o [code]f[/code] do [code]Functor[/code] pelo [code]Barry c d[/code]. O terceiro tipo de parâmetro de [code]Barry[/code] terá que mudar e nós vemos que isso está convenientemente no seu campo.
+Ah, estávamos certos. Que satisfatório. Agora, para fazer disso uma parte de [code]Functor[/code], nós temos que aplicar parcialmente os dois primeiros parâmetros de tipo e assim só nos resta [code]* -&gt; *[/code]. Isso significa que o começo de uma declaração de instância será: [code]instance Functor (Barry a b) where[/code]. Se nós olharmos para [code]fmap[/code] como se ele fosse feito especificamente para [code]Barry[/code], ele seria do tipo [code]fmap :: (a -&gt; b) -&gt; Barry c d a -&gt; Barry c d b[/code], porque nós só trocamos o [code]f[/code] do [code]Functor[/code] pelo [code]Barry c d[/code]. O terceiro tipo de parâmetro de [code]Barry[/code] terá que mudar e nós vemos que isso está convenientemente no seu campo.
 
 
 
 Aqui vamos nós! Nós acabamos de mapear o [code]f[/code] sobre o primeiro campo.
 
-Nessa seção, nós demos uma boa olhada em como parâmetros de tipo funcionam e meio que formalizamos eles com classes, assim como nós formalizamos parâmetros de função com declaração de tipos. Nós vimos que existem paralelos interessantes entre funções e construtores de tipos. Eles são, porém, duas coisas completamente diferentes. Quando trabalhar com Haskell de verdade, você normalmente não vai se confundir com classes e fará inferência de classes na mão como nós fizemos agora. Normalmente, você só tem que aplicar parcialmente seu próprio tipo em [code]* -&gt; *[/code] ou [code]*[/code] quando for fazer uma instância de uma das typeclasses padrão,mas é bom saber como e porquê isso de fato funciona. Também é interessante ver que tipos tem seus próprios pequenos tipos. De novo, você não precisa entender tudo que fizemos aqui para continuar a leitura , mas se você entendeu como classes funcionam,você provavelmente tem uma base muito sólida do sistema de tipos de Haskell.
+Nessa seção, nós demos uma boa olhada em como parâmetros de tipo funcionam e meio que formalizamos eles com classes, assim como nós formalizamos parâmetros de função com declaração de tipos. Nós vimos que existem paralelos interessantes entre funções e construtores de tipos. Eles são, porém, duas coisas completamente diferentes. Quando trabalhar com Haskell de verdade, você normalmente não vai se confundir com classes e fará inferência de classes na mão como nós fizemos agora. Normalmente, você só tem que aplicar parcialmente seu próprio tipo em [code]* -&gt; *[/code] ou [code]*[/code] quando for fazer uma instância de uma das typeclasses padrão, mas é bom saber como e porquê isso de fato funciona. Também é interessante ver que tipos tem seus próprios pequenos tipos. De novo, você não precisa entender tudo que fizemos aqui para continuar a leitura, mas se você entendeu como classes funcionam, você provavelmente tem uma base muito sólida do sistema de tipos de Haskell.
