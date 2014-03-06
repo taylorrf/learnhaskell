@@ -11,7 +11,7 @@ Veja que se movessemos a última pattern (o else geral) no topo, sempre diria [c
 
 Lembra da função fatorial que implementamos anteriormente? Definimos o fatorial de um número [code] n [/code] como sendo [code] product [1..n] [/code]. Nós ainda podemos usar recursividade, que é como geralmente é definida na matemática. Começamos explicitando que o fatorial de 0 é 1. Então dizemos que o fatorial de qualquer número inteiro positivo é ele multiplicado pelo fatorial do predecessor. Assim fica traduzido para o idioma Haskell.
 
-Essa é a primeira vez que definimos uma função recursiva. Resursão é importante em Haskell e iremos ver com mais calma mais tarde. Mas para dar água na boca, veremos agora o acontece ao tentarmos calcular o fatorial de, digamos, 3: tenta descobrir o resultado de [code] 3 * factorial 2 [/code]. O fatorial de 2 é [code] 2 * factorial 1 [/code], então até agora temos [code] 3 * (2 * factorial 1) [/code]. [code] factorial 1 [/code] é [code] 1 * factorial 0 [/code], então [code] 3 * (2 * (1 * factorial 0)) [/code]. E ai que temos o truque &mdash; definimos o fatorial de 0 ser 1 com a intenção de não executar a terceira linha, então só retorna 1. O resultado final é o equivalente a [code] 3 * (2 * (1 * 1)) [/code]. Se tivéssemos colocado a linha para a recursão como primeira da função, o 0 seria incluido e o cálculo seria infinito. Por isso a ordem é muito importante ao definir patterns e é melhor colocar as mais específicas no início e deixar as gerais para o fim.
+Essa é a primeira vez que definimos uma função recursiva. Resursão é importante em Haskell e iremos ver com mais calma mais tarde. Mas para dar água na boca, veremos agora o que acontece ao tentarmos calcular o fatorial de, digamos, 3: tenta descobrir o resultado de [code] 3 * factorial 2 [/code]. O fatorial de 2 é [code] 2 * factorial 1 [/code], então até agora temos [code] 3 * (2 * factorial 1) [/code]. [code] factorial 1 [/code] é [code] 1 * factorial 0 [/code], então [code] 3 * (2 * (1 * factorial 0)) [/code]. E ai que temos o truque &mdash; definimos o fatorial de 0 ser 1 com a intenção de não executar a terceira linha, então só retorna 1. O resultado final é o equivalente a [code] 3 * (2 * (1 * 1)) [/code]. Se tivéssemos colocado a linha para a recursão como primeira da função, o 0 seria incluido e o cálculo seria infinito. Por isso a ordem é muito importante ao definir patterns e é melhor colocar as mais específicas no início e deixar as gerais para o fim.
 
 Pattern matching também podem falhar, como no caso de definirmos uma função como essa:
 
@@ -27,7 +27,7 @@ Aí está. Muito melhor. Veja que temos um pattern padrão. O tipo de [code] add
 [code] fst [/code] e [code] snd [/code] também precisam de parâmetros em pares. Mas e com triplas? Não há nenhuma função que trabalhe com elas, mas podemos fazer a nossa própria.
 
 
-[code] _ [/code] significa o mesmo que em list comprehensions. Se o compilador não deve se importar com o que já ali, coloca-se [code] _ [/code].
+[code] _ [/code] significa o mesmo que em list comprehensions. Se o compilador não deve se importar com o que há ali, coloca-se [code] _ [/code].
 o que me lembra que patterns matching também podem ser usadas em list comprehensions. Veja...
 
 Se a pattern falhar, se moverá para o próximo elemento.
