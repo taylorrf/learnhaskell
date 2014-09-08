@@ -4,14 +4,14 @@ title: Preparar, apontar, foi!
 
 text: Ok, vamos começar! Se você é o tipo de pessoa horrível que não lê as introduções das coisas e se você pulou ela, então você irá querer ler a última seção da introdução de qualquer maneira, porque explica o que você precisa para acompanhar este tutorial e como vamos fazer para carregar as funções. A primeira coisa que vamos fazer é rodar o GHC no modo interativo e chamar alguma função para obter uma base para começar a sentir o Haskell. Abra seu terminal e digite [code]ghci[/code] . Você será agraciado com algo parecido com isto. 
 
-Meus parabéns, você esta no CHGI! O prompt aqui é [code]Prelude&gt;[/code] no entando como isto é demasiadamente longo quando você carrega algumas coisas na sua sessão, nós iremos usar [code]ghci&gt;[/code]. Se você quer ter o mesmo prompt, digite [code]:set prompt "ghci&gt; "[/code]. 
+Meus parabéns, você esta no GHCI! O prompt aqui é [code]Prelude&gt;[/code] no entando como isto é demasiadamente longo quando você carrega algumas coisas na sua sessão, nós iremos usar [code]ghci&gt;[/code]. Se você quer ter o mesmo prompt, digite [code]:set prompt "ghci&gt; "[/code]. 
 
 
 Veja algumas simples operações aritméticas.
 
 Isto é bastante auto-explicativo. Nós podemos utilizar todos operadores comuns em uma só linha e todas suas regras usuais precedentes serão obedecidas. Nós também podemos utilizar parênteses para declarar de forma explicita a operação precedente ou para muda-la.
- 
- 
+
+
 Muito legal hein?! Sim, eu sei que não... mas tenha paciência comigo. Uma pequena armadilha a se observar aqui é a negação de números. Se você quiser obter números negativos, sempre tenha a operação determinada por parênteses. Fazendo [code]5 * -3[/code] o GHCI irá gritar com você, porém fazendo [code]5 * (-3)[/code] isto irá funcionar perfeitamente.
 
 <a href="http://pt.wikipedia.org/wiki/%C3%81lgebra_booleana" target="_blank">Álgebra booleana</a> também é bastante simples. Você provavelmente já sabe que [code]&amp;&amp;[/code] refere-se a expressão booleana <i>and</i>, [code]||[/code] refere-se a expressão booleana <i>or</i>. [code]not[/code] faz a negação de um [code]True[/code] ou de um [code]False[/code].
