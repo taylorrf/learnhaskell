@@ -1,5 +1,5 @@
 Sobre
-============
+==============
 
 Projeto de tradução do livro "learn your a Haskell for great good" para o português do Brasil.
 
@@ -10,8 +10,8 @@ Versão online em inglês:
 http://www.learnyouahaskell.com
 
 
-Como contribuir
------------------
+### Como contribuir
+
 Para revisões de tradução ou tradução de capitulos faça um fork deste repositório e submeta sua contribuição.
 
 No caso de traduções, verifique o status de cada capitulo abaixo, caso já esteja sendo traduzido escolha outro capitulo ou uma parte que ainda precisa de tradução.
@@ -20,8 +20,7 @@ No caso de traduções, verifique o status de cada capitulo abaixo, caso já est
 Revisões e correções ortográficas de capitulos já traduzidos são bem-vindas.
 
 
-Status da Tradução
--------------------
+### Status da Tradução
 
 chapter01 	 - [ traduzido ]
 chapter01-part02 - [ traduzido ]
