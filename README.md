@@ -1,5 +1,6 @@
 Sobre
 ==============
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/taylorrf/learnhaskell?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Projeto de tradução do livro "learn your a Haskell for great good" para o português do Brasil.
 
