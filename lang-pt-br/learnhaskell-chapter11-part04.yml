@@ -6,12 +6,11 @@ Na seção anterior, nós vimos que há na verdade mais formas do tipo lista ser
 
 A segunda forma é pegar a primeira função a esquerda do [code]&lt;*&gt;[/code] e aplicar ao primeiro valor da direita, então pegar a segunda função da lista a esquerda e aplicar ao segundo valor da direita, e assim por diante. Por fim, é como se estivessemos mesclando as duas listas. Mas listas já são uma instância de [code]Applicative[/code], então como nós fazemos da lista uma instância de [code]Applicative[/code] desta segunda forma? Se você lembra, nós dissemos que o tipo [code]ZipList a[/code] foi introduzido para esse propósito, que tem um construtor, [code]ZipList[/code], que tem apenas um campo. Nós envolvemos a lista no campo. Então, [code]ZipList[/code] se torna uma instância de [code]Applicative[/code], assim quando nós queremos usar listas como aplicatives para realizar mesclagem, nós apenas envolvemos elas com o construtor [code]ZipList[/code] e então uma vez feito, recuperamos elas com [code]getZipList[/code]:
 
+Então, o que isso tem a ver com a palavra-chave <i>newtype</i>? Bem, penso sobre como nós podemos escrever a declaração dos dados para nosso tipo [code]ZipList a[/code]. Uma forma seria fazer assim:
 
-So, what does this have to do with this <i>newtype</i> keyword? Well, think about how we might write the data declaration for our [code]ZipList a[/code] type. One way would be to do it like so:
+Um tipo que tem apenas um construtor e que o construtor tem apenas um campo que é uma lista de coisas. Nós podemos querer também usar a sintaxe do record onde nós automaticamente obtemos uma função que extrai uma lista de um [code]ZipList[/code]:
 
-A type that has just one value constructor and that value constructor has just one field that is a list of things. We might also want to use record syntax so that we automatically get a function that extracts a list from a [code]ZipList[/code]:
-
-This looks fine and would actually work pretty well. We had two ways of making an existing type an instance of a type class, so we used the <i>data</i> keyword to just wrap that type into another type and made the other type an instance in the second way.
+Parece bom e funciona muito bem. Nós temos duas forma de fazer um tipo existente uma instância de um tipo de classe, então nós usamos a palavra-chave <i>data</i> para envolver o tipo em outro e fazer desse uma instância desse segunda modo.
 
 The <i>newtype</i> keyword in Haskell is made exactly for these cases when we want to just take one type and wrap it in something to present it as another type. In the actual libraries, [code]ZipList a[/code] is defined like this:
 
