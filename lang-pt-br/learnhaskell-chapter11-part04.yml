@@ -12,13 +12,13 @@ Um tipo que tem apenas um construtor e que o construtor tem apenas um campo que 
 
 Parece bom e funciona muito bem. Nós temos duas forma de fazer um tipo existente uma instância de um tipo de classe, então nós usamos a palavra-chave <i>data</i> para envolver o tipo em outro e fazer desse uma instância desse segunda modo.
 
-The <i>newtype</i> keyword in Haskell is made exactly for these cases when we want to just take one type and wrap it in something to present it as another type. In the actual libraries, [code]ZipList a[/code] is defined like this:
+A palavra-chave <i>newtype</i> em Haskell é exatamente para estes casos quando nós queremos apenas pegar um tipo e envolver em alguma coisa para aprensentar como outro tipo. Nas bibliotecas atuais, [code]ZipList a[/code] é definido como algo assim:
 
-Instead of the <i>data</i> keyword, the <i>newtype</i> keyword is used. Now why is that? Well for one, <i>newtype</i> is faster. If you use the <i>data</i> keyword to wrap a type, there's some overhead to all that wrapping and unwrapping when your program is running. But if you use <i>newtype</i>, Haskell knows that you're just using it to wrap an existing type into a new type (hence the name), because you want it to be the same internally but have a different type. With that in mind, Haskell can get rid of the wrapping and unwrapping once it resolves which value is of what type.
+Ao invés da palavra-chave <i>data</i>, a palavra-chave <i>newtype</i> é usada. Por que motivo? Bem, <i>newtype</i> é rápido. Se você usa a palavra-chave <i>data</i> para envolver um tipo, há um custo ao envolver e recuperar os dados quando seu programa está sendo executado. Mas se você usa <i>newtype</i>, Haskell sabe que você apenas está usando isso para envolver um tipo existente em um novo tipo (portanto o nome), porque você quer que internamente seja a mesma coisa mas tenha um tipo diferente. Com isso em mente, Haskell consegue eliminar o trabalho de envolver e recuperar valores uma vez que este sabe que valor é de que tipo.
 
-So why not just use <i>newtype</i> all the time instead of <i>data</i> then? Well, when you make a new type from an existing type by using the <i>newtype</i> keyword, you can only have one value constructor and that value constructor can only have one field. But with <i>data</i>, you can make data types that have several value constructors and each constructor can have zero or more fields:
+Então, porque não usar <i>newtype</i> em todos os casos ao invés de <i>data</i> então? Bem, quando você cria um novo tipo a partir de um tipo existente usando a palavra-chave <i>newtype</i>, você pode ter apenas um construtor e este deve ter apenas um campo. Mas com <i>data</i>, você pode criar tipos de dados com mais de um construtor e cada construtor pode ter zero ou mais campos:
 
-When using <i>newtype</i>, you're restricted to just one constructor with one field.
+Quando usamos <i>newtype</i>, estamos restritos apenas um construtor com apenas um campo.
 
 We can also use the <i>deriving</i> keyword with <i>newtype</i> just like we would with <i>data</i>. We can derive instances for [code]Eq[/code], [code]Ord[/code], [code]Enum[/code], [code]Bounded[/code], [code]Show[/code] and [code]Read[/code].
 If we derive the instance for a type class, the type that we're wrapping has to be in that type class to begin with. It makes sense, because <i>newtype</i> just wraps an existing type. So now if we do the following, we can print and equate values of our new type:
