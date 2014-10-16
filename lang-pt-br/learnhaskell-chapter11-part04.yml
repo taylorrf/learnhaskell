@@ -20,8 +20,7 @@ Então, porque não usar <i>newtype</i> em todos os casos ao invés de <i>data</
 
 Quando usamos <i>newtype</i>, estamos restritos apenas um construtor com apenas um campo.
 
-We can also use the <i>deriving</i> keyword with <i>newtype</i> just like we would with <i>data</i>. We can derive instances for [code]Eq[/code], [code]Ord[/code], [code]Enum[/code], [code]Bounded[/code], [code]Show[/code] and [code]Read[/code].
-If we derive the instance for a type class, the type that we're wrapping has to be in that type class to begin with. It makes sense, because <i>newtype</i> just wraps an existing type. So now if we do the following, we can print and equate values of our new type:
+Nós também podemos usar a palavra-chave <i>deriving</i> com <i>newtype</i> assim como usamos com <i>data</i>. Nós podemos derivar instâncias para [code]Eq[/code], [code]Ord[/code], [code]Enum[/code], [code]Bounded[/code], [code]Show[/code] e [code]Read[/code]. Se derivarmos a instância para um tipo de classe, o tipo que estamos envolvendo tem de estar nesses tipos também. Faz sentido, porque <i>newtype</i> apenas envolve um tipo existente. Então agora, se nós fizermos o seguinte, nós podemos imprimir e comparar valores do nosso tipo:
 
 Let's give that a go:
 
