@@ -22,14 +22,14 @@ Quando usamos <i>newtype</i>, estamos restritos apenas um construtor com apenas 
 
 Nós também podemos usar a palavra-chave <i>deriving</i> com <i>newtype</i> assim como usamos com <i>data</i>. Nós podemos derivar instâncias para [code]Eq[/code], [code]Ord[/code], [code]Enum[/code], [code]Bounded[/code], [code]Show[/code] e [code]Read[/code]. Se derivarmos a instância para um tipo de classe, o tipo que estamos envolvendo tem de estar nesses tipos também. Faz sentido, porque <i>newtype</i> apenas envolve um tipo existente. Então agora, se nós fizermos o seguinte, nós podemos imprimir e comparar valores do nosso tipo:
 
-Let's give that a go:
+Vamos dar uma olhada:
 
-In this particular <i>newtype</i>, the value constructor has the following type:
+Nesse <i>newtype</i> em particular, o valor do construtor tem o seguinte tipo:
 
+Este recebe um valor do tipo [code][Char][/code], como [code]"my sharona"[/code] e retorna um valor do tipo [code]CharList[/code]. A partir dos exemplos acima onde nós usamos o construtor [code]CharList[/code], nós vimos que esse é realmente um caso. Inversamente, a função [code]getCharList[/code], o qual foi gerada para nós já que usamos a sintaxe record em nosso newtype, tem este tipo:
 
-It takes a [code][Char][/code] value, such as [code]"my sharona"[/code] and returns a [code]CharList[/code] value. From the above examples where we used the [code]CharList[/code] value constructor, we see that really is the case. Conversely, the [code]getCharList[/code] function, which was generated for us because we used record syntax in our <i>newtype</i>, has this type:
+Este recebe um valor do tipo [code]CharList[/code] e converte para um valor do tipo [code][Char][/code]. Você pode pensar nisso como envolvendo e recuperando, mas você também pode pensar nisso como uma conversão de valores de um tipo para outro.
 
-It takes a [code]CharList[/code] value and converts it to a [code][Char][/code] value. You can think of this as wrapping and unwrapping, but you can also think of it as converting values from one type to the other.
 
 <h3>Using newtype to make type class instances</h3>
 
