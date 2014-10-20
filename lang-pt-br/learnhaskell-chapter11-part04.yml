@@ -30,15 +30,14 @@ Este recebe um valor do tipo [code][Char][/code], como [code]"my sharona"[/code]
 
 Este recebe um valor do tipo [code]CharList[/code] e converte para um valor do tipo [code][Char][/code]. Você pode pensar nisso como envolvendo e recuperando, mas você também pode pensar nisso como uma conversão de valores de um tipo para outro.
 
+<h3>Usando newtype para criar instâncias de um tipo de classe</h3>
 
-<h3>Using newtype to make type class instances</h3>
+Muitas vezes, nós queremos fazer dos nossos tipos instâncias de um certo tipo de classe, mas o tipo dos parâmetros não casam com o que nós queremos fazer. É fácil fazer de [code]Maybe[/code] uma instância de [code]Functor[/code], porque o tipo de classe [code]Functor[/code] é definido assim:
 
+Então nós apenas começamos com:
 
-Many times, we want to make our types instances of certain type classes, but the type parameters just don't match up for what we want to do. It's easy to make [code]Maybe[/code] an instance of [code]Functor[/code], because the [code]Functor[/code] type class is defined like this:
+E então implementamos [code]fmap[/code]. Todos os tipos de parâmetros fazem sentido aqui porque [code]Maybe[/code] toma o lugar de [code]f[/code] na definição do tipo de classe [code]Functor[/code], então se nós olharmos [code]fmap[/code] como se ele apenas funcionasse com [code]Maybe[/code], ele acaba se comportando da seguinte maneira:
 
-So we just start out with:
-
-And then implement [code]fmap[/code]. All the type parameters add up because the [code]Maybe[/code] takes the place of [code]f[/code] in the definition of the [code]Functor[/code] type class and so if we look at [code]fmap[/code] like it only worked on [code]Maybe[/code], it ends up behaving like:
 
 Isn't that just peachy? Now what if we wanted to make the tuple an instance of [code]Functor[/code] in such a way that when we [code]fmap[/code] a function over a tuple, it gets applied to the first component of the tuple? That way, doing [code]fmap (+3) (1,1)[/code] would result in [code](4,1)[/code]. It turns out that writing the instance for that is kind of hard. With [code]Maybe[/code], we just say [code]instance Functor Maybe where[/code] because only type constructors that take exactly one parameter can be made an instance of [code]Functor[/code]. But it seems like there's no way to do something like that with [code](a,b)[/code] so that the type parameter [code]a[/code] ends up being the one that changes when we use [code]fmap[/code]. To get  around this, we can <i>newtype</i> our tuple in such a way that the second type parameter represents the type of the first component in the tuple:
 
