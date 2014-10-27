@@ -40,18 +40,13 @@ E então implementamos [code]fmap[/code]. Todos os tipos de parâmetros fazem se
 
 Não é excelente? Agora, e se nós quisermos fazer da tupla uma instância de [code]Functor[/code], de uma forma que quando nós usarmos [code]fmap[/code] em uma tupla este é aplicado ao primeiro item da tupla? Dessa forma, fazendo [code]fmap (+3) (1,1)[/code] resultaria em [code](4,1)[/code]. Escrever uma instância para isso parece difícil. Com [code]Maybe[/code] nós apenas fazemos [code]instance Functor Maybe where[/code], porque apenas construtores de tipo que recebem exatamente um parâmetro podem se tornar uma instância de [code]Functor[/code]. Mas parece que não tem uma forma de fazer algo assim com [code](a,b)[/code], então o parâmetro do tipo [code]a[/code] acaba sendo o parâmetro que muda quando nós usamos [code]fmap[/code]. Para contornar isso, nós podemos usar <i>newtype</i> em nossa tupla de uma forma que o segundo parâmetro represente o tipo do primeiro item na tupla:
 
-And now, we can make it an instance of [code]Functor[/code] so that the function is mapped over the first component:
+E agora, nós podemos fazer disso uma instância de [code]Functor[/code] da forma que a função é mapeada sobre o primeiro componente:
 
-As you can see, we can pattern match on types defined with <i>newtype</i>. We pattern match to get the underlying tuple, then we apply the function [code]f[/code] to the first component in the tuple and then we use the [code]Pair[/code] value constructor to convert the tuple back to our [code]Pair b a[/code].
-If we imagine what the type [code]fmap[/code] would be if it only worked on our new pairs, it would be:
+Como você pode ver, nós podemos casar padrões de tipos definidos com <i>newtype</i>. Nós casamos padrões para obter a tupla subjacente, então nós aplicamos a função [code]f[/code] ao primeiro componente da tupla e então usamos o construtor [code]Pair[/code] para converter a tuple de volta para [code]Pair b a[/code]. Se nós imaginarmos que o tipo [code]fmap[/code] poderia ser se apenas trabalhasse nos nossos novos pares, este seria:
 
+Novamente, escrevemos [code]instance Functor (Pair c) where[/code] e assim [code]Pair c[/code] toma o lugar de [code]f[/code] na definição do tipo de classe para [code]Functor[/code]:
 
-Again, we said [code]instance Functor (Pair c) where[/code] and so
-[code]Pair c[/code] took the place of the [code]f[/code]
-in the type class definition for [code]Functor[/code]:
-
-
-So now, if we convert a tuple into a [code]Pair b a[/code], we can use [code]fmap[/code] over it and the function will be mapped over the first component:
+Então agora, se nós convertermos a tupla em [code]Pair b a[/code], nós podemos usar [code]fmap[/code] nela e a função será mapeada sobre o primeiro componente:
 
 
 <h3>On newtype laziness</h3>
