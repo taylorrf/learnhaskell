@@ -49,10 +49,10 @@ Novamente, escrevemos [code]instance Functor (Pair c) where[/code] e assim [code
 Então agora, se nós convertermos a tupla em [code]Pair b a[/code], nós podemos usar [code]fmap[/code] nela e a função será mapeada sobre o primeiro componente:
 
 
-<h3>On newtype laziness</h3>
+<h3>A avaliação sob demanda de newtype</h3>
 
+Nós mencionamos que <i>newtype</i> geralmente é mais rápido que <i>data</i>. A única coisa que pode ser feita com <i>newtype</i> é transformar um tipo existente em um novo tipo, então internamente, Haskell pode representar os valores dos tipos definidos com <i>newtype</i> como os originais, apenas tem de manter em mente que seus tipos agora são distintos. Isso significa que <i>newtype</i> não é apenas mais rápido, este é também avaliado sob demanda. Vamos dar uma olhada no que isso significa.
 
-We mentioned that <i>newtype</i> is usually faster than <i>data</i>. The only thing that can be done with <i>newtype</i> is turning an existing type into a new type, so internally, Haskell can represent the values of types defined with <i>newtype</i> just like the original ones, only it has to keep in mind that the their types are now distinct. This fact means that not only is <i>newtype</i> faster, it's also lazier. Let's take a look at what this means.
 
 Like we've said before, Haskell is lazy by default, which means that only when we try to actually print the results of our functions will any computation take place. Furthemore, only those computations that are necessary for our function to tell us the result will get carried out. The [code]undefined[/code] value in Haskell represents an erronous computation. If we try to evaluate it (that is, force Haskell to actually compute it) by printing it to the terminal, Haskell will throw a hissy fit (technically referred to as an exception):
 
