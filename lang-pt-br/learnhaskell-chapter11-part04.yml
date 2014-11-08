@@ -53,13 +53,11 @@ Então agora, se nós convertermos a tupla em [code]Pair b a[/code], nós podemo
 
 Nós mencionamos que <i>newtype</i> geralmente é mais rápido que <i>data</i>. A única coisa que pode ser feita com <i>newtype</i> é transformar um tipo existente em um novo tipo, então internamente, Haskell pode representar os valores dos tipos definidos com <i>newtype</i> como os originais, apenas tem de manter em mente que seus tipos agora são distintos. Isso significa que <i>newtype</i> não é apenas mais rápido, este é também avaliado sob demanda. Vamos dar uma olhada no que isso significa.
 
+Como dissemos antes, Haskell é avaliado sob demanda por padrão, o que significa que apenas quando nós tentarmos exibir os resultados de nossas funções as computações serão feitas. Além disso, apenas as computações que são necessárias para nossa função exibir o resulta serão avaliadas. O valor [code]undefined[/code] em Haskell representa uma computação errônea. Se tertarmos avaliar isso (ou seja, forçar Haskell a realizar esta computação) exibindo o resultado no terminal, Haskell irá ter um chilique (conhecido técnicamente como exceção):
 
-Like we've said before, Haskell is lazy by default, which means that only when we try to actually print the results of our functions will any computation take place. Furthemore, only those computations that are necessary for our function to tell us the result will get carried out. The [code]undefined[/code] value in Haskell represents an erronous computation. If we try to evaluate it (that is, force Haskell to actually compute it) by printing it to the terminal, Haskell will throw a hissy fit (technically referred to as an exception):
+Entretanto, se nós criarmos uma lista com alguns valores [code]undefined[/code] e apenas usarmos o topo da lista, que não é [code]undefined[/code], tudo vai funcionar porque Haskell de fato não precisará avaliar nenhum outro elemento na lista se nós apenas queremos ver o que o primeiro elemento é:
 
-However, if we make a list that has some [code]undefined[/code] values in it but request only the head of the list, which is not [code]undefined[/code], everything will go smoothly because Haskell doesn't really need to evaluate any other elements in a list if we only want to see what the first element is:
-
-
-Now consider the following type:
+Agora considere o seguinte tipo:
 
 It's your run-of-the-mill algebraic data type that was defined with the <i>data</i> keyword. It has one value constructor, which has one field whose type is [code]Bool[/code]. Let's make a function that pattern matches on a [code]CoolBool[/code] and returns the value [code]"hello"[/code] regardless of whether the [code]Bool[/code] inside the [code]CoolBool[/code] was [code]True[/code] or [code]False[/code]:
 
