@@ -78,7 +78,7 @@ Revisões e correções ortográficas de capitulos já traduzidos são bem-vinda
 * chapter11 	 - em tradução por @valdemir
 * chapter11-part02 - em tradução por @anboia
 * chapter11-part03 - em tradução por @phinfonet
-* chapter11-part04 - em aberto
+* chapter11-part04 - em tradução por @hlmerscher
 * chapter11-part05 - em aberto
 * chapter12 	 - em aberto
 * chapter12-part02 - em aberto
