@@ -51,8 +51,7 @@ WOW! Tudo explode bem na nossa cara! Isso não é um mostro, não tem cabeça! Q
 
 [code]reverse[/code] reverte uma lista.
 
-[code]take[/code] recebe um número e uma lista. Ele extrai muitos elementos desde o início da lista. Observe.
-
+[code]take[/code] recebe um número e uma lista. Ele extrai a quantidade de elementos desde o início da lista. Observe.
 
 Observe que se tentarmos tirar mais elementos do há na lista, ele retorna só a lista. Se nós tentarmos retornar 0 elementos, receberemos uma lista vazia.
 
