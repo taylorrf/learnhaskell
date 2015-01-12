@@ -61,7 +61,7 @@ Podemos fazer uma função que gera um fluxo finito de números e um novo gerado
 
 
 
-Denovo, uma definição recursiva. Dizemos que se quisermos 0 números, apenas retornamos uma lista vazia e o gerador que nos foi dado. Para qualquer outro número de valores aleatórios, primeiro obtemos um número aleatório e um novo gerador. Essa será a cabeça. Então dizemos que a cauda será <i>n - 1</i> números gerados com o novo gerador. Então retornamos a cabeça e o resto da lista se junta e o gerador final que iremos obter será dado por <i>n - 1</i> números aleatórios.
+De novo, uma definição recursiva. Dizemos que se quisermos 0 números, apenas retornamos uma lista vazia e o gerador que nos foi dado. Para qualquer outro número de valores aleatórios, primeiro obtemos um número aleatório e um novo gerador. Essa será a cabeça. Então dizemos que a cauda será <i>n - 1</i> números gerados com o novo gerador. Então retornamos a cabeça e o resto da lista se junta e o gerador final que iremos obter será dado por <i>n - 1</i> números aleatórios.
 
 E se quisermos um valor aleatório em algum tipo de intervalo? Todos os números inteiros aleatórios até agora foram escandalosamente grande ou pequeno. E se nós queremos para jogar um dado? Bem, usamos [function]randomR[/function] para esse propósito. Ela tem um tipo de [code]randomR :: (RandomGen g, Random a) :: (a, a) -&gt; g -&gt; (a, g)[/code], significando que é como um tipo [code]random[/code], ele pega apenas como primeiro parâmetro um par de valores que são os limites mínimos e máximos e o valor final produzido estará no intervalor desses límites.
 
