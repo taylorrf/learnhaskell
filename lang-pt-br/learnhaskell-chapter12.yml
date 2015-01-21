@@ -1,10 +1,10 @@
-chapter: A Fistful of Monads
+chapter: Um punhado de Monads
 
-text: When we first talked about functors, we saw that they were a useful concept for values that can be mapped over. Then, we took that concept one step further by introducing applicative functors, which allow us to view values of certain data types as values with contexts and use normal functions on those values while preserving the meaning of those contexts.
+text: Quando nós começamos a falar sobre functors, vimos que elas foram conceitos úteis para os valores que poderiam ser mapeados. Então, nós tornamos esse conceito uma passo a mais atráves da introdução da aplicação de functors, o que nos permite ver certos tipos de valores como valores com contexto e utilizar funções normais nesse valores enquando preserva o significado desses conceitos.
 
-In this chapter, we'll learn about monads, which are just beefed up applicative functors, much like applicative functors are only beefed up functors.
+Neste capítulo, nos vamos estudar sobre monads, que somente reforçam a aplicação de functors. Muito semelhante a aplicação de functors somente refornçando functors.
 
-When we started off with functors, we saw that it's possible to map functions over various data types. We saw that for this purpose, the [code]Functor[/code] type class was introduced and it had us asking the question: when we have a function of type [code]a -&gt; b[/code] and some data type [code]f a[/code], how do we map that function over the data type to end up with [code]f b[/code]? We saw how to map something over a [code]Maybe a[/code], a list [code][a][/code], an [code]IO a[/code] etc. We even saw how to map a function [code]a -&gt; b[/code] over other functions of type [code]r -&gt; a[/code] to get functions of type [code]r -&gt; b[/code]. To answer this question of how to map a function over some data type, all we had to do was look at the type of [code]fmap[/code]:
+Quando nós começamos com functors, vimos que é possivel mapear funções de vários tipos de dados. Nós vimos que para esse propósito, o  tipo de classe [code]Functor[/code] nós tem feito a pergunta: quando nós temos um tipo de função [code]a -&gt; b[/code] e tambem um tipo de dado [code]f a[/code], como nós fizemos para mapear essa função para um tipo de dado terminal com [code]f b[/code]? Nós vimos como mapear somente um [code]Maybe a[/code], uma lista [code][a][/code], um [code]IO a[/code] etc. Nós até vimos como mapear uma função [code]a -&gt; b[/code] para outra função do tipo [code]r -&gt; a[/code] para obter uma função do tipo [code]r -&gt; b[/code]. Para responder essta pergunta de como mapear uma função para algum tipo de dado, tudo o que nos temos que fazer é olhar para o tipo de dado [code]fmap[/code]:
 
 And then make it work for our data type by writing the appropriate [code]Functor[/code] instance.
 
