@@ -80,8 +80,8 @@ Revisões e correções ortográficas de capitulos já traduzidos são bem-vinda
  - [ ] chapter11-part03   (em tradução por @phinfonet)
  - [x] chapter11-part04   
  - [ ] chapter11-part05
- - [ ] chapter12          (em tradução por @johnidm)
- - [ ] chapter12-part02
+ - [X] chapter12          
+ - [ ] chapter12-part02   (em tradução por @johnidm)
  - [ ] chapter12-part03
  - [ ] chapter12-part04
  - [ ] chapter12-part05
