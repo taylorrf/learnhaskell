@@ -16,7 +16,7 @@ A palavra-chave <i>newtype</i> em Haskell é exatamente para estes casos quando 
 
 Ao invés da palavra-chave <i>data</i>, a palavra-chave <i>newtype</i> é usada. Por que motivo? Bem, <i>newtype</i> é rápido. Se você usa a palavra-chave <i>data</i> para envolver um tipo, há um custo ao envolver e recuperar os dados quando seu programa está sendo executado. Mas se você usa <i>newtype</i>, Haskell sabe que você apenas está usando isso para envolver um tipo existente em um novo tipo (portanto o nome), porque você quer que internamente seja a mesma coisa mas tenha um tipo diferente. Com isso em mente, Haskell consegue eliminar o trabalho de envolver e recuperar valores uma vez que este sabe que valor é de que tipo.
 
-Então, porque não usar <i>newtype</i> em todos os casos ao invés de <i>data</i> então? Bem, quando você cria um novo tipo a partir de um tipo existente usando a palavra-chave <i>newtype</i>, você pode ter apenas um construtor e este deve ter apenas um campo. Mas com <i>data</i>, você pode criar tipos de dados com mais de um construtor de valor e cada construtor de valor pode ter zero ou mais campos:
+Então, porque não usar <i>newtype</i> em todos os casos ao invés de <i>data</i>? Bem, quando você cria um novo tipo a partir de um tipo existente usando a palavra-chave <i>newtype</i>, você pode ter apenas um construtor e este deve ter apenas um campo. Mas com <i>data</i>, você pode criar tipos de dados com mais de um construtor de valor e cada construtor de valor pode ter zero ou mais campos:
 
 Quando usamos <i>newtype</i>, estamos restritos apenas um construtor com apenas um campo.
 
@@ -42,7 +42,7 @@ Não é excelente? Agora, e se nós quisermos fazer da tupla uma instância de [
 
 E agora, nós podemos fazer disso uma instância de [code]Functor[/code] da forma que a função é mapeada sobre o primeiro componente:
 
-Como você pode ver, nós podemos casar padrões de tipos definidos com <i>newtype</i>. Nós casamos padrões para obter a tupla subjacente, então nós aplicamos a função [code]f[/code] ao primeiro componente da tupla e então usamos o construtor [code]Pair[/code] para converter a tuple de volta para [code]Pair b a[/code]. Se nós imaginarmos que o tipo [code]fmap[/code] poderia ser se apenas trabalhasse nos nossos novos pares, este seria:
+Como você pode ver, nós podemos casar padrões de tipos definidos com <i>newtype</i>. Nós casamos padrões para obter a tupla subjacente, então nós aplicamos a função [code]f[/code] ao primeiro componente da tupla e então usamos o construtor [code]Pair[/code] para converter a tupla de volta para [code]Pair b a[/code]. Se nós imaginarmos que o tipo [code]fmap[/code] poderia ser se apenas trabalhasse nos nossos novos pares, este seria:
 
 Novamente, escrevemos [code]instance Functor (Pair c) where[/code] e assim [code]Pair c[/code] toma o lugar de [code]f[/code] na definição do tipo de classe para [code]Functor[/code]:
 
@@ -93,4 +93,4 @@ Na prática, você pode pensar em declarações <i>newtype</i> como declaraçõe
 
 A palavra chave <em>data</em> é para criar seus próprios tipos e com eles, fazer o que você quiser. Eles podem ter quantos construtores e campos você desejar e podem ser usados para implementar qualquer tipo de dados algébricos que quiser. Qualquer coisa como listas e [code]Maybe[/code] - como tipos de árvores.
 
-Se você apenas quer que suas assinatures de tipos pareçam claras e mais descritivas, você vai querer tipos sinônimos provavelmente. Se você quer pegar um tipo existente e envolver em um novo tipo para fazer deste uma instância de um tipo de classe, pode ser que esteje precisando de <i>newtype</i>. E se você quer fazer algo completamente novo, a probabilidade é de que você use a palavra chave <i>data</i>.
+Se você apenas quer que suas assinaturas de tipos pareçam claras e mais descritivas, você vai querer tipos sinônimos provavelmente. Se você quer pegar um tipo existente e envolver em um novo tipo para fazer deste uma instância de um tipo de classe, pode ser que esteje precisando de <i>newtype</i>. E se você quer fazer algo completamente novo, a probabilidade é de que você use a palavra chave <i>data</i>.
