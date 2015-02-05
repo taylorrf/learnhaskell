@@ -17,14 +17,18 @@ Não requer um grande esforço mental para se concluir que processar uma simples
 Essa sobrecarga não nos afeta muito o tempo inteiro, mas pode se tornar uma deficiência quando estivermos 
 lendo grandes arquivos e os manipulando. Por isso que Haskell tem <em>bytestrings</em>. Bytestrings são
 como listas, cada elemento tem o tamanho de um byte (ou 8 bits). A forma como ele realiza a avaliação
-preguiçosa também é diferente. Bytestrings vem em dois sabores: as restritas e as preguiçosas.
+preguiçosa também é diferente. 
+
+Bytestrings vem em dois sabores: as restritas e as preguiçosas.
 As bytestrings restritas encontram-se em [code]Data.ByteString[/code] e elas eliminam a avaliação preguiçosa
 completamente. Não existem promessas envolvidas; elas reprentam uma série de bytes em um array e ponto.
 Você não tem com elas coisas como bytestrings infinitas. Se você avaliar o primeiro byte de uma 
 bytestring restrita, você terá que avalia-lá por inteiro. A parte boa é que temos bem menos sobrecargas 
 porque não temos <a href="http://en.wikipedia.org/wiki/Thunk" target="_blnk"><i>thunks</i></a>
 (o termo técnico para <i>promessas</i>) envolvidas. A parte ruim é que elas irão ocupar a sua memória
-mais rapidamente porque elas lêem da memória de uma só vez. O outro tipo de bytestrings encontram-se em
+mais rapidamente porque elas lêem da memória de uma só vez. 
+
+O outro tipo de bytestrings encontram-se em
 [code]Data.ByteString.Lazy[/code]. Elas são preguiçosas, tão preguiçosas quanto listas. Como 
 dissemos antes, existem tantos <i>thunks</i> (promessas) em uma lista quanto elementos. Dai o porque desse tipo
 ser tão lento para certos propósitos. Bytestrings preguiçosas lançam mão de uma abordagem diferente -
@@ -33,7 +37,9 @@ Então se avaliarmos uma bytestring preguiçosa (imprimindo ela ou algo assim), 
 Depois disso, ela será apenas uma promessa para o restos dos pedaços. Bytestrings preguiçosas são como 
 listas de bytestrings restritas com um tamanho de 64K. Quando você processa um arquivo com bytestring preguiçosa,
 ela será lida pedaço por pedaço. O que é legal porque o uso de memória não vai lá nas alturas e 64K 
-provavelmente fecha perfeitamente em CPU's de cache L2. Se você der uma olhada na 
+provavelmente fecha perfeitamente em CPU's de cache L2. 
+
+Se você der uma olhada na 
 <a href="http://www.haskell.org/ghc/docs/latest/html/libraries/bytestring/Data-ByteString-Lazy.html" target="_blank">documentação</a> 
 para [code]Data.ByteString.Lazy[/code], você verá que tem um monte de funções que tem os mesmos 
 nomes de [code]Data.List[/code], só a assinatura de tipo que tem [code]ByteString[/code] ao invés de 
@@ -85,7 +91,7 @@ e então obtivemos uma lista de números a partir da direita, adicionando cada n
 da nossa bytestring. Quando usamos [code]cons[/code], terminamos com um pedaço para cada byte, e 
 meio que falhamos no nosso propósito.
 
-Por outro lado, o módulo bytestring carrega um bando de funções analogas as de [code]Data.List[/code],
+Por outro lado, o módulo bytestring carrega um bando de funções análogas as de [code]Data.List[/code],
 incluindo, mas não limitada somente a, [code]head[/code], [code]tail[/code], 
 [code]init[/code], [code]null[/code], [code]length[/code], [code]map[/code], [code]reverse[/code], 
 [code]foldl[/code], [code]foldr[/code], [code]concat[/code], [code]takeWhile[/code], 
