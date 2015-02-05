@@ -1,39 +1,121 @@
 title: Bytestrings
 
-text: Lists are a cool and useful data structure. So far, we've used them pretty much everywhere. There are a multitude of functions that operate on them and Haskell's laziness allows us to exchange the for and while loops of other languages for filtering and mapping over lists, because evaluation will only happen once it really needs to, so things like infinite lists (and even infinite lists of infinite lists!) are no problem for us. That's why lists can also be used to represent streams, either when reading from the standard input or when reading from files. We can just open a file and read it as a string, even though it will only be accessed when the need arises.
+text: Listas são legais e muito úteis como estrutura de dados. Por enquanto, estamos usando elas bastante por todos lugares.
+Existe uma grande variedade de funções que operam nelas e a avaliação preguiçosa de Haskell nos permite trocar os loops <i>for</i> e <i>while</i> das outras linguagens por filtros e mapeamentos nas listas,
+como a avaliação ocorre apenas uma vez isso precisa ser assim, então coisas como listas infinitas (inclusive infinitas listas de listas infinitas!) não são um problema para nós.
+Esse é o porque de listas poderem ser usadas também para representar <i><a href="http://en.wikipedia.org/wiki/STREAMS">streams</a></i>, mesmo quando lemos a partir de uma entrada padrão ou quando a partir de arquivos. 
+Podemos apenas abrir um arquivo e lê-lo como uma string, mesmo no caso dele ser acessado apenas quando for necessário.
 
-However, processing files as strings has one drawback: it tends to be slow. As you know, [code]String[/code] is a type synonym for [code][Char][/code]. [code]Char[/code]s don't have a fixed size, because it takes several bytes to represent a character from, say, Unicode. Furthemore, lists are really lazy. If you have a list like [code][1,2,3,4][/code], it will be evaluated only when completely necessary. So the whole list is sort of a promise of a list. Remember that [code][1,2,3,4][/code] is syntactic sugar for [code]1:2:3:4:[][/code]. When the first element of the list is forcibly evaluated (say by printing it), the rest of the list [code]2:3:4:[][/code] is still just a promise of a list, and so on. So you can think of lists as promises that the next element will be delivered once it really has to and along with it, the promise of the element after it. It doesn't take a big mental leap to conclude that processing a simple list of numbers as a series of promises might not be the most efficient thing in the world.
+Entretanto, processar arquivos como strings tem um inconveniente: isso costumar ser bem lento.
+Como você sabe, [code]String[/code] é um tipo sinônimo de [code][Char][/code]. 
+[code][Char][/code] não tem um tamanho fixo, porque precisamos de vários bytes para um único caracter, como por exemplo um Unicode. Além disso, listas realmente são preguiçosas. Se você tem uma lista como [code][1,2,3,4][/code], ela será avaliada somente quando for estritamente necesário. 
+Então a lista inteira é ordenada pela premissa de uma lista. Lembre-se que [code][1,2,3,4][/code] é um açucar sintático para [code]1:2:3:4:[][/code].
+Quando o primeiro elemento da lista é forçado a ser avaliado (vamos supor, ao imprimi-lo), o resto da lista [code]2:3:4:[][/code] ainda é apenas uma promessa de lista, e assim por diante.
+Então você deve pensar em listas como promessas para os próximos elementos que serão entregues quando realmente tiverem que ser entregues, e junto com ela, a promessa do elemento a seguir. 
+Não requer um grande esforço mental para se concluir que processar uma simples lista de números é uma série de promessas e que isso provavelmente não é a coisa mais eficiente do mundo.
 
-That overhead doesn't bother us so much most of the time, but it turns out to be a liability when reading big files and manipulating them. That's why Haskell has <em>bytestrings</em>. Bytestrings are sort of like lists, only each element is one byte (or 8 bits) in size. The way they handle laziness is also different. 
-Bytestrings come in two flavors: strict and lazy ones. Strict bytestrings reside in [code]Data.ByteString[/code] and they do away with the laziness completely. There are no promises involved; a strict bytestring represents a series of bytes in an array. You can't have things like infinite strict bytestrings. If you evaluate the first byte of a strict bytestring, you have to evaluate it whole. The upside is that there's less overhead because there are no thunks (the technical term for <i>promise</i>) involved. The downside is that they're likely to fill your memory up faster because they're read into memory at once.
-The other variety of bytestrings resides in [code]Data.ByteString.Lazy[/code]. They're lazy, but not quite as lazy as lists. Like we said before, there are as many thunks in a list as there are elements. That's what makes them kind of slow for some purposes. Lazy bytestrings take a different approach — they are stored in chunks (not to be confused with thunks!), each chunk has a size of 64K. So if you evaluate a byte in a lazy bytestring (by printing it or something), the first 64K will be evaluated. After that, it's just a promise for the rest of the chunks. Lazy bytestrings are kind of like lists of strict bytestrings with a size of 64K. When you process a file with lazy bytestrings, it will be read chunk by chunk. This is cool because it won't cause the memory usage to skyrocket and the 64K probably fits neatly into your CPU's L2 cache.
-If you look through the <a href="http://www.haskell.org/ghc/docs/latest/html/libraries/bytestring/Data-ByteString-Lazy.html" target="_blank">documentation</a> for [code]Data.ByteString.Lazy[/code], you'll see that it has a lot of functions that have the same names as the ones from [code]Data.List[/code], only the type signatures have [code]ByteString[/code] instead of [code][a][/code] and [code]Word8[/code] instead of [code]a[/code] in them. The functions with the same names mostly act the same as the ones that work on lists. Because the names are the same, we're going to do a qualified import in a script and then load that script into GHCI to play with bytestrings. 
+Essa sobrecarga não nos afeta muito o tempo inteiro, mas pode se tornar uma deficiência quando estivermos 
+lendo grandes arquivos e os manipulando. Por isso que Haskell tem <em>bytestrings</em>. Bytestrings são
+como listas, cada elemento tem o tamanho de um byte (ou 8 bits). A forma como ele realiza a avaliação
+preguiçosa também é diferente. Bytestrings vem em dois sabores: as restritas e as preguiçosas.
+As bytestrings restritas encontram-se em [code]Data.ByteString[/code] e elas eliminam a avaliação preguiçosa
+completamente. Não existem promessas envolvidas; elas reprentam uma série de bytes em um array e ponto.
+Você não tem com elas coisas como bytestrings infinitas. Se você avaliar o primeiro byte de uma 
+bytestring restrita, você terá que avalia-lá por inteiro. A parte boa é que temos bem menos sobrecargas 
+porque não temos <a href="http://en.wikipedia.org/wiki/Thunk" target="_blnk"><i>thunks</i></a>
+(o termo técnico para <i>promessas</i>) envolvidas. A parte ruim é que elas irão ocupar a sua memória
+mais rapidamente porque elas lêem da memória de uma só vez. O outro tipo de bytestrings encontram-se em
+[code]Data.ByteString.Lazy[/code]. Elas são preguiçosas, tão preguiçosas quanto listas. Como 
+dissemos antes, existem tantos <i>thunks</i> (promessas) em uma lista quanto elementos. Dai o porque desse tipo
+ser tão lento para certos propósitos. Bytestrings preguiçosas lançam mão de uma abordagem diferente -
+elas são armazenadas em pedaços (não confuda com thunks!!), cada pedaço tem um tamanho de 64K.
+Então se avaliarmos uma bytestring preguiçosa (imprimindo ela ou algo assim), o primeiro 64K será avaliado.
+Depois disso, ela será apenas uma promessa para o restos dos pedaços. Bytestrings preguiçosas são como 
+listas de bytestrings restritas com um tamanho de 64K. Quando você processa um arquivo com bytestring preguiçosa,
+ela será lida pedaço por pedaço. O que é legal porque o uso de memória não vai lá nas alturas e 64K 
+provavelmente fecha perfeitamente em CPU's de cache L2. Se você der uma olhada na 
+<a href="http://www.haskell.org/ghc/docs/latest/html/libraries/bytestring/Data-ByteString-Lazy.html" target="_blank">documentação</a> 
+para [code]Data.ByteString.Lazy[/code], você verá que tem um monte de funções que tem os mesmos 
+nomes de [code]Data.List[/code], só a assinatura de tipo que tem [code]ByteString[/code] ao invés de 
+[code][a][/code] e [code]Word8[/code] ao invés [code]a[/code] nelas. As funções com os mesmos 
+nomes geralmente funcionam da mesma forma que funcionam nas listas. Como os nomes são os mesmos,
+nós vamos dar um <i>import</i> "qualificado" no script e então carregar o script no GHCI pra brincar 
+com bytestrings.
 
+[code]B[/code] contém tipos e funções de bytestring preguiçosa, enquanto [code]S[/code] contém as restritas.
+Geralmente vamos usar a versão preguiçosa.
 
-[code]B[/code] has lazy bytestring types and functions, whereas [code]S[/code] has strict ones. We'll mostly be using the lazy version.
-The function <span class="function label">pack[/code] has the type signature [code]pack :: [Word8] -&gt; ByteString[/code]. What that means is that it takes a list of bytes of type [code]Word8[/code] and returns a [code]ByteString[/code]. You can think of it as taking a list, which is lazy, and making it less lazy, so that it's lazy only at 64K intervals.
+A função <span class="function label">pack[/code] tem a assinatura de tipo [code]pack :: [Word8] -&gt; ByteString[/code].
+Significando que ela recebe uma lista de bytes com o tipo [code]Word8[/code] e retorna uma [code]ByteString[/code].
+Você pode imaginar que ela recebe uma lista, que é preguiçosa, e a torna menos preguiçosa, significando 
+então que ela será preguiçosa somente nos intervalos de 64K.
 
-What's the deal with that [code]Word8[/code] type? Well, it's like [code]Int[/code], only that it has a much smaller range, namely 0-255. It represents an 8-bit number. And just like [code]Int[/code], it's in the [code]Num[/code] typeclass. For instance, we know that the value [code]5[/code] is polymorphic in that it can act like any numeral type. Well, it can also take the type of [code]Word8[/code].
+Qual que é o esquema daquele tipo [code]Word8[/code]? Bem, ele é como um [code]Int[/code], que possui
+um intervalo bem menor, normalmente algo entre 0~255. Ele representa um número de 8-bit. 
+E assim como [code]Int[/code], ele também esta dentro da typeclass [code]Num[/code]. Por exemplo,
+sabemos que o valor [code]5[/code] é polifórmico e pode agir como qualquer tipo numérico. Então,
+ele também pode ser do tipo [code]Word8[/code].
 
-As you can see, you usually don't have to worry about the [code]Word8[/code] too much, because the type system can makes the numbers choose that type. If you try to use a big number, like [code]336[/code] as a [code]Word8[/code], it will just wrap around to [code]80[/code].
-We packed only a handful of values into a [code]ByteString[/code], so they fit inside one chunk. The [code]Empty[/code] is like the [code][][/code] for lists.
+Como você pode notar, normalmente não nos preocupamos muito em relação ao [code]Word8[/code], 
+porque o sistema de tipos pode fazer com o que o número escolha qual o seu tipo. Se você tentar
+usar um número grande, [code]336[/code], por exemplo, como sendo um [code]Word8[/code], ele só 
+irá empacotar em torno de [code]80[/code].
 
-[function]unpack[/code] is the inverse function of [code]pack[/code]. It takes a bytestring and turns it into a list of bytes. 
-[function]fromChunks[/code] takes a list of strict bytestrings and converts it to a lazy bytestring. [function]toChunks[/code] takes a lazy bytestring and converts it to a list of strict ones.
+Nós empacotamos somente um punhado de valores em uma [code]ByteString[/code], que se encaixam dentro
+de um pedaço. O [code]Empty[/code] é como o [code][][/code] para listas. 
 
+[function]unpack[/code] é a função inversa de [code]pack[/code]. 
+Ela pega uma bytestring e converte ela em uma lista de bytes.
 
-This is good if you have a lot of small strict bytestrings and you want to process them efficiently without joining them into one big strict bytestring in memory first.
-The bytestring version of [code]:[/code] is called [function]cons[/code] It takes a byte and a bytestring and puts the byte at the beginning. It's lazy though, so it will make a new chunk even if the first chunk in the bytestring isn't full. That's why it's better to use the strict version of [code]cons[/code], [function]cons'[/code] if you're going to be inserting a lot of bytes at the beginning of a bytestring.
+[function]fromChunks[/code] pega uma lista de bytestrings restritas e as converte em bytestring preguiçosas. 
+[function]toChunks[/code] pega uma lista de bytestrings preguiçosas e as converte em bytestring restritas.
 
-As you can see [function]empty[/code] makes an empty bytestring. See the difference between [code]cons[/code] and [code]cons'[/code]? With the [code]foldr[/code], we started with an empty bytestring and then went over the list of numbers from the right, adding each number to the beginning of the bytestring. When we used [code]cons[/code], we ended up with one chunk for every byte, which kind of defeats the purpose.
-Otherwise, the bytestring modules have a load of functions that are analogous to those in [code]Data.List[/code], including, but not limited to, [code]head[/code], [code]tail[/code], [code]init[/code], [code]null[/code], [code]length[/code], [code]map[/code], [code]reverse[/code], [code]foldl[/code], [code]foldr[/code], [code]concat[/code], [code]takeWhile[/code], [code]filter[/code], etc. 
+Isso é bom se você tem um monte de pequenas bytestrings restritas e você quer processa-las eficientemente
+sem junta-las em uma bytestring restrita em memória primeiro.
 
-It also has functions that have the same name and behave the same as some functions found in [code]System.IO[/code], only [code]String[/code]s are replaced with [code]ByteString[/code]s. For instance, the [code]readFile[/code] function in [code]System.IO[/code] has a type of [code]readFile :: FilePath -&gt; IO String[/code], while the [function]readFile[/code] from the bytestring modules has a type of [code]readFile :: FilePath -&gt; IO ByteString[/code]. Watch out, if you're using strict bytestrings and you attempt to read a file, it will read it into memory at once! With lazy bytestrings, it will read it into neat chunks.
+A versão em bytestring para [code]:[/code] chama-se [function]cons[/code]. Ela recebe um byte e uma
+bytestring e coloca o byte no começo. Entretanto ela é preguiçosa, então ela fará um novo pedaço mesmo
+que o primeiro pedaço na bytestring não estiver preenchido. Por essa razão que é sempre melhor usar 
+a versão restrita de [code]cons[/code], [function]cons'[/code] se você estiver pensando em adicionar 
+um monte de bytes no começo de uma bytestring.
 
-Let's make a simple program that takes two filenames as command-line arguments and copies the first file into the second file. Note that [code]System.Directory[/code] already has a function called [code]copyFile[/code], but we're going to implement our own file copying function and program anyway.
+Como você pode perceber [function]empty[/code] cria uma bytestring vazia. Notou a diferença entre
+[code]cons[/code] e [code]cons'[/code]? Com o [code]foldr[/code], começamos com uma bytestring vazia
+e então obtivemos uma lista de números a partir da direita, adicionando cada número ao inicio
+da nossa bytestring. Quando usamos [code]cons[/code], terminamos com um pedaço para cada byte, e 
+meio que falhamos no nosso propósito.
 
+Por outro lado, o módulo bytestring carrega um bando de funções analogas as de [code]Data.List[/code],
+incluindo, mas não limitada somente a, [code]head[/code], [code]tail[/code], 
+[code]init[/code], [code]null[/code], [code]length[/code], [code]map[/code], [code]reverse[/code], 
+[code]foldl[/code], [code]foldr[/code], [code]concat[/code], [code]takeWhile[/code], 
+[code]filter[/code], etc.
 
-We make our own function that takes two [code]FilePath[/code]s (remember, [code]FilePath[/code] is just a synonym for [code]String[/code]) and returns an I/O action that will copy one file into another using bytestring. In the [code]main[/code] function, we just get the arguments and call our function with them to get the I/O action, which is then performed.
+Esse módulo inclui também funções com os mesmos nomes e comportamentos das funções encontradas em 
+[code]System.IO[/code], somente as [code]String[/code]s são substituidas pelas [code]ByteString[/code]s.
+Por exemplo, a função [code]readFile[/code] em [code]System.IO[/code] tem o tipo [code]readFile :: FilePath -&gt; IO String[/code],
+enquanto que a [function]readFile[/code] do módulo bytestring tem o tipo [code]readFile :: FilePath -&gt; IO ByteString[/code]. 
+Veja bem, se você estiver usando bytestring restritas e precisar ler um arquivo, ele será lido 
+em memória uma única vez! Com bytestring preguiçosas, ele será lido em vários pedaços.
 
-Notice that a program that doesn't use bytestrings could look just like this, the only difference is that we used [code]B.readFile[/code] and [code]B.writeFile[/code] instead of [code]readFile[/code] and [code]writeFile[/code]. Many times, you can convert a program that uses normal strings to a program that uses bytestrings by just doing the necessary imports and then putting the qualified module names in front of some functions. Sometimes, you have to convert functions that you wrote to work on strings so that they work on bytestrings, but that's not hard.
-Whenever you need better performance in a program that reads a lot of data into strings, give bytestrings a try, chances are you'll get some good performance boosts with very little effort on your part. I usually write programs by using normal strings and then convert them to use bytestrings if the performance is not satisfactory.
+Vamos codar um programinha bem simples que pega dois arquivos como argumentos na linha de comando e copia
+o primeiro arquivo no segundo. Note que [code]System.Directory[/code] já tem uma função chamada
+[code]copyFile[/code], mas vamos implementar assim mesmo a nossa própria função para copiar arquivos.
+
+Acabamos de fazer nossa própria função que recebe dois [code]FilePath[/code]s (lembre-se, [code]FilePath[/code]
+é apenas um sinônimo para [code]String[/code]) e retornamos uma ação I/O que irá copiar um
+arquivo dentro do outro usando bytestring. Na função [code]main[/code], apenas recebemos
+os argumentos e chamamos nossa função que tem a ação I/O, que fará o trabalho.
+
+Note que um programa que não utiliza bytestrings poderia muito bem se parecer com esse, 
+a unica diferença é que usamos [code]B.readFile[/code] e [code]B.writeFile[/code] ao invés de
+[code]readFile[/code] e [code]writeFile[/code]. Na maioria das vezes você poderá converter um programa 
+que usa strings normais em um programa que faz uso de bytestrings fazendo apenas os <i>imports</i> 
+necessários e colocando o módulo qualificado na frente de alguma função. As vezes, você terá que
+converter funções que você mesmo escreveu para funcionar com strings para que funcionem com bytestrings,
+mas isso não é difícil. 
+
+Sempre que você precisar de um boa performance em um programa que lê um monte de dados em uma string,
+tente usar bytestrings, as chances são de você ter uma bom ganho de performance com um pouco de esforço
+da sua parte. Eu geralmente escrevo meus programas com strings normais e então os converto para usar
+bytestrings se a performance não estiver satisfatória.
