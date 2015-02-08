@@ -115,95 +115,87 @@ retorna uma ação para ser executada no caso de exceção.
 
 Vamos colocar isso pra rodar:
 
-In the handler, we didn't check to see what kind of [code]IOError[/code] we got. 
-We just say [code]"Whoops, had some trouble!"[/code] for any kind of error. 
-Just catching all types of exceptions in one handler is bad practice in Haskell just like it is 
-in most other languages. What if some other exception happens that we don't want to catch, 
-like us interrupting the program or something? That's why we're going to do the same thing 
-that's usually done in other languages as well: we'll check to see what kind of exception we got. 
-If it's the kind of exception we're waiting to catch, we do our stuff. 
-If it's not, we throw that exception back into the wild. Let's modify our program to catch only 
-the exceptions caused by a file not existing.
+No handler, nós não checamos para ver qual o tipo de [code]IOError[/code] recebemos.
+Simplesmente dizemos [code]"Oopps, deu algum problema!"[/code] para qualquer tipo de erro.
+Apenas pegar todos os tipos de exceções em um handler é uma má pratica em Haskell assim como é 
+também na maioria das outras linguagens. E se acontecer alguma outra exceção que não queremos pegar,
+quando nós mesmos interrompendo o programa ou algo assim? Esse é porque que vamos fazer o mesmo 
+que fazemos em outras linguagens: verificar qual o tipo de exceção estamos recebendo.
+Se for o tipo de exceção que estamos esperando receber, fazemos o que queremos fazer.
+Se não for, jogamos essa exceção de volta pro mato. Vamos alterar nosso programa para pegar somente
+as exceções causadas por um arquivo não existente. 
+
+Tudo continua igual exceto o handler, que modificamos para pegar somente um certo grupo
+de exceções I/O. Aqui nós usamos duas novas funções de [code]System.IO.Error[/code] — 
+[function]isDoesNotExistError[/code] e [function]ioError[/code]. [code]isDoesNotExistError[/code] 
+é um predicado dos [code]IOError[/code]s, que significa que aquela função vai receber um 
+[code]IOError[/code] e retornar um [code]True[/code] ou [code]False[/code], significando que ele
+tem um tipo [code]isDoesNotExistError :: IOError -&gt; Bool[/code]. Nós usamos ele na exceção que irá passar para o nosso handler dar uma olhada se tem um erro causado
+pelo arquivo não existir. Nós usamos a sintaxe de <a href="syntax-in-functions#guards-guards">guardas</a>
+aqui, mas poderiamos também ter usado um <i>if else</i>. Se ela não foi causada porque o arquivo não
+existe, nós levantamos novamente a exceção que foi passada pelo handler com a função [code]ioError[/code].
+Isso tem o tipo [code]ioError :: IOException -&gt; IO a[/code], que então recebe um [code]IOError[/code]
+e executa uma ação I/O que irá levanta-lá. A ação I/O tem o tipo [code]IO a[/code], porque ela 
+nunca de fato produz um resultado, então ela pode se comportar como [code]IO <i>anything</i>[/code].
+
+Quando a exceção levantada na ação I/O [code]toTry[/code] que colocamos ao lado do bloco <i>do</i>
+não for causada por um arquivo não existente, [code]toTry `catch` handler[/code] irá pegar isso 
+e em seguida levanta-la novamente. Muito lega, hein?
+
+Existem vários predicados que atuam em [code]IOError[/code] e se um guarda não avalia-lo como 
+[code]True[/code], a avaliação passa para o próximo guarda. Os predicados que atuam em 
+[code]IOError[/code] são:
+
+Muitos deles são auto-explicativos. [code]isUserError[/code] avalia para [code]True[/code] 
+quando usamos a função [function]userError[/code] para criar uma exceção, que será usada
+para criar exceções do nosso código e equipa-lo com uma string. Por exemplo, você pode fazer 
+[code]ioError $ userError "remote computer unplugged!"[/code], embora seja preferível que você use
+tipos como [code]Either[/code] e [code]Maybe[/code] para expressar a possibilidade de falhas 
+ao invés de levantar exceções você mesmo com [code]userError[/code].
+
+Então você pode ter um handler que se parece mais ou menos com isso:
 
 
-Everything stays the same except the handler, which we modified to only catch a certain group 
-of I/O exceptions. Here we used two new functions from [code]System.IO.Error[/code] — 
-[function]isDoesNotExistError[/code] and [function]ioError[/code]. [code]isDoesNotExistError[/code] 
-is a predicate over [code]IOError[/code]s, which means that it's a function that takes an 
-[code]IOError[/code] and returns a [code]True[/code] or [code]False[/code], meaning it has a 
-type of [code]isDoesNotExistError :: IOError -&gt; Bool[/code]. We use it on the exception that 
-gets passed to our handler to see if it's an error caused by a file not existing. 
-We use <a href="syntax-in-functions#guards-guards">guard</a> syntax here, but we could have also 
-used an <i>if else</i>. If it's not caused by a file not existing, we re-throw the exception 
-that was passed by the handler with the [code]ioError[/code] function. It has a type of 
-[code]ioError :: IOException -&gt; IO a[/code], so it takes an [code]IOError[/code] and produces an 
-I/O action that will throw it. The I/O action has a type of [code]IO a[/code], because it never 
-actually yields a result, so it can act as [code]IO <i>anything</i>[/code].
+Onde [code]notifyCops[/code] e [code]freeSomeSpace[/code] são ações I/O que definimos.
+Certifique-se de levantar novamente as exceções se elas não atenderem a nenhum dos critérios,
+caso contrário seu programa irá falhar silenciosamente em alguns casos onde ele não deveria.
 
+[code]System.IO.Error[/code] também exporta funções que nos habilitam a pedir para nossas exceções
+por alguns atributos, como onde que a manipulação de um arquivo causou um erro, ou qual o nome 
+do arquivo. Os que iniciam com [code]ioe[/code] você pode ver uma 
+<a href="http://www.haskell.org/ghc/docs/6.10.1/html/libraries/base/System-IO-Error.html#3">lista completa deles</a> 
+na documentação. Digamos que queremos imprimir o nome do arquivo que causou o erro. Não podemos 
+imprimir o [code]fileName[/code] que recebemos de [code]getArgs[/code], porque somente o [code]IOError[/code]
+foi passado para o handler e o handler não sabe nada além disso. A função depende somente dos 
+paramêtros com que ela foi chamada. Esse é o porque podemos usar a função [function]ioeGetFileName[/code],
+que tem o tipo [code]ioeGetFileName :: IOError -&gt; Maybe FilePath[/code]. Ela pega um [code]IOError[/code] 
+como parâmetro e talvez retorna um [code]FilePath[/code] (que é só um sinônimo para [code]String[/code],
+lembre-se, por isso é meio que a mesma coisa). Basicamente o que isso faz é extrair o caminho do arquivo 
+do [code]IOError[/code], se ele tiver. Vamos mudar o nosso programa para imprimir o caminho do arquivo
+responsável pela exceção ocorrida. 
 
-So the exception thrown in the [code]toTry[/code] I/O action that we glued together with a 
-<i>do</i> block isn't caused by a file existing, [code]toTry `catch` handler[/code] will 
-catch that and then re-throw it. Pretty cool, huh?
+No guarda onde [code]isDoesNotExistError[/code] é [code]True[/code], nós usamos a expressão <i>case</i> 
+para chamar [code]ioeGetFileName[/code] com [code]e[/code] e então casar o padrão contra o valor 
+retornado por [code]Maybe[/code]. O uso da expressão <i>case</i> é normalmente usada quando 
+queremos casar padrões contra alguma coisa sem provocar uma nova função.
 
-There are several predicates that act on [code]IOError[/code] and if a guard doesn't evaluate to 
-[code]True[/code], evaluation falls through to the next guard. The predicates that act on 
-[code]IOError[/code] are:
+Você não precisa usar um handler para [code]catch[/code] exceto em todas as partes de I/O.
+Você pode apenas cobrir certas partes do seu código I/O com [code]catch[/code] ou você pode
+cobrir várias delas com [code]catch[/code] e usar diferentes handlers para ele, como por exemplo:
 
+Aqui, [code]toTry[/code] usa [code]handler1[/code] com seu handler e [code]thenTryThis[/code] 
+usa [code]handler2[/code]. [code]launchRockets[/code] não é um parâmetro de [code]catch[/code], 
+então seja qual for a exceção ele pode lançar o que esta quebrando nosso programa, a não ser que
+[code]launchRockets[/code] use [code]catch[/code] internamente para manipular como sua própria exceção.
+Claro que code]toTry[/code], [code]thenTryThis[/code] e [code]launchRockets[/code] são ações I/O que 
+devem estar grudadas com <i>do</i> e hipoteticamente definidos em outro lugar. Isso é meio que similar
+com blocos <i>try-catch</i> de outras linguagens, onde você pode cercar seu programa inteiro com 
+um único <i>try-catch</i> ou pode usar uma abordagem mais refinada e usar vários outros em diferentes 
+partes do seu código para contralar que tipo de erro aconteceu e onde. 
 
-Most of these are pretty self-explanatory. [code]isUserError[/code] evaluates to 
-[code]True[/code] when we use the function [function]userError[/code] to make the exception, 
-which is used for making exceptions from our code and equipping them with a string. For instance, 
-you can do [code]ioError $ userError "remote computer unplugged!"[/code], although It's prefered 
-you use types like [code]Either[/code] and [code]Maybe[/code] to express possible failure instead 
-of throwing exceptions yourself with [code]userError[/code].
-
-So you could have a handler that looks something like this:
-
-
-Where [code]notifyCops[/code] and [code]freeSomeSpace[/code] are some I/O actions that you define. 
-Be sure to re-throw exceptions if they don't match any of your criteria, otherwise you're causing 
-your program to fail silently in some cases where it shouldn't.
-
-[code]System.IO.Error[/code] also exports functions that enable us to ask our exceptions for some 
-attributes, like what the handle of the file that caused the error is, or what the filename is. 
-These start with [code]ioe[/code] and you can see a 
-<a href="http://www.haskell.org/ghc/docs/6.10.1/html/libraries/base/System-IO-Error.html#3">full list of them</a> 
-in the documentation. Say we want to print the filename that caused our error. We can't print the 
-[code]fileName[/code] that we got from [code]getArgs[/code], because only the [code]IOError[/code] 
-is passed to the handler and the handler doesn't know about anything else. 
-A function depends only on the parameters it was called with. That's why we can use the 
-[function]ioeGetFileName[/code] function, which has a type of 
-[code]ioeGetFileName :: IOError -&gt; Maybe FilePath[/code]. It takes an [code]IOError[/code] 
-as a parameter and maybe returns a [code]FilePath[/code] (which is just a type synonym for 
-	[code]String[/code], remember, so it's kind of the same thing). Basically, what it does is it 
-extracts the file path from the [code]IOError[/code], if it can. Let's modify our program to 
-print out the file path that's responsible for the exception occurring.
-
-
-In the guard where [code]isDoesNotExistError[/code] is [code]True[/code], we used a <i>case</i> 
-expression to call [code]ioeGetFileName[/code] with [code]e[/code] and then pattern match against 
-the [code]Maybe[/code] value that it returned. Using <i>case</i> expressions is commonly used when 
-you want to pattern match against something without bringing in a new function.
-
-
-You don't have to use one handler to [code]catch[/code] exceptions in your whole I/O part. 
-You can just cover certain parts of your I/O code with [code]catch[/code] or you can cover several 
-of them with [code]catch[/code] and use different handlers for them, like so:
-
-
-Here, [code]toTry[/code] uses [code]handler1[/code] as the handler and [code]thenTryThis[/code] 
-uses [code]handler2[/code]. [code]launchRockets[/code] isn't a parameter to [code]catch[/code], 
-so whichever exceptions it might throw will likely crash our program, unless [code]launchRockets[/code] 
-uses [code]catch[/code] internally to handle its own exceptions. Of course [code]toTry[/code], 
-[code]thenTryThis[/code] and [code]launchRockets[/code] are I/O actions that have been glued 
-together using <i>do</i> syntax and hypothetically defined somewhere else. This is kind of similar 
-to <i>try-catch</i> blocks of other languages, where you can surround your whole program in a single 
-<i>try-catch</i> or you can use a more fine-grained approach and use different ones in different parts 
-of your code to control what kind of error handling happens where.
-
-Now you know how to deal with I/O exceptions! Throwing exceptions from pure code and dealing with 
-them hasn't been covered here, mainly because, like we said, Haskell offers much better ways to 
-indicate errors than reverting to I/O to catch them. Even when glueing together I/O actions that 
-might fail, I prefer to have their type be something like [code]IO (Either a b)[/code], meaning that 
-they're normal I/O actions but the result that they yield when performed is of type 
-[code]Either a b[/code], meaning it's either [code]Left a[/code] or [code]Right b[/code].
+Agora você sabe como lidar com exceções I/O! Levantar exceções em código puro e trabalhar com elas
+não foi coberto aqui, principalmente porque, como dissemos antes, Haskell oferece soluções muito melhores
+para indicar erros ao invés de reverte-lo em I/O para captura-los. Mesmo quando colamos ações I/O 
+juntas elas podem falhar, eu prefiro ter meu tipo algo como [code]IO (Either a b)[/code], significando
+que são ações I/O normais mas o resultado que elas produzem são do tipo [code]Either a b[/code], ou seja,
+é tanto [code]Left a[/code] ou [code]Right b[/code].
