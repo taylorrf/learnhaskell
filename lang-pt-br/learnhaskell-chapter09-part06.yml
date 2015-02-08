@@ -5,23 +5,23 @@ Essas coisas acontecem na vida. Para diferentes linguagens existem diferentes ma
 com essas falhas. Em C, normalmente retornamos algum valor anormal (como [code]-1[/code] ou um ponteiro nulo)
 para indicar que aquilo que a função esta retornando não deve ser tratado como um valor normal.
 Java e C#, por outro lado, preferem usar exceções para lidar com falhas. Quando uma exceção é levantada,
-o fluxo de controle pula para algum código que definimos para fazer alguma tratamento e talvez 
+o fluxo de controle pula para algum código que definimos para fazer algum tratamento e talvez 
 levantar novamente alguma exceção que nos levará para algum outro código que irá lidar com o erro e 
 tomar conta dele. 
 
 Haskell tem um belo sistema de tipos. Tipos de dados algébrico que permitem usarmos tipos como 
 [code]Maybe[/code] e [code]Either[/code] em valores que esses tipos vão representar e que podem
-ter ou não algum valor. Em C, ao retornar, digamos, [code]-1[/code] para uma falha é uma convenção
-amplamente aceita. Mas ele tem significado apenas para humanos. Se não tomarmos cuidado, podemos 
+ter ou não algum valor. Em C, ao retornar, digamos, [code]-1[/code] para uma falha, é uma convenção
+amplamente aceita. Mas ela tem significado apenas para humanos. Se não tomarmos cuidado, podemos 
 cair no erro de tratar esses valores anormais como algo normal e causar um caos completo no nosso código.
-O sistema de tipos em Haskell nos da algo muito mais seguro nesse aspecto. A função 
+O sistema de tipos em Haskell nos fornece algo muito mais seguro nesse aspecto. A função 
 [code]a -&gt; Maybe b[/code] claramente indica que isso pode produzir um [code]b[/code] envolto por 
 um [code]Just[/code] ou pode nos retornar [code]Nothing[/code]. O tipo é diferente de simplesmente 
 [code]a -&gt; b[/code] e se tentarmos usar alternadamente essas duas funções, o compilador irá
 reclamar para nós.
 
 Apesar de ter tipos expressivos que suportam computações falhas, Haskell ainda tem suporte
-para exceções, porque elas fazem muito mais sentido no contexto de I/O. Um bando de coisas
+para exceções, porque elas fazem muito sentido no contexto de I/O. Um bando de coisas
 podem dar errado quando lidamos com o mundo externo porque ele simplesmente não é confiável. 
 Por exemplo, quando abrimos um arquivo, um monte de coisas podem dar errado. O arquivo pode estar
 bloqueado, ele pode não estar mais lá ou o HD ou alguma outra pode não estar mais disponível. 
@@ -46,26 +46,26 @@ porque seus resultados dependem apenas dos parâmetros com que as funções são
 Ao lidar com funções puras, você só tem que pensar sobre o que a função retorna, porque ela não
 pode fazer nada além disso. Isso torna sua vida muito mais fácil. Apesar de ser necessário ter alguma 
 lógica em I/O (como a abertura de arquivos e semelhantes), de preferência elas devem ter apenas
-o minimamente possível. Funções puras são preguiçosas por padrão, o que significa que nós não sabemos quando 
+o mínimo possível. Funções puras são preguiçosas por padrão, o que significa que nós não sabemos quando 
 ela será avaliada e isso realmente não importa. No entanto, uma vez que as funções puras começarem a 
 jogar exceções, será importante quando elas serão avaliadas. É por isso que só podemos pegar exceções 
 lançadas a partir de funções puras na parte I/O do nosso código. E isso é bem ruim, porque queremos 
-manter a parte de I/O o mais enxuto possível. No entanto, se não pega-las na parte I/O do nosso código, 
+manter a parte de I/O o mais enxuto possível. No entanto, se não pegá-las na parte I/O do nosso código, 
 nosso programa irá quebrar. A solução? Não misture exceções e código puro. Tire vantagem de poderoso 
 sistema tipo de Haskell e use tipos como [code]Either[/code] e [code]Maybe[/code] para representar os 
 resultados que podem falhar.
 
 Esse é o porque que vamos apenas dar uma olhada em como usar exceções I/O por enquanto. Exceções I/O
-são exceções que são causadas quando alguma coisa da errado enquanto estamos nos comunicando 
+são exceções que são causadas quando alguma coisa der errado enquanto estivermos nos comunicando 
 com o mundo externo em uma ação I/O que faça parte de [code]main[/code]. Por exemplo, 
-se tentarmos abrir um arquivo e ele foi deletado ou coisa assim. Dê uma olhada nesse programa que 
+quando tentamos abrir um arquivo e ele foi deletado ou coisa assim. Dê uma olhada nesse programa que 
 abre um arquivo cujo nome é dado através da linha de comando do terminal e nos diz quantas linhas
 o arquivo tem.
 
 Um programa super simples. Nós processamos a ação I/O [code]getArgs[/code] e atribuimos a primeira
 string da lista que é dada por [code]fileName[/code]. Então damos ao conteúdo do arquivo o nome
 de [code]contents[/code]. Finalmente, aplicamos [code]lines[/code] nesse conteúdo para obter uma lista
-de linhas para então saber o tamanho dessa lista e devolver isso para [code]show[/code] que terá uma
+de linhas para saber então o tamanho dessa lista e devolver isso para [code]show[/code] que terá uma
 string representando esse número. Ela funciona conforme o esperado, mas e se acontecer dela receber
 o nome de um arquivo que não existe?
 
@@ -102,7 +102,7 @@ Como esse tipo é implementado depende da implementação da própria linguagem,
 podemos inspecionar valores do tipo [code]IOError[/code] por pattern matching, assim 
 como não podemos usar pattern match em valores do tipo [code]IO <i>qualquer-coisa</i>[/code].
 Podemos usar vários predicados úteis para encontrar coisas sobre valores do tipo [code]IOError[/code] 
-que é o que já iremos aprender dentro de alguns segundos.
+que é o que já iremos aprender dentro de alguns instantes.
 
 Vamos colocar então o nosso novo amiguinho [code]catch[/code] pra funcionar!
 
