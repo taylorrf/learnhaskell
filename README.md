@@ -75,8 +75,8 @@ Revisões e correções ortográficas de capitulos já traduzidos são bem-vinda
  - [x] chapter09-part06
  - [x] chapter10
  - [x] chapter10-part02
- - [ ] chapter11          (em tradução por @taylorrf)
- - [ ] chapter11-part02   (em tradução por @anboia)
+ - [x] chapter11          
+ - [ ] chapter11-part02   (em tradução por @taylorrf)
  - [ ] chapter11-part03   (em tradução por @phinfonet)
  - [x] chapter11-part04   
  - [ ] chapter11-part05
