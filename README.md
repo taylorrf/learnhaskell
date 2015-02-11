@@ -97,6 +97,6 @@ Revisões e correções ortográficas de capitulos já traduzidos são bem-vinda
  - [x] chapter14
  - [x] chapter14-part02
  - [x] chapter14-part03
- - [ ] chapter14-part04
+ - [x] chapter14-part04
  - [ ] chapter14-part05
  - [ ] chapter14-part06

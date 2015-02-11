@@ -1,25 +1,56 @@
-title: Focusing on lists
+title: Focando nas listas
 
-text: Zippers can be used with pretty much any data structure, so it's no surprisethat they can be used to focus on sub-lists of lists. After all, lists arepretty much like trees, only where a node in a tree has an element (or not) andseveral sub-trees, a node in a list has an element and only a single sub-list.When we <a href="making-our-own-types-and-typeclasses#recursive-data-structures">implementedour own lists</a>, we defined our data type like so:
+text: Zippers também podem ser usados como qualquer outra estrutura de dados, o que não é nenhuma surpresa 
+já que eles podem ser usados para focar em sub-listas de listas. Afinal de contas, listas são bastante 
+parecidas com árvores, apenas quando um nó em uma árvore tem um elemento (ou não) e várias sub-árvore,
+um nó em uma lista tem um elemento e apenas uma única sub-lista. Quando nós <a href="making-our-own-types-and-typeclasses#recursive-data-structures">implementamos a nossa própria lista</a>, 
+definimos nosso tipo de dados da seguinte forma:
 
-Contrast this with our definition of our binary tree and it's easy to see howlists can be viewed as trees where each node has only one sub-tree.
+Compare isso com a nossa definição de árvore binária e será fácil ver como listas podem ser vistas 
+árvores quando cada nó tem somente uma única sub-árvore.
 
-A list like [code][1,2,3][/code] can be written as [code]1:2:3:[][/code]. It consists of the head of the list, whichis [code]1[/code] and then the list's tail, which is [code]2:3:[][/code]. In turn, [code]2:3:[][/code]also has a head, which is [code]2[/code] and a tail, which is [code]3:[][/code]. With [code]3:[][/code], the[code]3[/code] is the head and the tail is the empty list [code][][/code].
+Uma lista como [code][1,2,3][/code] pode ser escrita como [code]1:2:3:[][/code]. Contendo a cabeça 
+da lista, que será [code]1[/code] e então a cauda da lista, que será [code]2:3:[][/code].
+Por sua vez, [code]2:3:[][/code] também tem a sua cabeça, que é [code]2[/code] e uma cauda, que é 
+[code]3:[][/code]. Com [code]3:[][/code], o [code]3[/code] é a cabeça e a cauda é a lista vazia [code][][/code].
 
-Let's make a zipper for lists. To change the focus on sub-lists of a list, we move eitherforward or back (whereas with trees we moved either up or left or right). Thefocused part will be a sub-tree and along with that we'll leave breadcrumbs aswe move forward. Now what would a single breadcrumb for a list consist of? Whenwe were dealing with binary trees, we said that a breadcrumb has to hold theelement in the root of the parent node along with all the sub-trees that wedidn't choose. It also had to remember if we went left or right. So, it had tohave all the information that a node has except for the sub-tree that we choseto focus on.
+Vamos fazer um zipper para listas. Para mudar o nosso foco de sub-listas em listas, nós nos movemos
+para frente ou para trás (enquanto que em árvores nos movemos para esquerda ou para direita). A parte
+focada será uma sub-árvore e juntos com isso nós vamos deixar migalhas de pão à medida que avançamos.
+Agora, em que será que consiste uma migalha de pão para uma lista? Quando estamos lidando com árvores 
+binária, dizemos que a migalha de pão terá que segurar o elemento na raiz do nó pai, juntamente com 
+todas as sub-árvores que não escolhemos. Ele também terá que lembrar se fomos para esquerda ou para
+direita. Então, ele terá que ter todas as informações que um nó tem exceto para a sub-árvore que escolheu para se 
+concentrar.
 
-Lists are simpler than trees, so we don't have to remember if wewent left or right, because there's only one way to go deeper into a list.Because there's only one sub-tree to each node, we don't have to remember thepaths that we didn't take either. It seems that all we have to remember is theprevious element. If we have a list like [code][3,4,5][/code] andwe know that the previous element was [code]2[/code], we can goback by just putting that element at the head of our list, getting [code][2,3,4,5][/code].
+Listas são mais simples que árvores, então não precisamos lembrar se fomos para esquerda ou direita, 
+isso porque existe somente uma forma de ir mais fundo em listas. Como há somente uma única sub-árvore 
+em cada nó, não precisamos lembrar do caminho que fizemos para chegar lá. E ao que tudo indica, tudo
+o que precisamos lembrar é do elemento anterior. Se temos uma lista como [code][3,4,5][/code] e 
+sabemos que o elemento anterior é [code]2[/code], então nós podemos voltar apenas inserindo aquele 
+elemento na cabeça de nossa lista, obtendo assim [code][2,3,4,5][/code].
 
-Because a single breadcrumb here is just the element, we don't really have toput it inside a data type, like we did when we made the [code]Crumb[/code] data type for tree zippers:
+Como uma migalha de pão aqui é apenas um elemento, não precisamos necessariamente colocar ela
+dentro de um tipo de dados, da forma como fizemos antes com o tipo de dados [code]Crumb[/code] para a árvore
+de zippers:
 
-The first list represents the list that we're focusing on and the second listis the list of breadcrumbs. Let's make functions that go forward and back into lists:
+A primeira lista representa a lista em que estamos focando e a segunda lista representa a migalha de pão.
+Vamos criar uma função que vai pra frente e para trás dentro das listas:
 
-When we're going forward, we focus on the tail of the current list and leave thehead element as a breadcrumb. When we're moving backwards, we take the latestbreadcrumb and put it at the beginning of the list.
+Quando estamos indo para frente, nós focamos na cauda da lista atual e deixamos a cabeça do elemento
+como uma migalha de pão. Quando nos movemos para trás, nós pegamos a última migalha de pão e colocamos
+ela no inicio da lista.
 
-Here are these two functions in action:
+Aqui esta as duas funções em ação:
 
-We see that the breadcrumbs in the case of lists are nothing more but a reversedpart of our list. The element that we move away from always goes into the headof the breadcrumbs, so it's easy to move back by just taking that element fromthe head of the breadcrumbs and making it the head of our focus.
+Percebemos que as migalha de pão no caso de listas são nada mais do que apenas a parte reversa da nossa
+lista. O elemento que nos afastamos sempre vai para a cabeça da migalha de pão, por isso que é fácil
+se mover para trás apenas pegando elemento da cabeça da nossa migalha e usando isso como nosso foco.
 
-This also makes it easier to see why we call this a zipper, because this reallylooks like the slider of a zipper moving up and down.
+Isso também torna mais fácil ver por que chamamos isso de zíper, porque isso realmente se parece
+com um ziper que se move para cima e para baixo.
 
-If you were making a text editor, you could use a list of strings to representthe lines of text that are currently opened and you could then use a zipper sothat you know which line the cursor is currently focused on. By using a zipper,it would also make it easier to insert new lines anywhere in the text or deleteexisting ones.
+Se você estiver fazendo um editor de texto, você pode usar uma lista de strings para representar 
+as linhas de textos que estão atualmente abertas e você pode então usar o zipper para saber 
+em qual linha o cursor esta atualmente focado. Ao usar um zipper, pode ser mais fácil também inserir
+uma linha em qualquer lugar do texto ou deletar alguma.
