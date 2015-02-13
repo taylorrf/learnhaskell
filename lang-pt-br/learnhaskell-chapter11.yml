@@ -15,7 +15,7 @@ amplo e abstrato. Nós já fomos apresentados a typeclasses que definem as opera
 duas coisas quaisquer e nos dizem se elas são iguais ou que comparam a ordem delas. Esses são 
 comportamentos bastante abstratos e elegantes, mas nós já não pensamos neles como algo super ultra especial 
 porque geralmente lidamos com eles ao longo de boa parte das nossas vidas. Recentemente nós descobrimos
-os <i>functors</i>, que são basicamente são coisas que podem ser mapeadas. Isso é um exemplo de 
+os <i>functors</i>, que basicamente são coisas que podem ser mapeadas. Isso é um exemplo de 
 uma propriedade bastante útil e abstrata que as typeclasses podem descrever. Neste capítulo vamos
 dar uma olhada bem de perto em <i>functors</i>, juntamente com uma versão mais forte e útil de <i>functors</i> chamada
 de <i>applicative functors</i>. Vamos também dar uma boa olhada em <i>monoids</i>, que são uma espécie
