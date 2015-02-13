@@ -71,12 +71,12 @@ Revisões e correções ortográficas de capitulos já traduzidos são bem-vinda
  - [x] chapter09-part02
  - [x] chapter09-part03
  - [x] chapter09-part04
- - [ ] chapter09-part05   (em tradução por @Mizael)
- - [ ] chapter09-part06   (em tradução por @macenas)
+ - [x] chapter09-part05
+ - [x] chapter09-part06
  - [x] chapter10
  - [x] chapter10-part02
- - [ ] chapter11          (em tradução por @valdemir)
- - [ ] chapter11-part02   (em tradução por @anboia)
+ - [x] chapter11          
+ - [ ] chapter11-part02   (em tradução por @taylorrf)
  - [ ] chapter11-part03   (em tradução por @phinfonet)
  - [x] chapter11-part04   
  - [ ] chapter11-part05
@@ -97,6 +97,6 @@ Revisões e correções ortográficas de capitulos já traduzidos são bem-vinda
  - [x] chapter14
  - [x] chapter14-part02
  - [x] chapter14-part03
- - [ ] chapter14-part04
+ - [x] chapter14-part04
  - [ ] chapter14-part05
  - [ ] chapter14-part06

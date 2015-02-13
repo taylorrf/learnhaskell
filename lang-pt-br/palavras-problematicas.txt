@@ -13,6 +13,9 @@ typeclass
 subclass
 otherwise
 "where" binding --> ligação "where"
+functor
+applicative functors
+monoids
 
 --------------------------------------------------------------------------------
 Palavras "complicadas" de traduzir
