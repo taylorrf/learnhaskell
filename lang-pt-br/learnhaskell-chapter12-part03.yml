@@ -1,6 +1,6 @@
 title: O tipo de classe Monad
 
-text: Assim como functors tem o tipo de classe [code]Functor[/code] e applicative functors tem o tipo de classe [code]Applicative[/code], monads tem seu próprio tipo de classe: [code]Monad[/code]! Wow, quem teria advinhado? Assim é como esse tipo de classe se parece:
+text: Assim como functors tem o tipo de classe [code]Functor[/code] e applicative functors tem o tipo de classe [code]Applicative[/code], monads tem seu próprio tipo de classe: [code]Monad[/code]! Wow, quem teria adivinhado? Assim é como esse tipo de classe se parece:
 
 Vamos começar com a primeira linha. Ela diz: [code]class Monad m where[/code]. Mas espere, nós não dizemos que monads são apenas reforços de applicative functors? Não deveria haver uma restrição de classe ao longo das linhas de [code]class (Applicative m) = &gt; Monad m where[/code] devendo assim o tipo ser primeiro um applicative functor antes de produzir um monad? Bem, não deveria, mas quando Haskell foi criado, não tinha ocorrido ser uma boa opção para Haskell. Mas com certeza, cada monad é um applicative functor, mesmo se a declaração não dizer isso.
 
@@ -12,12 +12,12 @@ A próxima função é [code]&gt;&gt;=[/code], ou bind. É como um function appl
 
 Em seguida, temos [code]&gt;&gt;[/code]. Nós não vamos prestar muita atenção nisso agora porque ele vem com uma implementação padrão e nós praticamente nunca implementamos isso ao criar instâncias de monads.
 
-A última função do tipo de classe [code]Monad[/code] é [code]fail[/code]. Nós nunca usamos ela explicitamente em nosso código. Em vez disso, ela é usada pelo Haskell para permitir falhas em um construtor semântico especial para monads que iremos conhecer depois. Nós não precisamos nós preocupar com [code]fail[/code] por hora.
+A última função do tipo de classe [code]Monad[/code] é [code]fail[/code]. Nós nunca usamos ela explicitamente em nosso código. Em vez disso, ela é usada pelo Haskell para permitir falhas em um construtor semântico especial para monads que iremos conhecer depois. Nós não precisamos nos preocupar com [code]fail[/code] por hora.
 
 
 Agora que nós sabemos como que o tipo de classe [code]Monad[/code] se parece, vamos dar uma olhada em como [code]Maybe[/code] é uma instância de [code]Monad[/code]! 
 
-[code]return[/code] é o mesmo que [code]pure[/code], assim não exige esforço. Nós fazemos o mesmo que fizemos no tipo de classe [code]Applicative[/code] e envolvemos ele em um [code]Just[/code].
+[code]return[/code] é o mesmo que [code]pure[/code], assim não nos exige esforços. Nós fazemos o mesmo que fizemos no tipo de classe [code]Applicative[/code] e envolvemos ele em um [code]Just[/code].
 
 A função [code]&gt;&gt;=[/code] é o mesmo que o nosso [code]applyMaybe[/code]. Quando alimentamos o [code]Maybe a[/code] para nossa função, nós temos em mente o contexto e retornamos um [code]Nothing[/code] se o valor da esquerda é [code]Nothing[/code] porque se não há nenhum valor, então não há nenhuma maneira de aplicar a nossa função nele. Se é um [code]Just[/code] pegamos o que está dentro da função e aplicamos [code]f[/code].
 
