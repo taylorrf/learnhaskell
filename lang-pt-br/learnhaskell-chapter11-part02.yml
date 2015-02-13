@@ -12,47 +12,45 @@ com um [code]a[/code] (ou um monte deles) dentro dela e eu te darei uma caixa co
 (ou um monte deles) dentro dela.
 
 <em>Um conselho de amigo.</em> Muitas vezes a analogia das caixas é usada para nos ajudar a ter 
-alguma intuição sobre como functors função, e depois, provavelmente vamos usar a mesma analogia
-paga applicative functors e monads. É uma analogia bacana que ajuda as pessoas a entenderem functors
+alguma intuição sobre como functors funcionam, e depois, provavelmente vamos usar a mesma analogia
+para applicative functors e monads. É uma analogia bacana que ajuda as pessoas a entenderem functors
 em um primeiro momento, apenas não leve isso tão ao pé da letra, porque para algumas functors essa 
 analogia da caixa não se aplica muito bem. Um termo mais correto para definir o que as functors 
 realmente são seria <i>contexto computacional</i>. O contexto pode ser que a computação pode ter 
 um valor ou pode ter uma falha ([code]Maybe[/code] e [code]Either a[/code]) ou ele pode ter 
 mais valores (listas), coisas desse tipo.
 
-If we want to make a type constructor an instance of [code]Functor[/code], it has to have a 
-kind of [code]* -&gt; *[/code], which means that it has to take exactly one concrete type as a 
-type parameter. For example, [code]Maybe[/code] can be made an instance because it takes one 
-type parameter to produce a concrete type, like [code]Maybe Int[/code] or [code]Maybe String[/code]. 
-If a type constructor takes two parameters, like [code]Either[/code], we have to partially apply 
-the type constructor until it only takes one type parameter. So we can't write 
-[code]instance Functor Either where[/code], but we can write 
-[code]instance Functor (Either a) where[/code] and then if we imagine that [code]fmap[/code] 
-is only for [code]Either a[/code], it would have a type declaration of 
-[code]fmap :: (b -&gt; c) -&gt; Either a b -&gt; Either a c[/code]. As you can see, the 
-[code]Either a[/code] part is fixed, because [code]Either a[/code] takes only one type parameter, 
-whereas just [code]Either[/code] takes two so 
-[code]fmap :: (b -&gt; c) -&gt; Either b -&gt; Either c[/code] wouldn't really make sense.
+Se quisermos fazer um tipo construtor uma instância de [code]Functor[/code], ele deverá ter um tipo 
+de [code]* -&gt; *[/code], o que significa que ele recebe exatamente um tipo concreto como 
+um tipo de parâmetro. Por exemplo, de um [code]Maybe[/code] pode ser feita uma instância porque ele recebe 
+um tipo como parâmetro para produzir um tipo concreto, como [code]Maybe Int[/code] ou 
+[code]Maybe String[/code]. Se um tipo construtor tem dois parâmetros, como [code]Either[/code], temos 
+de aplicar parcialmente o tipo construtor até que ele só tenha um parâmetro do tipo. Portanto, 
+não podemos escrever [code]instance Functor Either where[/code], mas podemos escrever 
+[code]instance Functor (Either a) where[/code] e, em seguida, se imaginarmos que [code]fmap[/code] 
+é só para [code]Either a[/code], ele teria uma declaração de tipo de 
+[code]fmap :: (b -&gt; c) -&gt; Either a b -&gt; Either a c[/code]. Como você pode ver, a parte 
+[code]Either a[/code] é fixa, porque [code]Either a[/code] recebe apenas um tipo como 
+parâmetro, ao passo que se [code]Either[/code] recebesse dois então 
+[code]fmap :: (b -&gt; c) -&gt; Either b -&gt; Either c[/code] não iria fazer sentido.
 
-We've learned by now how a lot of types (well, type constructors really) are instances of 
-[code]Functor[/code], like [code][][/code], [code]Maybe[/code], [code]Either a[/code] and a 
-[code]Tree[/code] type that we made on our own. We saw how we can map functions over them for great good. 
-In this section, we'll take a look at two more instances of functor, namely [code]IO[/code] and 
+Aprendemos por enquanto como que um monte de tipos (bem, tipos construtores na verdade) são 
+instâncias de [code]Functor[/code], como [code][][/code], [code]Maybe[/code], [code]Either a[/code] 
+e o tipo [code]Tree[/code] que nós mesmo fizemos. Dizemos como queremos mapear funções para o nosso próprio bem.
+Nesse capítulo, vamos dar uma olhada em mais duas instâncias de functor, chamadas de [code]IO[/code] e 
 [code](-&gt;) r[/code].
 
-If some value has a type of, say, [code]IO String[/code], that means that it's an I/O action that, 
-when performed, will go out into the real world and get some string for us, which it will yield 
-as a result. We can use [code]&lt;-[/code] in <i>do</i> syntax to bind that result to a name. 
-We mentioned that I/O actions are like boxes with little feet that go out and fetch some value 
-from the outside world for us. We can inspect what they fetched, but after inspecting, 
-we have to wrap the value back in [code]IO[/code]. By thinking about this box with little 
-feet analogy, we can see how [code]IO[/code] acts like a functor.
+Se algum valor tiver o tipo de, digamos, [code]IO String[/code], isso irá significar que uma ação I/O,
+quando executada, irá até o mundo real e trazer alguma string para nós, que será o nosso resultado. 
+Podemos usar [code]&lt;-[/code] na sintaxe <i>do</i> para atrelar esse resultado a um nome.  Já 
+mencionamos que ações I/O são como pequenas caixas com perninhas que vão até o mundo real e pegam
+algum valor para nós. Nós podemos inspecionar o que elas pegaram, mas depois de inspecionar, 
+nós temos que devolver o valor de volta ao [code]IO[/code]. Ao pensar nessa analogia da caixa com 
+pequenas perninhas, nós conseguimos ver como [code]IO[/code] age como um functor.
 
-
-Let's see how [code]IO[/code] is an instance of [code]Functor[/code]. When we [code]fmap[/code] 
-a function over an I/O action, we want to get back an I/O action that does the same thing, 
-but has our function applied over its result value.
-
+Vamos ver como [code]IO[/code] é uma instância de [code]Functor[/code]. Quando nós [code]fmap[/code]
+ uma função sobre uma ação I/O, nós esperamos receber de volta uma ação I/O que faz a mesma coisa, 
+ mas que tem a nossa função aplicada sobre seus valores resultantes.
 
 
 The result of mapping something over an I/O action will be an I/O action, so right off the bat we 
