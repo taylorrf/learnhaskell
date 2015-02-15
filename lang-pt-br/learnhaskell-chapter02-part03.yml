@@ -4,9 +4,9 @@ text: Assim como as listas de compras no mundo real, listas em Haskell são extr
 
 Em Haskell, listas são estruturas de dados homogêneas. Ela armazena vários elementos do mesmo tipo. Isto quer dizer que podemos ter uma lista com inteiros ou uma lista de caracteres, porém não podemos ter uma lista com inteiros e alguns caracteres. E agora, uma lista! 
 
-Nota: Nós podemos utilizar a palavra-chave [code]let[/code] para definir o nome correto no GHCI. Fazer [code]let a = 1[/code] dentro do GHCI é o equivalente a escrever [code]a = 1[/code] em um script e carregá-lo. 
+Nota: Nós podemos utilizar a palavra-chave [code]let[/code] para definir o nome correto no GHCi. Fazer [code]let a = 1[/code] dentro do GHCi é o equivalente a escrever [code]a = 1[/code] em um script e carregá-lo. 
 
-Como você pode ver, listas são caracterizadas por utilizar colchetes e os valores nas listas são separados por vírgulas. Se nós tentarmos uma lista como [code][1,2,'a',3,'b','c',4][/code], o Haskell irá reclamar que os caracteres (que são, alias, demarcados entre aspas simples) não são números. Falando em caracteres, strings são simplesmente listas de caracteres. [code]"hello"[/code] é só um açúcar sintático para [code]['h','e','l','l','o'][/code]. Como strings são listas, nós podemos utilizar funções de listas nelas, o que é realmente útil.
+Como você pode ver, listas são caracterizadas por utilizar colchetes e os valores nas listas são separados por vírgulas. Se nós tentarmos uma lista como [code][1,2,'a',3,'b','c',4][/code], Haskell irá reclamar que os caracteres (que são, alias, demarcados entre aspas simples) não são números. Falando em caracteres, strings são simplesmente listas de caracteres. [code]"hello"[/code] é só um açúcar sintático para [code]['h','e','l','l','o'][/code]. Como strings são listas, nós podemos utilizar funções de listas nelas, o que é realmente útil.
 
 Uma prática comum é colocar duas listas juntas. Fazemos isso utilizando o operador [code]++[/code].
 
@@ -32,7 +32,7 @@ O que mais você pode fazer com listas? Aqui estão algumas funções básicas p
 
 [code]head[/code] recebe uma lista e retorna o seu <i>head</i>. O <i>head</i> (cabeça) de uma lista é basicamente o primeiro elemento.
 
-[code]tail[/code] recebe uma lista e retorna a sua cauda. Em outras palavras, ele decepa a cabeça de uma lista.
+[code]tail[/code] recebe uma lista e retorna a sua "cauda". Em outras palavras, ele decepa a pobre cabeça de uma lista sobrando apenas a cauda.
 
 [code]last[/code] recebe uma lista e retorna o seu último elemento.
 
@@ -45,7 +45,7 @@ Mas o que acontece se tentarmos obter o <i>head</i> de uma lista vazia?
 
 WOW! Tudo explode bem na nossa cara! Isso não é um mostro, não tem cabeça! Quando for utilizar [code]head[/code], [code]tail[/code], [code]last[/code] e [code]init[/code], tenha o cuidado para não utilizar em listas vazias. Este erro não pode ser capturado em tempo de compilação por isso é sempre bom tomar certos cuidados antes de pedir para o Haskell lhe dar algum elemento de uma lista vazia.
 
-[code]length[/code] recebe uma lista e retorna o seu <i>length</i>, obviamente.
+[code]length[/code] recebe uma lista e retorna o seu <i>length</i> (tamanho), obviamente.
 
 [code]null[/code] verifica se a lista é vazia. Se for, então retorna [code]True[/code], senão retorna [code]False[/code]. Utilize esta função no lugar de [code]xs == [][/code] (Caso você tiver uma lista chamada [code]xs[/code])
 
@@ -53,7 +53,7 @@ WOW! Tudo explode bem na nossa cara! Isso não é um mostro, não tem cabeça! Q
 
 [code]take[/code] recebe um número e uma lista. Ele extrai a quantidade de elementos desde o início da lista. Observe.
 
-Observe que se tentarmos tirar mais elementos do há na lista, ele retorna só a lista. Se nós tentarmos retornar 0 elementos, receberemos uma lista vazia.
+Observe que se tentarmos tirar mais elementos do que há na lista, ele retorna só a lista. Se nós tentarmos retornar 0 elementos, receberemos uma lista vazia.
 
 [code]drop[/code] funciona de forma similar, só que retira o número de elementos a partir do ínicio da lista.
 
@@ -65,6 +65,6 @@ Observe que se tentarmos tirar mais elementos do há na lista, ele retorna só a
 
 [code]product[/code] recebe uma lista de números e retorna o seu produto. 
 
-[code]elem[/code] recebe alguma coisa e uma lista de coisas e nos diz se esta coisa é um elemento da lista. Geralmente é chamado como uma função <i>infix</i> porque é mais fácil de ler dessa maneira.
+[code]elem[/code] recebe alguma coisa e uma lista de coisas e nos diz se esta coisa é um elemento da lista. Geralmente é chamado como uma função <i>infixa</i> porque é mais fácil de ler dessa maneira.
 
 Estas são algumas funções básicas para operações em listas. Iremos dar mais uma olhada em funções de listas <a href="modules#data-list">depois</a>.
