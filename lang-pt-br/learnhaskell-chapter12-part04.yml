@@ -1,83 +1,81 @@
-title: Walk the line
+title: Ande na linha
 
-text: Now that we know how to feed a [code]Maybe a[/code] value to a function of type [code]a -&gt; Maybe b[/code] while taking into account the context of possible failure, let's see how we can use [code]&gt;&gt;=[/code] repeatedly to handle computations of several [code]Maybe a[/code] values.
+text: Agora que sabemos como alimentar um valor [code]Maybe a[/code] para uma função do tipo [code]a -&gt; Maybe b[/code], tendo em vista o contexto de uma possível falha, vamos ver como podemos usar [code]&gt;&gt;=[/code] várias vezes para lidar com cálculos de vários valores de [code]Maybe a[/code].
 
-Pierre has decided to take a break from his job at the fish farm and try tightrope walking. He's not that bad at it, but he does have one problem: birds keep landing on his balancing pole! They come and they take a short rest, chat with their avian friends and then take off in search of breadcrumbs. This wouldn't bother him so much if the number of birds on the left side of the pole was always equal to the number of birds on the right side. But sometimes, all the birds decide that they like one side better and so they throw him off balance, which results in an embarrassing tumble for Pierre (he's using a safety net).
+Pierre decidiu fazer uma pausa em seu trabalho na fazenda de peixes e tentar caminhar em uma corda banda. Isso não é ruim para ela, mas ele tem um problema: pássaros mantem seu pouso em ponto de equilíbrio! Elas vêm e descansam um pouco, batem um papo com seus amigos pássaros e depois decolam a procura de migalhas de pão. Isso não o incomodaria tanto ele se o número de aves no lado esquerdo do bastão era sempre igual ao número de aves no lado direito. Mas às vezes, todos os pássaros decidem que eles gostam de um lado e assim ele desiquilibra-se, o resultado é uma queda embaraçosa para Pierre (ele está usando uma rede de segurança).
 
-Let's say that he keeps his balance if the number of birds on the left side of the pole and on the right side of the pole is within three. So if there's one bird on the right side and four birds on the left side, he's okay. But if a fifth bird lands on the left side, then he loses his balance and takes a dive.
+Digamos que ele mantém o seu equilíbrio, se a diferença do número de pássaros do lado esquerdo do bastão e o número de pássaros do lado direito do bastão está entre de três. Assim, se tem um passado do lado direito e quatro pássaros do lado esquerdo, ele está em equilibrio, Mas se um quinto pássaro pousa no lado esquerdo, ele perde o equilíbrio e leva um tombo.
 
-We're going to simulate birds landing on and flying away from the pole and see if Pierre is still at it after a certain number of birdy arrivals and departures. For instance, we want to see what happens to Pierre if first one bird arrives on the left side, then four birds occupy the right side and then the bird that was on the left side decides to fly away.
+Vamos simular pássaros pousando e voando longe do bastão e ver se Pierre ainda está nele depois de um determinado número de pássaros chegando e partindo. Por exemplo, queremos ver o que acontece com Pierre se o primeiro pássaro chega no lado esquerdo, em seguida, quatro pássaros ocupam o lado direito e depois o pássaro que estava no lado esquerdo decide voar para longe.
 
-We can represent the pole with a simple pair of integers. The first component will signify the number of birds on the left side and the second component the number of birds on the right side:
+Podemos representar o bastão com um simples par de números inteiros. O primeiro componente irá significar o número de aves no lado esquerdo e o segundo componente do número de aves no lado direito:
 
-First we made a type synonym for [code]Int[/code], called [code]Birds[/code], because we're using integers to represent how many birds there are. And then we made a type synonym [code](Birds,Birds)[/code] and we called it [code]Pole[/code] (not to be confused with a person of Polish descent).
+Primeiro criamos um tipo sinônimo para [code]Int[/code], chamados de [code]Birds[/code], porque estamos usando números inteiros para representar quantos pássaros existem. Em seguida criamos um tipo sinônimo de [code](Birds,Birds)[/code] e chamamos ele de [code]Pole[/code] (para não ser confundido com uma pessoa de ascendência polonesa).
 
-Next up, how about we make a function that takes a number of birds and lands them on one side of the pole. Here are the functions:
+Em seguida, que tal criar uma função que recebe um número de passados e pousa eles em um lado do bastão. Aqui estão as funções:
 
-Pretty straightforward stuff. Let's try them out:
+Coisa muito simples. Vamos testa-los:
 
-To make birds fly away we just had a negative number of birds land on one side. Because landing a bird on the [code]Pole[/code] returns a [code]Pole[/code], we can chain applications of [code]landLeft[/code] and [code]landRight[/code]:
+Para fazer os pássaros voarem para longe nos apenas temos um número negativo de passados pousando em um lado. Porque pousar um pássaro em [code]Pole[/code] retona um [code]Pole[/code], podemos encadear a aplicação de [code]landLeft[/code] e [code]landRight[/code]:
 
-When we apply the function [code]landLeft 1[/code] to [code](0,0)[/code] we get [code](1,0)[/code]. Then, we land a bird on the right side, resulting in [code](1,1)[/code]. Finally two birds land on the left side, resulting in [code](3,1)[/code]. We apply a function to something by first writing the function and then writing its parameter, but here it would be better if the pole went first and then the landing function. If we make a function like this:
+Quando aplicamos a função [code]landLeft 1[/code] para [code](0,0)[/code] temos [code](1,0)[/code]. Em seguida, pousamos um pássaro do lado direito, resultado em [code](1,1)[/code]. Finalmente dois pássaros pousam no lado esquerdo, resultando em [code](3,1)[/code]. Nós aplicamos uma função primeiro para escrever, em seguida, o seu parâmetro, mas aqui seria melhor se o bastão for o primeiro e depois a função de pouso, Se fizermos uma função como essa:
 
-We can apply functions by first writing the parameter and then the function:
+Podemos primeiro aplicar as funções e escrever parâmetro em seguida da função.
 
-By using this, we can repeatedly land birds on the pole in a more readable manner:
+Assim usando isso, podemos repetidamente pousar pássaros no bastão de modo mais legível:
 
-Pretty cool! This example is equivalent to the one before where we repeatedly landed birds on the pole, only it looks neater. Here, it's more obvious that we start off with [code](0,0)[/code] and then land one bird one the left, then one on the right and finally two on the left. 
+Muito legal! Este exemplo é equivalente ao anterior, onde pousamos repetidamente os pássaros no bastão, porém é mais legível. Aqui, está mais obvio que iniciar com [code](0,0)[/code] e depois pousar um passado na esquerda, depois um na direita e finalmente dois a esquerda.
 
-So far so good, but what happens if 10 birds land on one side?
+Até agora está bom, mas o que acontece se 10 pássaros pousam em um lado?
 
-10 birds on the left side and only 3 on the right? That's sure to send poor Pierre falling through the air! This is pretty obvious here but what if we had a sequence of landings like this:
+10 pássaros no lado esquerdo e somente 3 no lado direito? Isso com certeza vai fazer o pobre Pierre cair no ar! Isso é bastante obvio aqui, mas o que ocorre ser temos uma sequência de pousos como este:
 
-It might seem like everything is okay but if you follow the steps here, you'll see that at one time there are 4 birds on the right side and no birds on the left! To fix this, we have to take another look at our [code]landLeft[/code] and [code]landRight[/code] functions. From what we've seen, we want these functions to be able to fail. That is, we want them to return a new pole if the balance is okay but fail if the birds land in a lopsided manner. And what better way to add a context of failure to value than by using [code]Maybe[/code]! Let's rework these functions:
+Podemos pensar que está tudo certo, mas se você seguir os passos até aqui, vai ver que no momento existem 4 pássaros do lado direito e nenhum passado do lado esquerdo! Para corrigir isso, temos que ter outro olhar em nossas funções [code]landLeft[/code] e [code]landRight[/code]. Pelo que percebemos, queremos que essas funções possam falhar. Ou seja, queremos que elas retornem um novo bastão se o equilíbrio está certo, mas não conseguem se os pássaros pousar de forma desequilibrada. E o que é a melhor maneira de adicionar um contexto de falha de valor do que usar [code]Maybe[/code]! Vamos refazer essa função:
 
-Instead of returning a [code]Pole[/code] these functions now return a [code]Maybe Pole[/code]. They still take the number of birds and the old pole as before, but then they check if landing that many birds on the pole would throw Pierre off balance. We use guards to check if the difference between the number of birds on the new pole is less than 4. If it is, we wrap the new pole in a [code]Just[/code] and return that. If it isn't, we return a [code]Nothing[/code], indicating failure.
+Em vez de retornar um [code]Pole[/code] esta função agora retorna um [code]Maybe Pole[/code]. Ela ainda tem o número de pássaros do antigo bastão como antes, mas em seguida ela verifica se o pouso de muitos pássaros no bastão deixaria Pierre em desequilíbrio. Usamos guardas para verificar se a diferença entre o número de pássaros e o novo bastão é menor que 4. Se for, evolvemos o novo bastão em um [code]Just[/code] e retornamos ele. Se não for, nos retornamos um [code]Nothing[/code], indicando falha.
 
-Let's give these babies a go:
+Vamos dar esse bebes uma vez:
 
-Nice! When we land birds without throwing Pierre off balance, we get a new pole wrapped in a [code]Just[/code]. But when many more birds end up on one side of the pole, we get a [code]Nothing[/code]. This is cool, but we seem to have lost the ability to repeatedly land birds on the pole. We can't do [code]landLeft 1 (landRight 1 (0,0))[/code] anymore because when we apply [code]landRight 1[/code] to [code](0,0)[/code], we don't get a [code]Pole[/code], but a [code]Maybe Pole[/code]. [code]landLeft 1[/code] takes a [code]Pole[/code] and not a [code]Maybe Pole[/code].
+Meu caro! Quando pousamos pássaros sem deixar Pierre em desequilíbrio, pegamos um novo bastão envolvido em um [code]Just[/code]. Mas quando muito mais pássaros estão em um lado do bastão, temos um [code]Nothing[/code]. Isso é legal, mas parece ter perdido a habilidade de repetir o pouso de pássaros no bastão. Nós não podemos mais fazer [code]landLeft 1 (landRight 1 (0,0))[/code] porque quando aplicamos [code]landRight 1[/code] para [code](0,0)[/code], nos não temos um [code]Pole[/code], mas um [code]Maybe Pole[/code]. [code]landLeft 1[/code] leva um [code]Pole[/code] e não um [code]Maybe Pole[/code].
 
-We need a way of taking a [code]Maybe Pole[/code] and feeding it to a function that takes a [code]Pole[/code] and returns a [code]Maybe Pole[/code]. Luckily, we have [code]&gt;&gt;=[/code], which does just that for [code]Maybe[/code]. Let's give it a go:
+Precisamos de uma maneira de ter um [code]Maybe Pole[/code] e alimentar isso para uma função que leva um [code]Pole[/code] e retornar um [code]Maybe Pole[/code]. Felizmente, temos [code]&gt;&gt;=[/code], que faz exatamente isso para [code]Maybe[/code]. Vamos dar uma olhada:
 
-Remember, [code]landLeft 2[/code] has a type of [code]Pole -&gt; Maybe Pole[/code]. We couldn't just feed it the [code]Maybe Pole[/code] that is the result of [code]landRight 1 (0,0)[/code], so we use [code]&gt;&gt;=[/code] to take that value with a context and give it to [code]landLeft 2[/code]. [code]&gt;&gt;=[/code] does indeed allow us to treat the [code]Maybe[/code] value as a value with context because if we feed a [code]Nothing[/code] into [code]landLeft 2[/code], the result is [code]Nothing[/code] and the failure is propagated:
+Relembre, [code]landLeft 2[/code] tem um tipo de [code]Pole -&gt; Maybe Pole[/code]. Nos não poderíamos simplesmente alimente este [code]Maybe Pole[/code] que é um resultado de [code]landRight 1 (0,0)[/code],  assim nós usamos [code]&gt;&gt;=[/code] para dar a esse valor com um contexto a [code]landLeft 2[/code].[code]&gt;&gt;=[/code] de fato, permitem tratar o valor [code]Maybe[/code] como um valor com contexto porque se alimentarmos um [code]Nothing[/code] dentro de [code]landLeft 2[/code], o resultado é [code]Nothing[/code] e a falha é propagada:
 
-With this, we can now chain landings that may fail because [code]&gt;&gt;=[/code] allows us to feed a monadic value to a function that takes a normal one.
+Com isso, podemos agora encadear pousos que podem falhar porque [code]&gt;&gt;=[/code] nos permite alimentar um valor monadic para uma função que leva um valor normal.
 
-Here's a sequence of birdy landings:
+Aqui está a sequência de pousos dos pássaros:
 
-At the beginning, we used [code]return[/code] to take a pole and wrap it in a [code]Just[/code]. We could have just applied [code]landRight 2[/code] to [code](0,0)[/code], it would have been the same, but this way we can be more consistent by using [code]&gt;&gt;=[/code] for every function.
+No início, usamos [code]return[/code] para ter um bastão e envolver ele em um [code]Just[/code]. Poderíamos simplesmente ter aplicado [code]landRight 2[/code] para [code](0,0)[/code], isso seria o mesmo, mas desta forma podemos ser mais consistentes utilizando [code]&gt;&gt;=[/code] para todas as funções. [code]Just (0,0)[/code] é alimentado para [code]landRight 2[/code], resultando em [code]Just (0,2)[/code]. Isso, por sua vez, é alimentado para [code]landLeft 2[/code], resultando em [code]Just (2,2)[/code], e assim por diante.
 
-[code]Just (0,0)[/code] gets fed to [code]landRight 2[/code], resulting in [code]Just (0,2)[/code]. This, in turn, gets fed to [code]landLeft 2[/code], resulting in [code]Just (2,2)[/code], and so on.
+Lembre-se esse no exemplo de antes introduzimos falha dentro da rotina de Pierre:
 
-Remember this example from before we introduced failure into Pierre's routine:
+Isso não simula muito bem sua interação com os pássaros, porque no meio há um desequilíbrio, mas o resultado não reflete isso. Mas vamos ver agora que usamos aplicações monadic ([code]&gt;&gt;=[/code]) em vez aplicações normais:
 
-It didn't simulate his interaction with birds very well because in the middle there his balance was off but the result didn't reflect that. But let's give that a go now by using monadic application ([code]&gt;&gt;=[/code]) instead of normal application:
+Incrível. O resultado final representa uma falha, que é o que nós esperávamos. Vamos ver como este resultado foi obtido. Primeiro, [code]return[/code] envia [code](0,0)[/code] dentro do contexto padrão, tornando-se um [code]Just (0,0)[/code]. Em seguida, ocorre [code]Just (0,0) &gt;&gt;= landLeft 1[/code] . Uma vez que o [code]Just (0,0)[/code] é um valor [code]Just[/code], [code]landLeft 1[/code] é aplicado para [code](0,0)[/code], resultando em um [code]Just (1,0)[/code], porque os pássaros ainda estão relativamente em equilíbrio. Em seguida, ocorre [code]Just (1,0) &gt;&gt;= landRight 4[/code], é o resultado é [code]Just (1,4)[/code] com o equilíbrio dos pássaros ainda intacto, embora apenas um pouco. [code]Just (1,4)[/code] é alimentado para [code]landLeft (-1)[/code]. Isto significa que ocorre [code]landLeft (-1) (1,4)[/code]. Agora por causa da forma como [code]landLeft[/code] funciona, isso resulta em um [code]Nothing[/code], porque o bastão resultante é o equilíbrio. Agora que temos um [code]Nothing[/code], ele é alimentado para [code]landRight (-2)[/code], mas porque é um [code]Nothing[/code], o resultado é automaticamente [code]Nothing[/code], como não temos nada para aplicar em [code]landRight (-2)[/code].
 
-Awesome. The final result represents failure, which is what we expected. Let's see how this result was obtained. First, [code]return[/code] puts [code](0,0)[/code] into a default context, making it a [code]Just (0,0)[/code]. Then, [code]Just (0,0) &gt;&gt;= landLeft 1[/code] happens. Since the [code]Just (0,0)[/code] is a [code]Just[/code] value, [code]landLeft 1[/code] gets applied to [code](0,0)[/code], resulting in a [code]Just (1,0)[/code], because the birds are still relatively balanced. Next, [code]Just (1,0) &gt;&gt;= landRight 4[/code] takes place and the result is [code]Just (1,4)[/code] as the balance of the birds is still intact, although just barely. [code]Just (1,4)[/code] gets  fed to [code]landLeft (-1)[/code]. This means that [code]landLeft (-1) (1,4)[/code] takes place. Now because of how [code]landLeft[/code] works, this results in a [code]Nothing[/code], because the resulting pole is off balance. Now that we have a [code]Nothing[/code], it gets fed to [code]landRight (-2)[/code], but because it's a [code]Nothing[/code], the result is automatically [code]Nothing[/code], as we have nothing to apply [code]landRight (-2)[/code] to.
+Nós não poderíamos ter conseguido isso apenas usando [code]Maybe[/code] como um aplicativo. Se você tentar isso, você vai ficar preso, porque applicative functors não permitem os applicative values interagir uns com os outros muito bem. Eles podem ser usarmos como parâmetros em uma função até usados como um estilo de aplicativo. Os operadores de aplicativos vão buscar esses resultados a alimentá-los para a função de maneira apropriada para cada aplicativo, e depois, colocar o valor do aplicativo final junto, mas não são muito interativos entre si. Aqui, porém, cada passo é baseado no resultado anterior. Em cada pouso, o possível resultado anterior e examinado e o bastão é marcado como equilibrado. Isso determina se o pouso vai ter sucesso ou falha.
 
-We couldn't have achieved this by just using [code]Maybe[/code] as an applicative. If you try it, you'll get stuck, because applicative functors don't allow for the applicative values to interact with each other very much. They can, at best, be used as parameters to a function by using the applicative style. The applicative operators will fetch their results and feed them to the function in a manner appropriate for each applicative and then put the final applicative value together, but there isn't that much interaction going on between them. Here, however, each step relies on the previous one's result. On every landing, the possible result from the previous one is examined and the pole is checked for balance. This determines whether the landing will succeed or fail.
+Nós podemos também inventar uma função que ignora número atual de pássaros em equilíbrio no bastão apenas fazendo Pierre desequilibrar e cair. Podemos chamar isso de [code]banana[/code]:
 
-We may also devise a function that ignores the current number of birds on the balancing pole and just makes Pierre slip and fall. We can call it [code]banana[/code]:
+Agora podemos encadear isso junto com nossos pássaros pousando. Ele sempre fara nosso caminho falhar, porque ignora o que os passados e sempre retorna uma falha, Confira:
 
-Now we can chain it together with our bird landings. It will always cause our walker to fall, because it ignores whatever's passed to it and always returns a failure. Check it:
+O valor [code]Just (1,0)[/code] é alimentado para [code]banana[/code], mas produz um [code]Nothing[/code], que faz tudo resultar em um [code]Nothing[/code]. Como infeliz!
 
-The value [code]Just (1,0)[/code] gets fed to [code]banana[/code], but it produces a [code]Nothing[/code], which causes everything to result in a [code]Nothing[/code]. How unfortunate!
+Em vez de criar funções que ignoram essas entradas e apenas retornam um valor monadic predeterminado, podemos usar a função [code]&gt;&gt;[/code], cuja a implementação padrão é:
 
-Instead of making functions that ignore their input and just return a predetermined monadic value, we can use the [code]&gt;&gt;[/code] function, whose default implementation is this:
+Normalmente, passamos algum valor para uma função que ignora seu parâmetro e sempre retorna apenas algum valor predeterminado sempre resultando em no valor pré-determinado. Com monads no entanto, o seu contexto e significado tem que ser considerados. Aqui é como [code]&gt;&gt;[/code] age com [code]Maybe[/code]:
 
-Normally, passing some value to a function that ignores its parameter and always just returns some predetermined value would always result in that predetermined value. With monads however, their context and meaning has to be considered as well. Here's how [code]&gt;&gt;[/code] acts with [code]Maybe[/code]:
+Se você substituir [code]&gt;&gt;[/code] com [code]&gt;&gt;= \_ -&gt;[/code], é fácil ver por que ele age e como ele faz.
 
-If you replace [code]&gt;&gt;[/code] with [code]&gt;&gt;= \_ -&gt;[/code], it's easy to see why it acts like it does.
+Podemos substituir nossa função [code]banana[/code] e encadear com um [code]&gt;&gt;[/code] e, em seguida, um [code]Nothing[/code]:
 
-We can replace our [code]banana[/code] function in the chain with a [code]&gt;&gt;[/code] and then a [code]Nothing[/code]:
+E ai vamos obviamente falhar!
 
-There we go, guaranteed and obvious failure!
+Também vale a pena dar uma olhada em como seria se não tivéssemos feito uma escolha inteligente para tratar valores [code]Maybe[/code] como valores com um contexto de falha e alimentar ele em funções como fizemos. Aqui uma serie de pássaros pousando, seria algo como como:
 
-It's also worth taking a look at what this would look like if we hadn't made the clever choice of treating [code]Maybe[/code] values as values with a failure context and feeding them to functions like we did. Here's how a series of bird landings would look like: 
+Pousamos um passado no lado esquerdo e depois examinados a possibilidade de falha e a possibilidade de sucesso. Em caso de falhar, retornamos um [code]Nothing[/code]. Em caso de sucesso, pousamos os pássaros do lado direito e depois fazemos a mesma coisa novamente. Convertendo essa monstruosidade dentro um encadeamento de aplicações monadic com [code]&gt;&gt;=[/code] é um exemplo clássico de como o monad [code]Maybe[/code] nos poupa tempo quando temos que fazer cálculos sucessivos que são baseados em cálculos que poderão falhar.
 
-We land a bird on the left and then we examine the possibility of failure and the possibility of success. In the case of failure, we return a [code]Nothing[/code]. In the case of success, we land birds on the right and then do the same thing all over again. Converting this monstrosity into a neat chain of monadic applications with [code]&gt;&gt;=[/code] is a classic example of how the [code]Maybe[/code] monad saves us a lot of time when we have to successively do computations that are based on computations that might have failed.
+Note como o [code]Maybe[/code] e a implementação [code]&gt;&gt;=[/code] caracteriza exatamente esse lógica de ver se o valor é [code]Nothing[/code] e se for isso , retorna imediatamente um [code]Nothing[/code] e se não for, vai para frente com [code]Just[/code].
 
-Notice how the [code]Maybe[/code] implementation of [code]&gt;&gt;=[/code] features exactly this logic of seeing if a value is [code]Nothing[/code] and if it is, returning a [code]Nothing[/code] right away and if it isn't, going forward with what's inside the [code]Just[/code].
-
-In this section, we took some functions that we had and saw that they would work better if the values that they returned supported failure. By turning those values into [code]Maybe[/code] values and replacing normal function application with [code]&gt;&gt;=[/code], we got a mechanism for handling failure pretty much for free, because [code]&gt;&gt;=[/code] is supposed to preserve the context of the value to which it applies functions. In this case, the context was that our values were values with failure and so when we applied functions to such values, the possibility of failure was always taken into account.
+Nessa seção, abordámos algumas funções e vimos como poderiam funcionar melhor se os valores que eles retornam suportem falha. Transformamos esses valores em valores [code]Maybe[/code] e substituímos aplications functor normais com [code]&gt;&gt;=[/code], temos um mecanismo para tratar falhas livremente, porque [code]&gt;&gt;=[/code] preserva o contexto de um valor para o qual se aplica às funções. Neste caso, o contexto era que nossos valores eram valores com falha e assim quando nos aplicamos funções para esses valores, a possibilidade de falha foi sempre levada em conta.
