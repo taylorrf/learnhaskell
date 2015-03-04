@@ -1,13 +1,13 @@
 title: Mapas e filtros
 
 text: [fuction]map[/function] recebe uma função e uma lista e aplica esta função em todos elementos da 
-lista, produzindo uma nova lista. Vamos ver como este tipo de declaração é e como isto é definido.
+lista, produzindo uma nova lista. Vamos ver como é a sua declaração de tipo e como ele é definido.
 
 A declaração de tipo nos diz que esta função recebe um [code]a[/code] e retorna um [code]b[/code], 
 uma lista de [code]a[/code]'s e retorna uma lista de [code]b[/code]'s. O interessante aqui é dar uma 
-olhada na assinatura de tipos da função, você pode algumas vezes ver como isto funciona. [code]map[/code] 
-é realmente uma das mais versáteis funções de ordem superior que poderemos utilizar em milhares de 
-formas diferentes. Veja isto em ação:
+olhada na assinatura de tipos da função, algumas vezes só olhando isso você já consegue saber como ela funciona. 
+[code]map[/code] é realmente uma das mais versáteis funções de ordem superior que poderemos utilizar em milhares de 
+formas diferentes. Veja ela em ação:
 
 Você provavelmente já sabe que cada um deles pode ser realizado com uma compreensão de lista. 
 [code]map (+3) [1,5,3,1,6][/code] é o mesmo que escrever [code][x+3 | x &lt;- [1,5,3,1,6]][/code]. 
@@ -16,9 +16,9 @@ aplicar alguma função em um elemento da lista, especialmente depois que você 
 mapas de mapas ter que lidar com uma série de colchetes pode ser um pouco bagunçado.
 
 [fuction]filter[/code] é uma função que recebe um predicado (um predicado é uma função que diz que 
-	qualquer coisa é verdadeira ou não, nesse caso, uma função que retorna um valor booleano) e uma 
+qualquer coisa é verdadeira ou não, nesse caso, uma função que retorna um valor booleano) e uma 
 lista e então retorna uma lista com elementos que satisfazem o predicado. A declaração de tipo e a 
-implementação pode ser a seguinte:
+implementação é algo como:
 
 Bastante simples. Se [code]p x[/code] se transformar em [code]True[/code], o elemento será incluido 
 em uma nova lista. Se isto não acontecer, ficará de fora. Alguns exemplos úteis:
@@ -51,12 +51,12 @@ Primeiro vamos fazer uma lista com todos os números menores do que 100.000, em 
 Então vamos filtrá-lo pelo seu predicado e como os números são ordenados de forma decrescente, o maior 
 número que irá satisfazer nosso predicado será o primeiro elemento filtrado da lista. Não precisamos 
 utilizar uma lista infinita para o nosso conjunto inicial. Eis a preguiça em ação novamente. Como nós 
-acabamos utilizando a <>cabeça</i> da lista filtrada, não importa se a lista filtrada for finita ou 
+acabamos utilizando a <i>cabeça</i> da lista filtrada, não importa se a lista filtrada for finita ou 
 infinita. A análise para quando a primeira solução adequada for encontrada.
 
 E agora, nós queremos <em>obter a soma de todos os quadrados ímpares que sejam menores do que 10.000</em>. 
 Primeiramente, como iremos usá-lo em nossa solução, irei introduzir aqui a função 
-[function]takeWhile[/function]. Ele recebe um predicado e uma lista e então vai para o inicio da lista 
+[function]takeWhile[/function]. Ela recebe um predicado e uma lista e então vai para o inicio da lista 
 e retorna os elementos que satisfazem o predicado. Se o elemento encontrado por ele não satisfazer o 
 predicado, ele para. Se você quer a primeira palavra da string 
 [code]"elefantes é que sabem fazer festa"[/code], então faça [code]takeWhile (/=' ') "elefantes é que 
@@ -71,11 +71,11 @@ Demais! Começamos com alguns dados iniciais (a lista infinita de todos os núme
 nós mapeamos isto, filtramos e cortamos até que fosse o que precisávamos e depois nós somamos. Também 
 podemos escrever isto utilizando compreensão de lista: 
 
-É uma questão de gosto escolher a que você achar mais bonita. Novamente, a magnífica preguiça do 
+É uma questão de gosto, escolha a forma que você achar mais bonita. Novamente, a magnífica preguiça do 
 Haskell torna isto possível. Nós podemos mapear e filtrar uma lista infinita, justamente porque ele 
-não mapeia e filtra do jeito certo, senão essa tarefa seria bem demorada. Somente quando forçamos o 
-Haskell a mostrar para nós a soma realizada na função [code]sim[/code] digamos para o 
-[code]takeWhile[/code] que ele precisa de alguns números. [code]takeWhile[/code] força que o 
+não mapeia e filtra do jeito convencional, senão essa tarefa seria bem demorada. Somente quando forçamos 
+Haskell a mostrar para nós a soma realizada na função [code]sum[/code] é que ele diz para o 
+[code]takeWhile[/code] que ele precisa daqueles números. [code]takeWhile[/code] força que o 
 mapeamento e a filtragem ocorra, porém somente se algum número maior ou igual do que 10.000 for 
 encontrado.
 
@@ -87,20 +87,37 @@ números. Isto é feito para todos os números iniciais, a sequência termina no
 tivermos inicialmente o número 13, teremos esta sequência: <i>13, 40, 20, 10, 5, 16, 8, 4, 2, 1</i>. 
 13*3 + 1 igual a 40. 40 dividido por 2 é 20, etc. Como vimos a sequência tem 10 termos.
 
-Agora o que nós queremos saber é: <em> para todos os números iniciais entre 1 e 100, quantas sequências 
-tem com um length maior do que 15?</em> Primeiramente, vamos escrever uma função para obter uma 
+Agora o que nós queremos saber é: <em>para todos os números iniciais entre 1 e 100, quantas sequências 
+tem com um tamanho maior do que 15?</em> Primeiramente, vamos escrever uma função para obter uma 
 sequência:
 
 Como a sequência termina em 1, esse seria o caso de limite. Essa é uma função recursiva bem padrão.
 
 Feito! Esta funcionando corretamente. E agora, a função para nos dizer a resposta para a nossa questão:
 
-Mapeamos a função [code]chain[/code] no [code][1..100][/code] para obter uma lista das sequências, com 
-eles mesmos representando-se como listas. Então os filtramos com o predicado só para verificar se 
-aquelas listas tem o lenght maior do que 15. Novamente nós filtramos, e conseguimos ver quantas 
+Mapeamos a função [code]chain[/code] para [code][1..100][/code] para obter uma lista das sequências, com 
+eles próprios representando-se como listas. Então os filtramos com o predicado só para verificar se 
+aquelas listas tem o tamanho maior do que 15. Novamente nós filtramos, e conseguimos ver quantas 
 sequências são deixadas na lista resultante.
 
 <em>Nota:</em> Esta função tem o tipo [code]numLongChains :: Int[/code] porque [code]length[/code] 
 retorna um [code]Int[/code] ao invés de um [code]Num a[/code] por razões históricas. Se quisermos 
 retornar um [code]Num a[/code] mais geral, nós deveremos usar o [code]fromIntegral[/code] no length 
 resultante.
+
+Usando [code]map[/code], conseguimos fazer também algumas coisas como [code]map (*) [0..][/code], 
+se não por algum motivo que seja então para ilustrar como currying funciona e como funções (parcialmente 
+aplicadas) são valores reais que você pode passar para outra função ou colocar dentro de listas (você 
+só não pode transforma-las em strings). Por enquanto, apenas mapeamos funções que pegam somente um 
+parâmetro sobre uma lista, como [code]map (*2) [0..][/code] que resulta em uma lista do tipo 
+[code](Num a) =&gt; [a][/code], porém podemos fazer também [code]map (*) [0..][/code] sem problemas.
+O que acontece aqui é que aquele número na lista é aplicado para a função [code]*[/code], que tem o 
+tipo [code](Num a) =&gt; a -&gt; a -&gt; a[/code]. Aplicar somente um parâmetro para um função que 
+recebe dois parâmetros, retorna uma função que pega um parâmetro. Se a gente mapear [code]*[/code] sobre 
+a lista [code][0..][/code], vamos ter de volta uma função que pega somente um parâmetro, sendo então 
+[code](Num a) =&gt; [a -&gt; a][/code]. [code]map (*) [0..][/code] produz uma lista igual a que obteriamos
+se escrevessemos [code][(0*),(1*),(2*),(3*),(4*),(5*)..[/code].
+
+Receber o elemento com índice [code]4[/code] a partir da nossa lista nos retorna uma função equivalente a 
+[code](4*)[/code]. Então, apenas aplicamos [code]5[/code] na função. Que é o mesmo que escrever 
+[code](4*) 5[/code] ou somente [code]4 * 5[/code].
