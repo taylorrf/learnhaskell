@@ -65,7 +65,7 @@ A dobra a direita [function]foldr[/function], funciona de forma similar a dobra 
 acumulador começa a consumir os valores a partir da direita. Além disso, funções binárias com dobra 
 esquerda tem o seu acumulador como o primeiro parâmetro e o valor atual sendo o segundo 
 (como [code]\acc x -&gt; ...[/code]), as funções binárias com dobra direita tem como valor atual o 
-primeiro parâmetro e o acumulador o segundo (so [code]\x acc -&gt; ...[/code]). Isto só fará sentido 
+primeiro parâmetro e o acumulador o segundo (como [code]\x acc -&gt; ...[/code]). Isto só fará sentido 
 se essa dobra direita tiver o acumulador na direita, porque isso irá dobrar a partir do lado direito.
 
 O valor acumulado (e por isso, o resultado) da dobra pode ter qualquer tipo. Ele pode ser um número, 
@@ -81,8 +81,8 @@ valor acumulado será agora [code][5,6][/code]. Aplicamos [code](+3)[/code] ao [
 acrescentamos ele ao acumulado e então o valor final será [code][4,5,6][/code].
 
 É claro, vamos querer implementar esta função com a dobra a esquerda também. Isto poderá ser 
-[code]map' f xs = foldl (\acc x -&gt; acc ++ [f x]) [] xs[/code], porém a idéia é aquela função 
-[code]++[/code] seja muito mais custosa do [code]:[/code], então normalmente utilizamos dobras a 
+[code]map' f xs = foldl (\acc x -&gt; acc ++ [f x]) [] xs[/code], porém a idéia é que aquela função 
+[code]++[/code] seja muito mais custosa do que [code]:[/code], então normalmente utilizamos dobras a 
 direita quando nós queremos construir novas listas a partir de uma lista.
 
 Se você reverter a lista, você poderá fazer a dobra direita do mesmo modo que fazemos a dobra esquerda 
@@ -90,20 +90,20 @@ e vice-versa. Algumas vezes você não tem como fazer isso. A função [code]sum
 implementada muito bem do mesmo jeito com uma dobra esquerda e direita. A grande diferença é que a 
 dobra direita funciona em listas infinitas, ao contrario da esquerda que não! Para esclarecer melhor, 
 se você pegar uma lista infinita a partir de um ponto e você dobrá-la a partir da direita, você irá 
-eventualmente descobrir o início da lista. Tanto faz, se você quer pegar uma lista infinita a partir 
+eventualmente descobrir o início da lista. Entretanto, se você quiser pegar uma lista infinita a partir 
 de um ponto e tentar dobrá-la a partir da esquerda, você nunca chegará no fim!
 
 <em>Dobras podem ser usadas para implementar qualquer função onde você percorre uma lista uma única 
 vez, elemento por elemento, e então retorna algo baseado nisso. Sempre que você quiser percorrer uma 
-lista para alguma coisa, é provável que você queira uma dobra.</em> Por isso que dobras vem com mapas 
-e filtros, uma dos tipos mais úteis de funções na programação funcional.
+lista para retornar alguma coisa, é provável que você queira uma dobra.</em> Por isso que dobras vem com mapas 
+e filtros, um dos tipos mais úteis de funções na programação funcional.
 
 As funções [function]foldl1[/code] e [function]foldr1[/code] funcionam da mesma forma que 
 [code]foldl[/code] e [code]foldr[/code], só que você não precisa informar explicitamente qual o 
-valor inicial. Ele assume que o primeiro (ou último) elemento da lista é o valor inicial da dobra e 
-então inicial a dobra com ele. Com isto em mente, a função [code]sum[/code] pode implementar algo 
+valor inicial. Ela assume que o primeiro (ou último) elemento da lista é o valor inicial da dobra 
+e então inicia a dobra com ele. Com isto em mente, a função [code]sum[/code] pode implementar algo 
 como: [code]sum = foldl1 (+)[/code]. Como eles dependem de pelo menos um elemento para dobrar a 
-lista, isto causará um runtime error caso seja chamado com uma lista vazia.  Por outro lado, 
+lista, isto causará um <i>runtime error</i> caso seja chamado com uma lista vazia.  Por outro lado, 
 [code]foldl[/code] e [code]foldr[/code] trabalham bem com listas vazias. Quando criar uma dobra, 
 pense sobre como isso irá se comportar com uma lista vazia. Se a função não fizer sentido quando 
 tiver uma lista vazia, você provavelmente usará [code]foldl1[/code] ou [code]foldr1[/code] para 
@@ -144,7 +144,7 @@ enquanto o [code]scanr[/code] irá colocar o resultado no primeiro.
 Scans são usadas para monitorar a progressão de uma função que pode ser implementada como uma dobra. 
 Vamos responder essa nossa questão: <em>Quantos elementos precisamos ter para somar a raiz de todos 
 os números naturais que excedem 1000?</em>. Para obter o quadrado de todos os números naturais, nós 
-tem que fazer [code]map sqrt [1..][/code]. Agora, para ter a soma, nós temos que fazer uma dobra, 
+temos que fazer [code]map sqrt [1..][/code]. Agora, para ter a soma, nós temos que fazer uma dobra, 
 mas como nós temos interesse em como a soma irá progredir, faremos usando o scan. Uma vez tendo 
 feito o scan, podemos ver quantas somas estão sob 1000. A primeira soma no resultado do scanlist 
 será normalmente 1. O segundo será 1 mais a raiz quadrada de 2. O terceiro será a soma da raiz 
