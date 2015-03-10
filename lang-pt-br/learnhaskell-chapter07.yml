@@ -33,11 +33,11 @@ que recebe uma lista e retira todos os elementos repetidos. Misturar [code]lengt
 [code]\xs -&gt; length (nub xs)[/code].
 
 Você também pode colocar funções de módulos no global namespace no GHCI. Se estiver no GHCI e 
-quiser chamar uma das funções de [code]Data.List[/code], poderia fazer:
+quiser chamar uma das funções de [code]Data.List[/code], você pode fazer:
 
 
-Se o que quer é carregar nomes em vários módulos dentro do GHCI, não é necessário digitar 
-[code]:m +[/code] milhares de vezes, há a possibilidade de fazer o mesmo em apenas uma linha.
+Se o que você quer é carregar vários módulos dentro do GHCI, não é necessário digitar 
+[code]:m +[/code] milhares de vezes porque há a possibilidade de fazer o mesmo em apenas uma linha.
 
 
 Contudo se já carregou um script que carrega módulos, não é necessário usar [code]:m +[/code] novamente.
