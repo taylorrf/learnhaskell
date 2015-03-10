@@ -4,7 +4,7 @@ text: O módulo [code]Data.List[/code] obviamente lida com listas, provendo fun�
 que inclusive já conhecemos algumas (como [code]map[/code] e [code]filter[/code]) por 
 [code]Prelude[/code] já importar algo por conveniência. Você não precisará importar 
 [code]Data.List[/code] via importação qualificada porque não conflita com nada do [code]Prelude[/code] 
-(exceto os já roubados automaticamente). Vamos dar uma olhada que algumas que ainda não conhecemos.
+(exceto os já roubados automaticamente). Vamos dar uma olhada em algumas que ainda não conhecemos.
 
 [function]intersperse[/function] recebe um elemento e uma lista e o repete entre cada um dos 
 elementos da lista. Veja só:
@@ -24,15 +24,14 @@ precisamos fazer só o seguinte:
 Quando transpomos essas três listas, as potências de 3 estão na primeira linha, as de 2 na segunda e 
 assim por diante. Mapear [code]sum[/code] desses valores produz o resultado esperado.
 
-[function]foldl'[/function], [function]foldl1'[/function], [function]foldr'[/function] e 
-[function]foldr1'[/function] são mais trabalhadoras que suas versões preguiçosas. Ao usar folds 
-preguiçosas em listas grandes, você pode se deparar com um 
-<a href="http://pt.wikipedia.org/wiki/Pilha_de_chamada#Estouro_de_pilha">estouro de pilha</a>. 
+[function]foldl'[/function] e [function]foldl1'[/function] são versões mais trabalhadoras do que suas 
+respectivas versões preguiçosas. Ao usar folds preguiçosas em listas grandes, você pode se deparar 
+com um <a href="http://pt.wikipedia.org/wiki/Pilha_de_chamada#Estouro_de_pilha">estouro de pilha</a>. 
 O culpado disso é exatamente a natureza preguiçosa das funções, que ao invés de realmente realizar a 
 operação com o acumulado, somente diz que quando for pedido um resultado, ele irá executar mais 
 essa outra conta. O problema é quando todo esse bando de promessas ultrapassa o limite da memória. 
 Os folds severos não são tão passíveis de bugs por já realizar as operações intermediárias ao 
-invés de encher a pilha de falsas promessas. Então se você tiver esse tipo de problemas, tente 
+invés de encher a pilha de falsas promessas. Então se você tiver esse tipo de problema, tente 
 usar suas versões trabalhadoras.
 
 [function]concat[/function] concatena uma lista de listas em apenas uma lista.
@@ -292,7 +291,7 @@ quando dois elementos são iguais. [function]sortBy[/function], [function]insert
 elemento é maior, menor ou igual a outro. O tipo de [code]sortBy[/code] e 
 [code]sortBy :: (a -&gt; a -&gt; Ordering) -&gt; [a] -&gt; [a][/code]. Se você ainda se lembra, o 
 tipo [code]Ordering[/code] pode assumir valor [code]LT[/code], [code]EQ[/code] ou [code]GT[/code]. 
-[code]sort[/code] é o equivalente a [code]sortBy compare[/code], porque compare pega dois tipos de 
+[code]sort[/code] é o equivalente a [code]sortBy compare[/code], porque <i>compare</i> pega dois tipos de 
 [code]Ord[/code] e retorna sua relação quanto ordenação.
 
 Listas podem ser comparadas, mas quando o são, são comparados lexicograficamente. E se quisermos 
