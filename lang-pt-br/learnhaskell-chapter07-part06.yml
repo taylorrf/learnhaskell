@@ -4,11 +4,14 @@ text: Temos visto vários módulos interessantes, mas como fazemos o nosso próp
 de programação permite dividir o código em vários arquivos e Haskell não é diferente. Ao escrever 
 programas, uma boa prática é juntar funções e tipos que tem o mesmo propósito num módulo. Desse modo, 
 você pode facilmente reutilizar funções de outros programas simplesmente importando módulos.
-Vamos aprender criar um módulo tendo como exemplo algumas funções de cálculo de volume e área de objetos 
+
+Vamos aprender como criar um módulo tendo como exemplo algumas funções de cálculo de volume e área de objetos 
 geométricos. Podemos criar um arquivo chamado [code]Geometry.hs[/code].
+
 Dizemos que um módulo <i>exporta</i> funções. Ao importar um módulo, eu passo a poder usar as funções 
 que foram exportadas. Um módulo também pode definir funções que possuem chamadas a funçoes internas, 
 mas só podemos ver e usar as explicitamente exportadas.
+
 No início de um módulo, especificamos seu nome. Se nosso arquivo se chama [code]Geometry.hs[/code], 
 nosso módulo deve se chamar [code]Geometry[/code]. Especificamos as funções que serão exportadas e 
 então podemos começar a escrever nossas próprias funções.

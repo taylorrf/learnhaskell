@@ -4,7 +4,7 @@ text: O módulo [code]Data.Set[/code] nos oferece conjuntos. Conjuntos matemáti
 Conjuntos são algo entre listas e mapas. Todos os elementos em um conjunto são únicos. E por serem 
 internamente implementados por árvores (semelhantemente a mapas do [code]Data.Map[/code]), são 
 ordenados. Checar existência, inserção, deleção, etc. é muito mais rápido do que com listas. As 
-operações mais comuns falando -se de conjuntos é inserir, checar existência e converter para lista.
+operações mais comuns falando-se de conjuntos é inserir, checar existência e converter para lista.
 
 Pelos nomes do [code]Data.Set[/code] frequentemente conflitarem com membros de [code]Prelude[/code] e 
 [code]Data.List[/code], fazemos uma importação qualificada.
