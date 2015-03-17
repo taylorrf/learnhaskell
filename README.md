@@ -32,13 +32,11 @@ Revisões e correções ortográficas de capitulos já traduzidos são bem-vinda
  - [x] capitulo08
  - [x] capitulo09
  - [x] capitulo10
-
  - [x] capitulo11-part01        
  - [ ] capitulo11-part02   (em tradução por @taylorrf)
  - [ ] capitulo11-part03   (em tradução por @phinfonet)
  - [x] capitulo11-part04   
  - [ ] capitulo11-part05
-
  - [x] capitulo12-part01      
  - [x] capitulo12-part02   
  - [x] capitulo12-part03
@@ -46,7 +44,6 @@ Revisões e correções ortográficas de capitulos já traduzidos são bem-vinda
  - [ ] capitulo12-part05
  - [ ] capitulo12-part06
  - [ ] capitulo12-part07
-
  - [ ] capitulo13-part01
  - [ ] capitulo13-part02
  - [ ] capitulo13-part03
@@ -54,7 +51,6 @@ Revisões e correções ortográficas de capitulos já traduzidos são bem-vinda
  - [ ] capitulo13-part05
  - [ ] capitulo13-part06
  - [ ] capitulo13-part07
- 
  - [x] capitulo14-part01
  - [x] capitulo14-part02
  - [x] capitulo14-part03
