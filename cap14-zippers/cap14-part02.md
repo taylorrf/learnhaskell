@@ -1,0 +1,26 @@
+Caminhando
+==========
+
+Como nós aprendemos na aula de biologia, existem muitos tipos de árvores, então vamos pegar a semente que usaremos para plantar a nossa. Aqui está:
+
+Então nossa árvore ou está vazia ou contém um nó que tem um elemento e duas sub-árvores. Aqui está um ótimo exemplo de uma árvore, a qual eu estou dando para você, caro leitor, de graça!
+
+E aqui está a representação gráfica da árvore:
+
+Notou o [code]W[/code] na árvore? Digamos que nós queremos muda-lo para um [code]P[/code]. Como é que vamos fazer isso? Bem, uma forma seria percorrendo nossa árvore até acharmos um elemento que seja localizado indo primeiramente para direita e depois para esquerda e mudando esse elemento. Aqui está o código para fazer isso:
+
+Eca! Não só isso é feio, mas também bastante confuso. O que aconteceu aqui? Bem, nós percorremos nossa árvore a partir do elemento raiz [code]x[/code] (que vem a ser o elemento [code]‘P’[/code] na raiz) e sua sub-árvore [code]l[/code]. Ao invés de nomear a sub-árvore direita, nós continuamos percorrendo a árvore. Nós continuamos percorrendo até atingirmos a súb-árvore na qual a raiz é o [code]‘W’[/code]. Uma vez feito isso, nós reconstruímos a árvore mudando a sub-árvore que contém o [code]‘W’[/code] como raiz mas agora alterando seu valor para [code]‘P’[/code].
+
+Existe uma maneira melhor de fazer isso? Que tal nós fazermos nossa função usar a árvore juntamente com uma lista de direções. As direções irão ser ou [code]E[/code] ou [code]D[/code], representando esquerda ou direita respectivamente. Com isso iremos alterar o elemento que alcançarmos ao seguir as direções fornecidas. Aqui está:
+
+Se o primeiro elemento na nossa lista de direções for [code]E[/code], nós construímos uma nova árvore que seja parecida com a antiga, só se diferenciando por ter na sub árvore esquerda um elemento alterado para [code]‘P’[/code]. Quando chamamos recursivamente [code]chageToP[/code], nós passamos só a cauda da lista de direções, pois nós já fomos para esquerda. Nós fazemos a mesma coisa em caso da direção ser [code]D[/code]. Se a lista de direções estiver vazia, isso significa que nós estamos no destino, então retornamos uma árvore parecida com a que foi passada, porém tem [code]‘P’[/code] como valor da raiz.
+
+Para evitar imprimir a árvore toda, vamos fazer uma função que receba uma lista de direções e retorne qual elemento é alcançado pela lista:
+
+Essa função é bastante similar a [code]changeToP[/code], só se difere que ao invés de guardar todo caminho ao longo das direções, ela ignora tudo exceto o destino. Aqui nós mudamos o elemento [code]‘W’[/code] para [code]‘P’[/code] e ver a mudança na nossa nova árvore:
+
+Legal, parece que funciona. Nessas funções, a lista de direções age com <i>foco</i>, por isso conseguimos exatamente a sub-árvore desejada. Uma lista de direções com [code][D][/code] foca na sub-árvore que está a direita da raiz, por exemplo. Uma lista de direções vazia foca na árvore principal como um todo.
+
+Enquanto essa técnica parece legal, pode ser uma pouco ineficiente, especialmente quando queremos mudar os elementos várias vezes. Digamos que tenhamos um árvore realmente grande e uma longa lista de direções que aponta para algum elemento que está localizado na base da árvore. Nós usamos nossa lista de direções para caminhar ao longo da árvore e mudar o elemento da base. Se nós quiséssemos mudar outro elemento que está próximo ao elemento que acabamos de mudar, nós temos que começar tudo de novo a partir da raiz e percorrer o mesmo caminho novamente! Que saco!
+
+Na próxima seção, nós iremos encontrar uma alternativa melhor para focar em um sub-árvore, uma que permita uma troca eficiente de foco em sub-árvores vizinhas.
