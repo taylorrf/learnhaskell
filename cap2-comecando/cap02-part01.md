@@ -1,8 +1,9 @@
-chapter: Começando
+Começando
+=========
 
-title: Preparar, apontar, foi!
+** Preparar, apontar, foi! **
 
-text: Ok, vamos começar! Se você é o tipo de pessoa horrível que não lê as introduções das coisas e se você pulou ela, então de qualquer maneira você irá querer ler a <a href="introduction#what-you-need">última seção</a> da introdução, porque nela explico o que você precisa para acompanhar este tutorial e como vamos fazer para carregar as funções. A primeira coisa que vamos fazer é rodar o GHC no modo interativo e chamar alguma função para obter uma base para começar a sentir o Haskell. Abra seu terminal e digite [code]ghci[/code]. Você será agraciado com algo parecido com isto:
+Ok, vamos começar! Se você é o tipo de pessoa horrível que não lê as introduções das coisas e se você pulou ela, então de qualquer maneira você irá querer ler a <a href="introduction#what-you-need">última seção</a> da introdução, porque nela explico o que você precisa para acompanhar este tutorial e como vamos fazer para carregar as funções. A primeira coisa que vamos fazer é rodar o GHC no modo interativo e chamar alguma função para obter uma base para começar a sentir o Haskell. Abra seu terminal e digite [code]ghci[/code]. Você será agraciado com algo parecido com isto:
 
 Meus parabéns, você esta no GHCi! O prompt aqui é [code]Prelude&gt;[/code] no entando como isto é demasiadamente longo quando você carrega algumas coisas na sua sessão, nós iremos usar [code]ghci&gt;[/code]. Se você quer ter o mesmo prompt, digite [code]:set prompt "ghci&gt; "[/code]. 
 

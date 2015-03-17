@@ -1,6 +1,7 @@
-title: Primeiras funções do seu filho
+Primeiras funções do seu filho
+==============================
 
-text: No capítulo anterior nós aprendemos a idéia básica para chamada de funções. Agora vamos tentar fazer a nossa própria! Abra o seu editor de texto favorito e escreva a seguinte função que recebe um número e o multiplica por dois.
+No capítulo anterior nós aprendemos a idéia básica para chamada de funções. Agora vamos tentar fazer a nossa própria! Abra o seu editor de texto favorito e escreva a seguinte função que recebe um número e o multiplica por dois.
 
 Funções são definidas de forma semelhante como são chamadas. O nome da função é seguido por parâmetros separados por espaços. Porém quando definimos funções, terá um [code]=[/code] e depois nós iremos definir o que a função faz. Salve isto como [code]baby.hs[/code] ou algo parecido. Agora vá até o local onde o arquivo foi salvo e rode o [code]ghci[/code] a partir dai. Dentro do GCHI, digite [code]:l baby[/code]. Agora o script estará carregado e nós já podemos brincar com a função que definimos.
 

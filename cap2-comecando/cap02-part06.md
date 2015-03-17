@@ -1,6 +1,7 @@
-title: Tuplas
+Tuplas
+======
 
-text:Em alguns casos, tuplas são como listas &mdash; um jeito de armazenar muitos valores em um lugar só. No entanto, existem algumas diferenças fundamentais. Uma lista de números é uma lista de números. Esse é o seu tipo e não importa se tiver um único número nela ou uma quantidade infinita de números. Tuplas, no entanto, são usadas quando você sabe exatamente quantos valores você quer combinar e o seu tipo depende de quantos componentes ela tem e os tipos dos componentes. Tuplas são caracterizadas por parênteses com seus componentes separados por vírgulas.
+Em alguns casos, tuplas são como listas &mdash; um jeito de armazenar muitos valores em um lugar só. No entanto, existem algumas diferenças fundamentais. Uma lista de números é uma lista de números. Esse é o seu tipo e não importa se tiver um único número nela ou uma quantidade infinita de números. Tuplas, no entanto, são usadas quando você sabe exatamente quantos valores você quer combinar e o seu tipo depende de quantos componentes ela tem e os tipos dos componentes. Tuplas são caracterizadas por parênteses com seus componentes separados por vírgulas.
 
 Outra diferença fundamental é que elas não precisam ser homogêneas. Ao contrário de uma lista, uma tupla pode conter uma combinação de vários tipos.
 

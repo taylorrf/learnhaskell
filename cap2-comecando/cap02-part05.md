@@ -1,6 +1,7 @@
-title: Eu sou a compreensão de lista
+Eu sou a compreensão de lista
+=============================
 
-text: Se você já esteve em um curso de matemática, você provavelmente já viu compreensão de conjuntos. Isto é normalmente utilizado para a construção de conjuntos mais específicos de conjuntos em geral. Uma <i>compreensão</i> básica para um conjunto que contém os dez primeiros números naturais seria. A parte depois do <i>pipe</i> é chamada de output da função, [code]x[/code] é a variável, [code]N[/code] é o input e [code]x &lt;= 10[/code] o predicado. Isso significa que o conjunto contém o dobro de todos os números naturais que satisfazem o predicado.
+Se você já esteve em um curso de matemática, você provavelmente já viu compreensão de conjuntos. Isto é normalmente utilizado para a construção de conjuntos mais específicos de conjuntos em geral. Uma <i>compreensão</i> básica para um conjunto que contém os dez primeiros números naturais seria. A parte depois do <i>pipe</i> é chamada de output da função, [code]x[/code] é a variável, [code]N[/code] é o input e [code]x &lt;= 10[/code] o predicado. Isso significa que o conjunto contém o dobro de todos os números naturais que satisfazem o predicado.
 
 Se quisermos escrever isto em Haskell nós podemos fazer algo como [code]take 10 [2,4..][/code]. Mas se nós não quisermos dobrar os 10 primeiros números naturais mas sim aplicar alguma função mais complexa neles? Nós podemos utilizar <a href="http://pt.wikipedia.org/wiki/List_comprehension" target="_blank">compreensão de lista</a> para isto. Compreensão de lista é bastante similar com compreensão de conjuntos. Vamos começar com os 10 primeiros números pares agora. A compreensão de lista que podemos usar é [code][x*2 | x &lt;- [1..10]][/code]. [code]x[/code] é traçado a partir de [code][1..10][/code] e para cada elemento em [code][1..10][/code] (que temos vinculado a [code]x[/code]) teremos esse elemento dobrado. Aqui esta a compreensão em ação.
 

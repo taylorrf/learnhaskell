@@ -1,8 +1,9 @@
-chapter: Tipos e Typeclasses
+Tipos e Typeclasses
+===================
 
-title: Acredite no tipo
+** Acredite no tipo **
 
-text: Já falamos que Haskell possui um sistema de tipos estático. O tipo de toda expressão é conhecido na hora da compilação, o que resulta num código mais seguro. Se você escrever um programa que tente dividir um tipo booleano por um número, ele nem compilará. Isso é bom porque é melhor detectarmos erros logo ao terminar de programar do que se deparar com travamentos indesejados. Tudo em Haskell tem um tipo, então o compilador pode considerar várias possibilidades antes mesmo de compilá-lo.
+Já falamos que Haskell possui um sistema de tipos estático. O tipo de toda expressão é conhecido na hora da compilação, o que resulta num código mais seguro. Se você escrever um programa que tente dividir um tipo booleano por um número, ele nem compilará. Isso é bom porque é melhor detectarmos erros logo ao terminar de programar do que se deparar com travamentos indesejados. Tudo em Haskell tem um tipo, então o compilador pode considerar várias possibilidades antes mesmo de compilá-lo.
 
 Ao contrário de Java ou Pascal, Haskell tem inferência de tipo. Se for digitado um número, não precisamos avisar ao Haskell que é um número. Ele consegue identificar isso automaticamente, não damos os tipos de funções e expressões explicitamente. Nós veremos apenas o básico de Haskell com uma visão apenas superficial sobre tipos. No entanto, entender o sistema de tipos é muito importante para o aprendizado de Haskell.
 

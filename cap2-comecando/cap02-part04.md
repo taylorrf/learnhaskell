@@ -1,6 +1,7 @@
-title: Texas ranges
+Texas ranges
+============
 
-text:E se você precisar de uma lista com todos os números entre 1 e 20? Claro, iríamos digitando todos eles, porém obviamente esta não seria uma solução para cavalheiros que desejam excelência em sua linguagem de programação. Em função disso, nós utilizamos ranges. Ranges é um jeito de construir listas que são uma seqüência aritmética de elementos devidamente enumerados. Números podem ser enumerados. Um, dois, três, quatro, etc. Caracteres também podem ser enumerados. O alfabeto é uma enumeração de caractéres de A a Z. Nomes também podem ser enumerados. O que vem depois de "João"? Não faço idéia.
+E se você precisar de uma lista com todos os números entre 1 e 20? Claro, iríamos digitando todos eles, porém obviamente esta não seria uma solução para cavalheiros que desejam excelência em sua linguagem de programação. Em função disso, nós utilizamos ranges. Ranges é um jeito de construir listas que são uma seqüência aritmética de elementos devidamente enumerados. Números podem ser enumerados. Um, dois, três, quatro, etc. Caracteres também podem ser enumerados. O alfabeto é uma enumeração de caractéres de A a Z. Nomes também podem ser enumerados. O que vem depois de "João"? Não faço idéia.
 
 Para constituir uma lista que contenha todos os números naturais de 1 a 20, você simplesmente deve escrever [code][1..20][/code]. Isto é o equivalente a ter escrito [code][1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20][/code] e não há diferença entre um e outro com a exceção de que escrever longas seqüências enumeradas manualmente é algo bastante estúpido.
 

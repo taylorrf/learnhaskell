@@ -1,6 +1,7 @@
-title: Uma introdução às listas
+Uma introdução às listas
+========================
 
-text: Assim como as listas de compras no mundo real, listas em Haskell são extremamente úteis. Esta é a estrutura de dados mais utilizada e pode ser utilizada em muitas e variadas formas para modelar e resolver uma série de problemas. Listas são MUITO legais. Neste capitulo nós iremos dar uma olhada no básico de listas, strings (que são listas) e compreensões de listas. 
+Assim como as listas de compras no mundo real, listas em Haskell são extremamente úteis. Esta é a estrutura de dados mais utilizada e pode ser utilizada em muitas e variadas formas para modelar e resolver uma série de problemas. Listas são MUITO legais. Neste capitulo nós iremos dar uma olhada no básico de listas, strings (que são listas) e compreensões de listas. 
 
 Em Haskell, listas são estruturas de dados homogêneas. Ela armazena vários elementos do mesmo tipo. Isto quer dizer que podemos ter uma lista com inteiros ou uma lista de caracteres, porém não podemos ter uma lista com inteiros e alguns caracteres. E agora, uma lista! 
 
