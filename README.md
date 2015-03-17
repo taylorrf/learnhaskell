@@ -22,81 +22,42 @@ Revisões e correções ortográficas de capitulos já traduzidos são bem-vinda
 
 ### Status da Tradução
 
- - [x] chapter01
- - [x] chapter01-part02
- - [x] chapter01-part03
- - [x] chapter02
- - [x] chapter02-part02
- - [x] chapter02-part03
- - [x] chapter02-part04
- - [x] chapter02-part05
- - [x] chapter02-part06
- - [x] chapter03
- - [x] chapter03-part02
- - [x] chapter03-part03
- - [x] chapter04
- - [x] chapter04-part02
- - [x] chapter04-part03
- - [x] chapter04-part04
- - [x] chapter04-part05
- - [x] chapter05
- - [x] chapter05-part02
- - [x] chapter05-part03
- - [x] chapter05-part04
- - [x] chapter05-part05
- - [x] chapter06
- - [x] chapter06-part02
- - [x] chapter06-part03
- - [x] chapter06-part04
- - [x] chapter06-part05
- - [x] chapter06-part06
- - [x] chapter06-part07
- - [x] chapter07
- - [x] chapter07-part02
- - [x] chapter07-part03
- - [x] chapter07-part04
- - [x] chapter07-part05
- - [x] chapter07-part06
- - [x] chapter08
- - [x] chapter08-part02
- - [x] chapter08-part03
- - [x] chapter08-part04
- - [x] chapter08-part05
- - [x] chapter08-part06
- - [x] chapter08-part07
- - [x] chapter08-part08
- - [x] chapter08-part09
- - [x] chapter08-part10
- - [x] chapter09
- - [x] chapter09-part02
- - [x] chapter09-part03
- - [x] chapter09-part04
- - [x] chapter09-part05
- - [x] chapter09-part06
- - [x] chapter10
- - [x] chapter10-part02
- - [x] chapter11          
- - [ ] chapter11-part02   (em tradução por @taylorrf)
- - [ ] chapter11-part03   (em tradução por @phinfonet)
- - [x] chapter11-part04   
- - [ ] chapter11-part05
- - [X] chapter12          
- - [X] chapter12-part02   
- - [X] chapter12-part03
- - [ ] chapter12-part04   (em tradução por @johnidm) 
- - [ ] chapter12-part05
- - [ ] chapter12-part06
- - [ ] chapter12-part07
- - [ ] chapter13
- - [ ] chapter13-part02
- - [ ] chapter13-part03
- - [ ] chapter13-part04
- - [ ] chapter13-part05
- - [ ] chapter13-part06
- - [ ] chapter13-part07
- - [x] chapter14
- - [x] chapter14-part02
- - [x] chapter14-part03
- - [x] chapter14-part04
- - [ ] chapter14-part05
- - [ ] chapter14-part06
+ - [x] capitulo01
+ - [x] capitulo02
+ - [x] capitulo03
+ - [x] capitulo04
+ - [x] capitulo05
+ - [x] capitulo06
+ - [x] capitulo07
+ - [x] capitulo08
+ - [x] capitulo09
+ - [x] capitulo10
+
+ - [x] capitulo11-part01        
+ - [ ] capitulo11-part02   (em tradução por @taylorrf)
+ - [ ] capitulo11-part03   (em tradução por @phinfonet)
+ - [x] capitulo11-part04   
+ - [ ] capitulo11-part05
+
+ - [x] capitulo12-part01      
+ - [x] capitulo12-part02   
+ - [x] capitulo12-part03
+ - [x] capitulo12-part04 
+ - [ ] capitulo12-part05
+ - [ ] capitulo12-part06
+ - [ ] capitulo12-part07
+
+ - [ ] capitulo13-part01
+ - [ ] capitulo13-part02
+ - [ ] capitulo13-part03
+ - [ ] capitulo13-part04
+ - [ ] capitulo13-part05
+ - [ ] capitulo13-part06
+ - [ ] capitulo13-part07
+ 
+ - [x] capitulo14-part01
+ - [x] capitulo14-part02
+ - [x] capitulo14-part03
+ - [x] capitulo14-part04
+ - [ ] capitulo14-part05
+ - [ ] capitulo14-part06
