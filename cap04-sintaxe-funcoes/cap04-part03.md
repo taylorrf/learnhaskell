@@ -10,8 +10,7 @@ Note ainda que nos repetimos três vezes. Nós nos repetimos três vezes. Repeti
 Colocamos a palavra-chave [code]where[/code] (geralmente identamos até onde estão os pipes) e definimos variáveis ou funções. Esses nomes são visíveis dentro dos guards e nos permitem não ficar nos repetindo. Se decidirmos que iremos calcular o IMC de um modo diferente, precisamos mudar apenas uma vez. Podemos avançar um pouco e deixar nossa função assim:
 
 
-
-Os nomes criação na seção where só são visíveis dentro da função, então não temos de nos preocupar com elas poluindo o namespace de outras funções. Note também que todos os nomes foram alinhados na mesma coluna. Se não o fizéssemos, Haskell ficaria confuso e não saberia que eles fazem parte do mesmo bloco.
+Os nomes criados na seção where só são visíveis dentro da função, então não temos de nos preocupar com elas poluindo o namespace de outras funções. Note também que todos os nomes foram alinhados na mesma coluna. Se não o fizéssemos, Haskell ficaria confuso e não saberia que eles fazem parte do mesmo bloco.
 
 Associações <i>where</i> não são compartilhadas entre diferentes patterns. Se você quiser que vários patterns de uma mesma função compartilhem um determinado nome, você deverá especificá-los como global.
 
