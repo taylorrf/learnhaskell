@@ -2,7 +2,7 @@ Tipo variável
 =============
 
 Qual você acha que é o tipo da função [code]head[/code]? Já que [code]head[/code] recebe uma lista e 
-retorna o seu último elemento, qual deve ser o seu tipo? Vamos descobrir!
+retorna o seu primeiro elemento, qual deve ser o seu tipo? Vamos descobrir!
 
 Hmmm! O que é esse [code]a[/code]? É o tipo? Lembre-se que já vimos que o tipo é escrito com a primeira 
 letra maiúscula, então não pode ser exatamente o tipo. E é exatamente essa diferença que nos diz ser 
