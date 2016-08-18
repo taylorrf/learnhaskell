@@ -41,7 +41,7 @@ algum valor para nós. Nós podemos inspecionar o que elas pegaram, mas depois d
 nós temos que devolver o valor de volta ao [code]IO[/code]. Ao pensar nessa analogia da caixa com
 pequenas perninhas, nós conseguimos ver como [code]IO[/code] age como um functor.
 
-Vamos ver como [code]IO[/code] é uma instância de [code]Functor[/code]. Quando nós usamos [code]fmap[/code] em uma função numa ação I/O, nós esperamos receber de volta uma ação I/O que faz a mesma coisa, mas que tem a nossa função aplicada sobre seus valores resultantes.
+Vamos ver como [code]IO[/code] é uma instância de [code]Functor[/code]. Quando nós usamos uma função [code]fmap[/code] sob uma ação I/O, nós esperamos receber de volta uma ação I/O que faz a mesma coisa, mas que tem a nossa função aplicada sobre seus valores resultantes.
 
 
 O resultado de mapear alguma coisa sobre uma ação I/O será uma ação I/O, por isso logo de cara
@@ -51,7 +51,7 @@ Em seguida, fazemos [code]return (f result)[/code]. [code]return[/code] é, como
 valor resultante da sua última ação. Por isso que nós criamos uma ação I/O que faz absolutamente nada, que irá apenas apresentar
 [code]f result[/code] como o resultado da nova ação I/O.
 
-Podemos brincar um pouco nisso para ganhar alguma intuição. É realmente muito simples. Da uma olhada nesse pedaço de código:
+Podemos brincar um pouco nisso para ganhar alguma intuição. É realmente muito simples. Da só uma olhada nesse pedaço de código:
 
 O usuário nos envia um valor (line) e nós devolvemos ele para o usuario ao contrário (com a função <i>reverse</i>).
 Veja como podemos re-escrever isso usando [code]fmap[/code]:
@@ -63,9 +63,7 @@ para obtermos [code]Just "halb"[/code], nós podemos também fazer [code]fmap[/c
 mundo real para obter alguma coisa. Portanto quando nós associamos isso a um nome usando [code]&lt;-[/code], esse nome irá
 refletir um resultado que já tem o [code]reverse[/code] aplicado.
 
---
-A ação I/O [code]fmap (++"!") getLine[/code] se comporta como [code]getLine[/code], simplesmente apresentando sempre junto
-ao seu resultado um [code]"!"[/code].
+A ação I/O [code]fmap (++"!") getLine[/code] se comporta como [code]getLine[/code], simplesmente apresentando sempre junto ao seu resultado um [code]"!"[/code].
 
 Se olharmos em como o tipo [code]fmap[/code] deve ser caso esteja atrelado ao [code]IO[/code],
 ele deverá ser algo como [code]fmap :: (a -&gt; b) -&gt; IO a -&gt; IO b[/code]. Aqui o [code]fmap[/code] pega
@@ -73,7 +71,7 @@ uma função, uma ação I/O e retorna uma nova ação I/O da mesma forma que a 
 será aplicada apenas no seu próprio resultado.
 
 Caso você notar que esta sempre associando um resultado de uma ação I/O a um nome, só para aplicar uma função
-nela e chamar alguma outra coisa, considere então usar o [code]fmap[/code], simplesmente porque ele fica
+nela e chamar alguma outra coisa, considere então usar o [code]fmap[/code], simplesmente porque assim fica
 mais bonitinho. Se você quiser aplicar diversas transformações em um dado dentro de uma <i>functor</i>,
 você pode declarar sua própria função em um nível de abstração mais alto, criando uma função lambda ou
 idealmente, usando composição de função:
@@ -90,12 +88,8 @@ pouco confuso agora, pensando "que diabos esse [code](-&gt;) r[/code] significa"
 re-escrever [code]2 + 3[/code] como [code](+) 2 3[/code]. Agora quando olhamos o [code](-&gt;) r a[/code],
 nós podemos enchergar o [code](-&gt;)[/code] sobre uma ótica diferente, porque nós vemos ele apenas como um
 tipo construtor que pega dois parâmetros, assim como o [code]Either[/code]. Mas lembre-se, nós vimos que
-um tipo construtor deve pegar exatamente um tipo de parametro para que ele possa ser ums instância de [code]Functor[/code].
-Esse é o porque não podemos fazer com que o [code](-&gt;)[/code] seja uma instância de [code]Functor[/code], porém se
-nós aplicarmos parcialmente isso ao [code](-&gt;) r[/code], não nos trará problemas. Se a sintaxe permitir que
-tipos contrutores sejam parcialmente aplicados com sessões (da mesma forma que podemos aplicar [code]+[/code] ao fazer [code](2+)[/code],
-que é o mesmo que [code](+) 2[/code]), você poderá escrever então [code](-&gt;) r[/code] como [code](r -&gt;)[/code].
-O que são funcões <i>functors</i>? Bem, vamos dar uma olhada na implementação que esta em [code]Control.Monad.Instances[/code]
+um tipo construtor deve pegar exatamente um tipo de parametro para que ele possa ser uma instância de [code]Functor[/code].
+Esse é o porque não podemos fazer com que o [code](-&gt;)[/code] seja uma instância de [code]Functor[/code], porém se nós aplicarmos parcialmente isso ao [code](-&gt;) r[/code], não nos trará problemas. Se a sintaxe permitir que tipos contrutores sejam parcialmente aplicados em partes (da mesma forma que podemos aplicar [code]+[/code] ao fazer [code](2+)[/code], que é o mesmo que [code](+) 2[/code]), você poderá escrever então [code](-&gt;) r[/code] como [code](r -&gt;)[/code]. O que são funcões <i>functors</i>? Bem, vamos dar uma olhada na implementação que esta em [code]Control.Monad.Instances[/code]
 
 Usualmente marcamos funções que contém qualquer coisa e que retornam qualquer coisa como [code]a -&gt; b[/code].
 [code]r -&gt; a[/code] é o mesmo esquema, apenas usamos letras diferentes para o tipo da variável.
@@ -115,11 +109,10 @@ Então, perceba que isso recebe uma função a partir de [code]a[/code] para [co
 para [code]a[/code] e retorna uma função a partir de [code]r[/code] para [code]b[/code]. Será que isso te lembra alguma coisa?
 Sim! Composição de funções! Nós empilhamos a saída de [code]r -&gt; a[/code] sobre a entrada de [code]a -&gt; b[/code] para ter a
 função [code]r -&gt; b[/code], que é exatamente o que composição de funções é. Se você observar como a instância é definida acima,
- vai ver que aquilo é apenas uma composição de função. Outra forma de escrever essa instância pode ser:
+vai ver que aquilo é apenas uma composição de função. Outra forma de escrever essa instância pode ser:
 
 Isso nos revela que usar [code]fmap[/code] sobre funções é apenas composição de uma maneira óbvia.
-Digite em seu terminal [code]:m + Control.Monad.Instances[/code], já que ai é one a instância é definida e então tente
-brincar com mapeamentos sobre funções.
+Digite em seu terminal [code]:m + Control.Monad.Instances[/code], já que ai é onde a instância é definida e então tente brincar com mapeamentos sobre funções.
 
 Podemos chamar [code]fmap[/code] como uma função infixa e então a semelhança com o [code].[/code] fica bem clara.
 Na segunda linha de entrada, estamos mapeando [code](*3)[/code] sobre [code](+100)[/code], que resulta em
@@ -127,13 +120,7 @@ uma função que vai pegar uma entrada, chamar [code](+100)[/code] nela e então
 sobre o resultado. Nós realizamos a chamada dessa função com o [code]1[/code].
 
 E como será que a analogia da caixa se encaixa aqui? Bem, se você forçar bastante a barra, ela se encaixa.
-Quando usamos o [code]fmap (+3)[/code] sobre [code]Just 3[/code], é tranquilo de imaginar que o [code]Maybe[/code]
-seria tipo uma caixa com algumas coisas dentro sobre as quais iremos aplicar a função [code](+3)[/code]. Mas e quando
-nós estamos fazendo um [code]fmap (*3) (+100)[/code]? Nesse caso você pode imaginar a função [code](+100)[/code] como
-uma caixa que eventualmente irá conter o resultado. Da mesma forma que uma ação I/O pode ser uma espécia de caixa que
-se vai ao mundo real e volta pra gente com o resultado. Usando [code]fmap (*3)[/code] no [code](+100)[/code] vai criar
-outra função que se comporta como [code](+100)[/code], apenas antes de produzir um resultado, [code](*3)[/code] será aplicado
-no resultado. Agora a gente pode ver como o [code]fmap[/code] age como [code].[/code] para as funções.
+Quando usamos o [code]fmap (+3)[/code] sobre [code]Just 3[/code], é tranquilo de imaginar que o [code]Maybe[/code] seria tipo uma caixa com algumas coisas dentro sobre as quais iremos aplicar a função [code](+3)[/code]. Mas e quando nós estamos fazendo um [code]fmap (*3) (+100)[/code]? Nesse caso você pode imaginar a função [code](+100)[/code] como uma caixa que eventualmente irá conter o resultado. Da mesma forma que uma ação I/O pode ser uma espécia de caixa que se vai ao mundo real e volta pra gente com o resultado. Usando [code]fmap (*3)[/code] no [code](+100)[/code] vai criar outra função que se comporta como [code](+100)[/code], apenas antes de produzir um resultado, [code](*3)[/code] será aplicado no resultado. Agora a gente pode ver como o [code]fmap[/code] age como [code].[/code] para as funções.
 
 O fato de que [code]fmap[/code] é uma composição de funções quando usada em funções não é tão absurdamente
 útil no momento, mas ao menos é bem interessante. Isso abre um pouco a nossa mente e nos permite entender
@@ -151,18 +138,13 @@ uma função com alguns poucos parâmetros (parcialmente aplicamos ela), a gente
 (se a gente pensar novamente sobre funções recebendo vários parâmetros). Portanto [code]a -&gt; b -&gt; c[/code] pode ser escrito como [code]a -&gt; (b -&gt; c)[/code], para tornar o rearranjo (<i>currying</i>) mais aparente.
 
 Seguindo a mesma linha de pensamento, se a gente escrever [code]fmap :: (a -&gt; b) -&gt; (f a -&gt; f b)[/code],
- podemos então pensar no [code]fmap[/code] não como uma função que pega uma função e um functor que retorna um functor,
- mas como uma função que pega uma função e retorna uma nova função da mesma forma que a anterior, ela apenas
- pega um functor como um parâmetro e retorna um functor como resultado. Ela pega uma função [code]a -&gt; b[/code]
- e retorna uma função [code]f a -&gt; f b[/code]. Isso é chamado de <i>levantar</i> uma função. Vamos brincar em torno dessa idea
- usando o nosso comando do GHCI [code]:t[/code]:
+podemos então pensar no [code]fmap[/code] não como uma função que pega uma função e um functor que retorna um functor, mas como uma função que pega uma função e retorna uma nova função da mesma forma que a anterior, ela apenas pega um functor como um parâmetro e retorna um functor como resultado. Ela pega uma função [code]a -&gt; b[/code] e retorna uma função [code]f a -&gt; f b[/code]. Isso é chamado de <i>levantar</i> uma função. Vamos brincar em torno dessa idea usando o nosso comando do GHCI [code]:t[/code]:
 
 A expressão [code]fmap (*2)[/code] é uma função que pega um functor [code]f[/code] sob números e retorna um functor sob números.
 Esse functor pode ser uma lista, um [code]Maybe [/code], uma [code]Either String[/code], tanto faz. A expressão [code]fmap (replicate 3)[/code]
 vai pegar um functor sob qualquer tipo e retornar uma functor sob a lista de elementos daquele tipo.
 
-Quando digo <i>um functor sob números</i>, você deve entender isso como <i>um functor que tem números dentro dele</i>.
-O anterior é um pouco mais correto técnicamente, porém o último é mais fácil de entender.
+Quando digo <i>um functor sob números</i>, você deve entender isso como <i>um functor que tem números dentro dele</i>. O anterior é um pouco mais correto técnicamente, porém o último é mais fácil de entender.
 
 This is even more apparent if we partially apply, say, [code]fmap (++"!")[/code] and then bind it to
 a name in GHCI.
@@ -307,7 +289,7 @@ will be applied to it. Another example is mapping over functions. When we do
 [code]fmap (+3) (*3)[/code], we attach the transformation [code](+3)[/code] to the eventual output
 of [code](*3)[/code]. Looking at it this way gives us some intuition as to why using
 [code]fmap[/code] on functions is just composition ([code]fmap (+3) (*3)[/code] equals
-	[code](+3) . (*3)[/code], which equals [code]\x -&gt; ((x*3)+3)[/code]), because we take a
+[code](+3) . (*3)[/code], which equals [code]\x -&gt; ((x*3)+3)[/code]), because we take a
 function like [code](*3)[/code] then we attach the transformation [code](+3)[/code] to its output.
 The result is still a function, only when we give it a number, it will be multiplied by three and
 then it will go through the attached transformation where it will be added to three.
