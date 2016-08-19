@@ -31,7 +31,7 @@ O [code]filter[/code] equivale a aplicar diversos predicados em uma compreensão
 a filtrar algo diversas vezes ou juntar o predicado coerentemente com a função [code]&amp;&amp;[/code].
 
 Lembra da função quicksort do <a href="recursion">capítulo anterior</a>? Utilizamos compreensão de 
-lista para filtrar os elementos que forem menores do que (ou igual a) e maior do o pivô. Podemos obter 
+lista para filtrar os elementos que forem menores do que (ou igual a) e maior do que o pivô. Podemos obter 
 a mesma funcionalidade de um jeito mais legível com o uso do [code]filter[/code]:
 
 Mapeamento e filtragem é o pão e a manteiga de toda a caixa de ferramenta da programação funcional. 
