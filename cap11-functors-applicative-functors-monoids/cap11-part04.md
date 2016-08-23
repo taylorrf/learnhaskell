@@ -3,31 +3,31 @@ A palavra chave newtype
 
 Até agora, nós aprendemos como criar tipos de dados algébricos utilizando a palavra chave <em>data</em>. Nós aprendemos também a dar sinônimos para tipos existentes com a palavra chave <em>type</em>. Nesta seção, nós iremos dar uma olhada em como criar novos tipos a partir de tipos de dados já existentes utilizando a palavra chave <em>newtype</em>, e porque nós iriamos querer fazer isso em primeiro lugar.
 
-Na seção anterior, nós vimos que há na verdade mais formas do tipo lista ser um applicative functor. Uma delas é [code]&lt;*&gt;[/code] pegar cada função da lista a esquerda e aplicar a cada valor na lista a direita, resultando em todas as combinações possíveis ao aplicar as funções da esquerda com os valores da direita.
+Na seção anterior, nós vimos que há na verdade mais formas do tipo lista ser um applicative functor. Uma delas é o [code]&lt;*&gt;[/code] pegar cada função da lista a esquerda e aplicar a cada valor na lista a direita, resultando em todas as combinações possíveis ao aplicar as funções da esquerda com os valores da direita.
 
-A segunda forma é pegar a primeira função a esquerda do [code]&lt;*&gt;[/code] e aplicar ao primeiro valor da direita, então pegar a segunda função da lista a esquerda e aplicar ao segundo valor da direita, e assim por diante. Por fim, é como se estivessemos mesclando as duas listas. Mas listas já são uma instância de [code]Applicative[/code], então como nós fazemos da lista uma instância de [code]Applicative[/code] desta segunda forma? Se você lembra, nós dissemos que o tipo [code]ZipList a[/code] foi introduzido para esse propósito, que tem um construtor de valor, [code]ZipList[/code], que tem apenas um campo. Nós envolvemos a lista no campo. Então, [code]ZipList[/code] se torna uma instância de [code]Applicative[/code], assim quando nós queremos usar listas como aplicatives para realizar mesclagem, nós apenas envolvemos elas com o construtor de valor [code]ZipList[/code] e então uma vez feito, recuperamos elas com [code]getZipList[/code]:
+A segunda forma é pegar a primeira função a esquerda do [code]&lt;*&gt;[/code] e aplicar ao primeiro valor da direita, então pegar a segunda função da lista a esquerda e aplicar ao segundo valor da direita, e assim por diante. Por fim, é como se estivessemos mesclando as duas listas. Mas listas já são uma instância de [code]Applicative[/code], então como nós fazemos da lista uma instância de [code]Applicative[/code] desta segunda forma? Se você ainda lembra, nós dissemos que o tipo [code]ZipList a[/code] foi introduzido para esse propósito, que tem um construtor de valor [code]ZipList[/code], com apenas um campo. Colocamos a lista que estamos empacotando naquele campo. Então, [code]ZipList[/code] se torna uma instância de [code]Applicative[/code], assim quando nós queremos usar listas como aplicatives para realizar mesclagem, nós apenas envolvemos elas com o construtor de valor [code]ZipList[/code] e então uma vez feito, recuperamos elas com [code]getZipList[/code]:
 
 Então, o que isso tem a ver com a palavra-chave <i>newtype</i>? Bem, penso sobre como nós podemos escrever a declaração dos dados para nosso tipo [code]ZipList a[/code]. Uma forma seria fazer assim:
 
 Um tipo que tem apenas um construtor e que o construtor de valor tem apenas um campo que é uma lista de coisas. Nós podemos querer também usar a sintaxe do record onde nós automaticamente obtemos uma função que extrai uma lista de um [code]ZipList[/code]:
 
-Parece bom e funciona muito bem. Nós temos duas forma de fazer um tipo existente uma instância de um tipo de classe, então nós usamos a palavra-chave <i>data</i> para envolver o tipo em outro e fazer desse uma instância desse segunda modo.
+Parece bom e funciona muito bem. Nós temos duas formas de fazer um tipo já existente uma instância de um tipo de classe, uma forma é usarmos a palavra-chave <i>data</i> apenas para embalar o tipo envolta de outro tipo e fazer desse outro tipo uma instância.
 
-A palavra-chave <i>newtype</i> em Haskell é exatamente para estes casos quando nós queremos apenas pegar um tipo e envolver em alguma coisa para aprensentar como outro tipo. Nas bibliotecas atuais, [code]ZipList a[/code] é definido como algo assim:
+A palavra-chave <i>newtype</i> em Haskell é exatamente para estes casos quando nós queremos apenas pegar um tipo e envolvê-lo em alguma coisa para aprensentar como outro tipo. Nas bibliotecas atuais, [code]ZipList a[/code] é definido como algo assim:
 
-Ao invés da palavra-chave <i>data</i>, a palavra-chave <i>newtype</i> é usada. Por que motivo? Bem, <i>newtype</i> é rápido. Se você usa a palavra-chave <i>data</i> para envolver um tipo, há um custo ao envolver e recuperar os dados quando seu programa está sendo executado. Mas se você usa <i>newtype</i>, Haskell sabe que você apenas está usando isso para envolver um tipo existente em um novo tipo (portanto o nome), porque você quer que internamente seja a mesma coisa mas tenha um tipo diferente. Com isso em mente, Haskell consegue eliminar o trabalho de envolver e recuperar valores uma vez que este sabe que valor é de que tipo.
+Ao invés da palavra-chave <i>data</i>, a palavra-chave <i>newtype</i> é usada. Por que motivo? Bem, <i>newtype</i> é rápido. Se você usa a palavra-chave <i>data</i> para envolver um tipo, há um custo ao envolver e recuperar os dados quando seu programa está sendo executado. Mas se você usa <i>newtype</i>, Haskell sabe que você apenas está usando isso para envolver um tipo existente em um novo tipo (portanto o nome), porque você quer que internamente seja a mesma coisa mas tenha um tipo diferente. Com isso em mente, Haskell consegue eliminar o trabalho de envolver e recuperar valores uma vez que ele sabe qual valor é de que tipo.
 
 Então, porque não usar <i>newtype</i> em todos os casos ao invés de <i>data</i>? Bem, quando você cria um novo tipo a partir de um tipo existente usando a palavra-chave <i>newtype</i>, você pode ter apenas um construtor e este deve ter apenas um campo. Mas com <i>data</i>, você pode criar tipos de dados com mais de um construtor de valor e cada construtor de valor pode ter zero ou mais campos:
 
 Quando usamos <i>newtype</i>, estamos restritos apenas um construtor com apenas um campo.
 
-Nós também podemos usar a palavra-chave <i>deriving</i> com <i>newtype</i> assim como usamos com <i>data</i>. Nós podemos derivar instâncias para [code]Eq[/code], [code]Ord[/code], [code]Enum[/code], [code]Bounded[/code], [code]Show[/code] e [code]Read[/code]. Se derivarmos a instância para um tipo de classe, o tipo que estamos envolvendo tem de estar nesses tipos também. Faz sentido, porque <i>newtype</i> apenas envolve um tipo existente. Então agora, se nós fizermos o seguinte, nós podemos imprimir e comparar valores do nosso tipo:
+Podemos usar também a palavra-chave <i>deriving</i> com <i>newtype</i> assim como usamos com <i>data</i>. Nós podemos derivar instâncias para [code]Eq[/code], [code]Ord[/code], [code]Enum[/code], [code]Bounded[/code], [code]Show[/code] e [code]Read[/code]. Se derivarmos a instância para um tipo de classe, o tipo que estamos envolvendo tem de estar nesses tipos também. Faz sentido, porque <i>newtype</i> apenas envolve um tipo existente. Então agora, se nós fizermos o seguinte, nós podemos imprimir e comparar valores do nosso tipo:
 
 Vamos dar uma olhada:
 
-Nesse <i>newtype</i> em particular, o valor do construtor de valor tem o seguinte tipo:
+Nesse <i>newtype</i> em particular, o valor do construtor tem o seguinte tipo:
 
-Este recebe um valor do tipo [code][Char][/code], como [code]"my sharona"[/code] e retorna um valor do tipo [code]CharList[/code]. A partir dos exemplos acima onde nós usamos o construtor [code]CharList[/code], nós vimos que esse é realmente um caso. Inversamente, a função [code]getCharList[/code], o qual foi gerada para nós já que usamos a sintaxe record em nosso newtype, tem este tipo:
+Ele recebe um valor do tipo [code][Char][/code], como [code]"my sharona"[/code] e retorna um valor do tipo [code]CharList[/code]. A partir dos exemplos acima onde nós usamos o construtor [code]CharList[/code], nós vimos que esse é realmente um caso. Inversamente, a função [code]getCharList[/code], o qual foi gerada para nós já que usamos a sintaxe record em nosso newtype, tem este tipo:
 
 Este recebe um valor do tipo [code]CharList[/code] e converte para um valor do tipo [code][Char][/code]. Você pode pensar nisso como envolvendo e recuperando, mas você também pode pensar nisso como uma conversão de valores de um tipo para outro.
 
@@ -66,7 +66,7 @@ Ao invés de aplicar esta função a um [code]CoolBool[/code] normalmente, vamos
 
 Caramba! Uma exceção! Agora, porque esta exceção acontece? Tipos definidos com a palavra chave <i>data</i> podem ter múltiplos construtores de valores (mesmo [code]CoolBool[/code] tendo apenas um). Então para ver se o valor passado para nossa função obedece ao padrão [code](CoolBool _)[/code], Haskell tem de avaliar o tipo apenas para ver que construtor de valor foi usado quando nós criamos o valor. E quando nós tentarmos avaliar um valor [code]undefined[/code], uma exceção será lançada.
 
-Ao invés de usar a palavra chave <i>data</i> para [code]CoolBool[/code], vamos tentar usar <i>newtype</i>: 
+Ao invés de usar a palavra chave <i>data</i> para [code]CoolBool[/code], vamos tentar usar <i>newtype</i>:
 
 Nós não temos de mudar nossa função [code]helloMe[/code], porque a sintaxe do casamento de padrões é a mesma se você usar <i>newtype</i> ou <i>data</i> para definir nosso tipo. Vamos fazer a mesma coisa aqui e aplicar [code]helloMe[/code] a um valor [code]undefined[/code]:
 
@@ -90,7 +90,7 @@ Nós não podemos usar [code]++[/code] para juntar um [code]CharList[/code] e um
 
 Quando nós usamos a sintaxe record em nossas declarações <i>newtype</i>, nós obtemos funções para converter entre o novo tipo e o tipo original: nomeando o construtor de valor de nosso <i>newtype</i> e a função para extrair o valor do seu campo. O novo tipo também não se torna automaticamente uma instância dos tipos de classes que o tipo original pertence, então nós temos que derivar ou manualmente escrever elas.
 
-Na prática, você pode pensar em declarações <i>newtype</i> como declarações <i>data</i> que possuem apenas um construtor e um campo. Se você se pega escrevendo declarações <i>data</i> assim, considere usar <i>newtype</i>.
+Na prática, você pode pensar em declarações <i>newtype</i> como declarações <i>data</i> que possuem apenas um construtor e um campo. Se você se pegar escrevendo declarações <i>data</i> assim, considere usar <i>newtype</i>.
 
 A palavra chave <em>data</em> é para criar seus próprios tipos e com eles, fazer o que você quiser. Eles podem ter quantos construtores e campos você desejar e podem ser usados para implementar qualquer tipo de dados algébricos que quiser. Qualquer coisa como listas e [code]Maybe[/code] - como tipos de árvores.
 

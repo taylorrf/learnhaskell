@@ -146,25 +146,25 @@ vai pegar um functor sob qualquer tipo e retornar uma functor sob a lista de ele
 
 Quando digo <i>um functor sob números</i>, você deve entender isso como <i>um functor que tem números dentro dele</i>. O anterior é um pouco mais correto técnicamente, porém o último é mais fácil de entender.
 
-This is even more apparent if we partially apply, say, [code]fmap (++"!")[/code] and then bind it to
-a name in GHCI.
-You can think of [code]fmap[/code] as either a function that takes a function and a functor and then
-maps that function over the functor, or you can think of it as a function that takes a function and
-lifts that function so that it operates on functors. Both views are correct and in Haskell, equivalent.
-The type [code]fmap (replicate 3) :: (Functor f) =&gt; f a -&gt; f [a][/code] means that the function
-will work on any functor. What exactly it will do depends on which functor we use it on.
-If we use [code]fmap (replicate 3)[/code] on a list, the list's implementation for [code]fmap[/code]
-will be chosen, which is just [code]map[/code]. If we use it on a [code]Maybe a[/code],
-it'll apply [code]replicate 3[/code] to the value inside the [code]Just[/code], or if it's
-[code]Nothing[/code], then it stays [code]Nothing[/code].
+Isso é ainda mais aparente se nós aplicarmos parcialmente, por exemplo, [code]fmap (++"!")[/code] e associar
+isso a um nome no GHCI.
 
-Next up, we're going to look at the <em>functor laws</em>. In order for something to be a functor,
-it should satisfy some laws. All functors are expected to exhibit certain kinds of functor-like
-properties and behaviors. They should reliably behave as things that can be mapped over.
-Calling [code]fmap[/code] on a functor should just map a function over the functor, nothing more.
-This behavior is described in the functor laws. There are two of them that all instances of
-[code]Functor[/code] should abide by. They aren't enforced by Haskell automatically, so you have
-to test them out yourself.
+Você pode pensar no [code]fmap[/code] tanto como uma função que recebe uma função e um functor e então
+mapeia essa função sobre o functor, como você pode pensar nele como uma função que recebe uma função e
+levanta essa função para que ela opere no functor. Ambas visões estão corretas em Haskell e se equivalem.
+O tipo [code]fmap (replicate 3) :: (Functor f) =&gt; f a -&gt; f [a][/code] significa que essa função irá
+trabalhar em qualquer functor. O que exatamente isso irá fazer, dependerá de qual functor iremos usar nela.
+Se a gente usar [code]fmap (replicate 3)[/code] numa lista, a implementação do [code]fmap[/code] para listas
+será usada, que é basicamente um [code]map[/code]. Se usarmos isso em um [code]Maybe a[/code], ele irá
+aplicar o [code]replicate 3[/code] ao valor dentro de [code]Just[/code], ou se ele for um [code]Nothing[/code],
+ então permanecerá um [code]Nothing[/code].
+
+A seguir, vamos dar uma olhada nas <em>leis dos functors</em>. Para que algo possa ser um functor,
+ela deve satisfazer algumas leis. É esperado que todas functors demonstrem cetos tipos de propriedades
+e comportamentos que são típicos de functors. Eles devem se comportar seguramente como coisas que podem ser
+mapeadas. Chamar o [code]fmap[/code] em uma functor deve somente mapear a função sob o functor, apenas isso.
+Esse comportamento é descrito nas leis das functors. Existem duas dessas que todas instâncias de [code]Functor[/code] devem cumprir. Elas não são forçadas automaticamente pelo Haskell, portanto
+você deve testa-las por sua conta própria.
 
 <em>The first functor law states that if we map the [code]id[/code] function over a functor,
 the functor that we get back should be the same as the original functor.</em> If we write that a bit
