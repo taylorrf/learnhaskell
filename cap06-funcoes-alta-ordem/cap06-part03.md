@@ -34,7 +34,7 @@ Lembra da função quicksort do <a href="recursion">capítulo anterior</a>? Util
 lista para filtrar os elementos que forem menores do que (ou igual a) e maior do que o pivô. Podemos obter 
 a mesma funcionalidade de um jeito mais legível com o uso do [code]filter[/code]:
 
-Mapeamento e filtragem é o pão e a manteiga de toda a caixa de ferramenta da programação funcional. 
+Mapeamento e filtragem é o pão e a manteiga de toda a caixa de ferramentas da programação funcional. 
 Não importa se fizermos isso com [code]map[/code] e [code]filter[/code] funções ou compreensão de lista. 
 Lembre-se como resolvemos o problema para achar o triângulo retângulo com uma determinada circunferência. 
 Com programação imperativa, nós deveriamos resolvê-lo aninhando três loops e então testando se a 
