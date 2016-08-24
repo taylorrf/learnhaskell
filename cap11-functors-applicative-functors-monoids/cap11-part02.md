@@ -166,35 +166,32 @@ mapeadas. Chamar o [code]fmap[/code] em uma functor deve somente mapear a funç�
 Esse comportamento é descrito nas leis das functors. Existem duas dessas que todas instâncias de [code]Functor[/code] devem cumprir. Elas não são forçadas automaticamente pelo Haskell, portanto
 você deve testa-las por sua conta própria.
 
-<em>The first functor law states that if we map the [code]id[/code] function over a functor,
-the functor that we get back should be the same as the original functor.</em> If we write that a bit
-more formally, it means that [law]fmap id = id[/code]. So essentially, this says that if we do
-[code]fmap id[/code] over a functor, it should be the same as just calling [code]id[/code] on the
-functor. Remember, [code]id[/code] is the identity function, which just returns its parameter unmodified.
-It can also be written as [code]\x -&gt; x[/code]. If we view the functor as something that can be
-mapped over, the [law]fmap id = id[/code] law seems kind of trivial or obvious.
 
-Let's see if this law holds for a few values of functors.
+<em>A primeira lei dos functors decreta que se nós mapearmos o [code]id[/code] de uma função sobre um functor,
+o functor que nós obtermos como retorno deverá ser o mesmo que o functor original.</em> Se escrevermos isso
+um pouco mais formalmente, significará que [law]fmap id = id[/code]. Basicamente então isso diz que
+se nós fizermos um [code]fmap id[/code] sobre um functor, isso será o mesmo que apenas chamar [code]id[/code]
+no functor. Lembre-se, [code]id[/code] é a identidade da função, que só retorna seu parâmetro inalterado.
+Também podemos escrever isso como [code]\x -&gt; x[/code]. Se visualizarmos o functor como algo que pode ser
+mapeado em cima de alguma outra coisa, a lei [law]fmap id = id[/code] irá parecer meio que trivial e óbvia.
 
+Vamos ver se essa lei se sustenta sobre alguns valores de functors.
 
-If we look at the implementation of [code]fmap[/code] for, say, [code]Maybe[/code], we can figure out
-why the first functor law holds.
+Se nós olharmos na implementação de [code]fmap[/code] por, digamos, [code]Maybe[/code], nós vamos descobrir
+porque a primeira lei dos functors se sustenta.
 
-We imagine that [code]id[/code] plays the role of the [code]f[/code] parameter in the implementation.
-We see that if wee [code]fmap id[/code] over [code]Just x[/code], the result will be
-[code]Just (id x)[/code], and because [code]id[/code] just returns its parameter, we can deduce that
-[code]Just (id x)[/code] equals [code]Just x[/code]. So now we know that if we map [code]id[/code]
-over a [code]Maybe[/code] value with a [code]Just[/code] value constructor, we get that same value back.
+Imaginemos que o [code]id[/code] age como o parâmetro [code]f[/code] na implementação. Nós percebemos que
+se usarmos [code]fmap id[/code] sobre [code]Just x[/code], o resultado será [code]Just (id x)[/code], e como  [code]id[/code] só retorna isso como parâmetro, podemos deduzir então que [code]Just (id x)[/code] é igual a [code]Just x[/code]. Portanto agora sabemos que se nós mapearmos um [code]id[/code] sobre um valor  [code]Maybe[/code] com um valor construtor [code]Just[/code], nós obteremos o mesmo resultado de volta.
 
-Seeing that mapping [code]id[/code] over a [code]Nothing[/code] value returns the same value is trivial.
-So from these two equations in the implementation for [code]fmap[/code], we see that the law
-[code]fmap id = id[/code] holds.
+Perceber que ao mapear um [code]id[/code] sobre um valor [code]Nothing[/code] irá retornar o mesmo valor é
+trivial. Então a partir dessas duas equações na implementação para [code]fmap[/code], nós vimos que
+a lei [code]fmap id = id[/code] é verdadeira.
 
-<em>The second law says that composing two functions and then mapping the resulting function over a
-functor should be the same as first mapping one function over the functor and then mapping the other
-one.</em> Formally written, that means that [law]fmap (f . g) = fmap f . fmap g[/code].
-Or to write it in another way, for any functor <i>F</i>, the following should hold:
-[law]fmap (f . g) F = fmap f (fmap g F)[/code].
+<em>A segunda lei diz que compor duas funções e então mapear a função resultante sobre um functor deve
+ser o mesmo que primeiro mapear uma função sobre o functor e depois mapear a outra função.</em> Formalmente
+escrevendo, isso significa que [law]fmap (f . g) = fmap f . fmap g[/code]. Ou, escrevendo de outro jeito,
+para qualquer functor <i>F</i>, o seguinte deverá ser verdadeiro: [law]fmap (f . g) F = fmap f (fmap g F)[/code].
+
 
 If we can show that some type obeys both functor laws, we can rely on it having the same fundamental
 behaviors as other functors when it comes to mapping. We can know that when we use [code]fmap[/code]
