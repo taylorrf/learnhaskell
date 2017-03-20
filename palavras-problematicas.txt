@@ -9,13 +9,13 @@ não-tradução dessas palavras já está difundida no meio desse leitor.
 Palavras não-traduzidas (que são "reservadas" da linguagem ou que guardam algum
 valor muito próximo da sintaxe da linguagem)
 
-typeclass
-subclass
+typeclass                                               classe de tipos
+subclass                                                subclasse, subclassess (plural)
 otherwise
-"where" binding --> ligação "where"
-functor
+"where" binding                                         ligação "where"
+functor                                                 functor, functores (plural)
 applicative functors
-monoids
+monoids                                                 monoide
 
 --------------------------------------------------------------------------------
 Palavras "complicadas" de traduzir
