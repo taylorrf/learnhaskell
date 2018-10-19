@@ -16,7 +16,7 @@ Você pode não saber disso, mas nós usamos um tipo que tem um parâmetro de ti
 Vamos brincar um pouco com o tipo [code]Maybe[/code]
 
 
-Parâmetros de tipo são úteis porque podemos criar diferentes tipos com eles dependendo de que espécie de tipos desejamos ter guardados no nosso tipo de dado. Quando fazemos [code]:t Just "haha"[/code], o mecanismo de inferência de tipo descobre que isso é do tipo [code]Maybe [Char][/code], porque se o [code]a[/code] no código [code]Just a[/code] for uma String, entãp o [code]a[/code] em [code]Maybe a[/code] também deve ser uma String.
+Parâmetros de tipo são úteis porque podemos criar diferentes tipos com eles dependendo de que espécie de tipos desejamos ter guardados no nosso tipo de dado. Quando fazemos [code]:t Just "haha"[/code], o mecanismo de inferência de tipo descobre que isso é do tipo [code]Maybe [Char][/code], porque se o [code]a[/code] no código [code]Just a[/code] for uma String, então o [code]a[/code] em [code]Maybe a[/code] também deve ser uma String.
 
 
 Perceba que o tipo de [code]Nothing[/code] é [code]Maybe a[/code]. Seu tipo é polimórfico. Se alguma função precisar de um [code]Maybe Int[/code] como parâmetro, podemos passar um Nothing, porque [code]Nothing[/code] não contém um valor, logo não importa. O tipo [code]Maybe a[/code] pode agir como um [code]Maybe Int[/code] se ele tiver de fazê-lo, assim como [code]5[/code] pode agir como um [code]Int[/code] ou um [code]Double[/code]. Similarmente, o tipo da lista vazia é [code][a][/code]. Uma lista vazia pode agir como um lista de qualquer coisa. Por isso que podemos fazer [code][1, 2, 3] ++ [][/code] e [code][!ha", "ha", "ha"] ++ [][/code].
