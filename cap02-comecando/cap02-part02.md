@@ -1,19 +1,19 @@
 Primeiras funções do seu filho
 ==============================
 
-No capítulo anterior aprendemos a idéia básica para chamada de funções. Agora vamos tentar fazer a nossa própria função! Abra o seu editor de texto favorito e escreva a seguinte função que recebe um número e o multiplica por dois.
+No capítulo anterior, aprendemos a idéia básica para chamada de funções. Agora vamos tentar fazer a nossa própria função! Abra o seu editor de texto favorito e escreva a seguinte função que recebe um número e o multiplica por dois.
 
 Funções são definidas de forma semelhante como são chamadas. O nome da função é seguido por parâmetros separados por espaços. Porém quando definimos funções, terá um [code]=[/code] e depois iremos definir o que a função faz. Salve isto como [code]baby.hs[/code] ou algo parecido. Agora vá até o local onde o arquivo foi salvo e execute o [code]ghci[/code] a partir dai. Dentro do GCHI, digite [code]:l baby[/code]. Agora o script estará carregado e já podemos brincar com a função que definimos.
 
-Como o [code]+[/code] funciona muito bem tanto com números inteiros como com números de ponto flutuante (ou qualquer outra coisa que possa ser considerada um número) a nossa função também funcionára com qualquer número. Vamos fazer uma função que recebe dois números e multiplica cada um deles por dois, e após realiza a soma deles.
+Como o [code]+[/code] funciona muito bem tanto com números inteiros como com números de ponto flutuante (ou qualquer outra coisa que possa ser considerada um número) a nossa função também funcionára com qualquer número. Vamos fazer uma função que recebe dois números e multiplica cada um deles por dois e depois realiza a soma deles.
 
 Simples. Podemos definir isso também como [code]doubleUs x y = x + x + y + y[/code]. Testar isto produzirá um resultado bastante previsível (lembre-se de anexar esta função no arquivo [code]baby.hs[/code], salva-lo e então executar [code]:l baby[/code] dentro do GHCI).
 
 Como esperado, você pode chamar suas próprias funções dentro de outras funções que você fez. Com isto em mente, iremos redefinir [code]doubleUs[/code] da seguinte forma:
 
-Este é um exemplo bastante simples de um padrão comum que você verá ao longo de Haskell. Ir fazendo funções básicas que são obviamente corretas e então combiná-las em funções mais complexas. Desta forma você também acabará evitando repetições. E se alguns matemáticos descobrissem que 2 é na verdade 3 e você tivesse que mudar o seu programa? Você deveria então simplesmente redefinir o [code]doubleMe[/code] para ser [code]x + x + x[/code] e desde que [code]doubleUs[/code] chamasse [code]doubleMe[/code], já estaria funcionando automaticamente neste estranho mundo em que 2 é 3.
+Este é um exemplo bastante simples de um padrão comum que você verá ao longo de Haskell. Faça funções básicas que são obviamente corretas e então combiná-las em funções mais complexas. Desta forma, você também acabará evitando repetições. E se alguns matemáticos descobrissem que 2 é na verdade 3 e você tivesse que mudar o seu programa? Você deveria então simplesmente redefinir o [code]doubleMe[/code] para ser [code]x + x + x[/code] e desde que [code]doubleUs[/code] chamasse [code]doubleMe[/code], já estaria funcionando automaticamente neste estranho mundo em que 2 é 3.
 
-Funções em Haskell não precisam estar em uma ordem em particular, portanto não importa se você definir primeiro o [code]doubleMe[/code] e depois o [code]doubleUs[/code] ou se fizer o contrário.
+Funções em Haskell não precisam estar em uma ordem em particular, portanto não importa se definir primeiro o [code]doubleMe[/code] e depois o [code]doubleUs[/code] ou se fizer o contrário.
 
 Agora vamos fazer uma função que multiplicará um número por 2, porém somente se este número for menor ou igual a 100, porque números maiores que 100 já são grandes o suficiente.
 
