@@ -68,4 +68,4 @@ Observe que se tentarmos tirar mais elementos do que há na lista, ele retorna s
 
 [code]elem[/code] recebe alguma coisa e uma lista de coisas e nos diz se esta coisa é um elemento da lista. Geralmente é chamado como uma função <i>infixa</i> porque é mais fácil de ler dessa maneira.
 
-Estas são algumas funções básicas para operações em listas. Iremos dar mais uma olhada em funções de listas <a href="modules#data-list">depois</a>.
+Estas são algumas funções básicas para operações em listas. Vermos mais funções de listas <a href="modules#data-list">depois</a>.
